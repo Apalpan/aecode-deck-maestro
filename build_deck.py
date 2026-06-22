@@ -145,7 +145,7 @@ S("dark","AECODE","cover",f"""
   <div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>
   <img class="aecodito reveal" src="brand/assets/reference/aecodito-home.png" alt="">
   <h1 class="cover-title reveal">La plataforma de<br><span class="grad">adopción tecnológica</span><br>para la construcción</h1>
-  <p class="cover-sub reveal">Ayuda a profesionales y empresas AEC a aprender, aplicar y medir el uso de BIM, IA, automatización y herramientas digitales en el trabajo real. <b>Aprende · Aplica · Construye mejor.</b></p>
+  <p class="cover-sub reveal">Ayuda a profesionales y empresas AEC a aprender, aplicar y medir el uso de Digitalización BIM, automatización, IA y herramientas digitales en el trabajo real. <b>Aprende · Aplica · Construye mejor.</b></p>
   <div class="cover-meta reveal"><span>Enfoque final de startup · 10/10</span><span class="dot">·</span><span>file de entendimiento avanzado</span><span class="dot">·</span><span>{datetime.date.today().strftime('%b %Y')}</span></div>
   <div class="cover-hint reveal">← → o swipe · <b>T</b> tema · <b>F</b> full · <b>O</b> índice · <b>P</b> auto · rueda del mouse</div>
 """)
@@ -156,7 +156,7 @@ S("dark","Apertura","split",f"""
   {title('No faltan cursos.<br>Falta <span class="grad">adoptar tecnología</span> en el trabajo real.')}
   <div class="split">
    <div class="split-l">
-     {lead('La construcción está incorporando BIM, IA, automatización y datos. Pero la adopción <b>no avanza al ritmo que el sector necesita</b>.')}
+     {lead('La construcción está incorporando Digitalización BIM, automatización, IA y datos. Pero la adopción <b>no avanza al ritmo que el sector necesita</b>.')}
      {bullets(["No faltan cursos.","No faltan tutoriales.","No falta información.","No falta IA."])}
    </div>
    <div class="split-r">
@@ -169,7 +169,7 @@ S("dark","Apertura","split",f"""
 # 03 TESIS
 S("dark","Apertura","statement",f"""
   {kicker("La tesis en una frase")}
-  {quote('AECODE acelera la <span class="grad">adopción tecnológica</span> en construcción: forma talento capaz de usar BIM, IA y automatización para trabajar mejor, ahorrar tiempo y aumentar productividad.')}
+  {quote('AECODE acelera la <span class="grad">adopción tecnológica</span> en construcción: forma talento capaz de usar Digitalización BIM, automatización e IA para trabajar mejor, ahorrar tiempo y aumentar productividad.')}
   {flow([("Aprende",""),("Aplica","hot"),("Construye mejor","win")])}
   {lead('AECODE <b>no existe para vender cursos</b>. Existe para que profesionales y empresas adopten tecnología más rápido y la conviertan en mejor empleabilidad, menos retrabajo y más productividad.')}
 """)
@@ -201,11 +201,11 @@ S("dark","I · Problema","table",f"""
   {kicker("Formulación SMART")}
   {title('Un problema <span class="grad">específico y temporal</span>')}
   {table(["Dimensión","Formulación"],[
-   ["<b>Específico</b>","Profesionales y empresas AEC deben aplicar BIM, IA y automatización en diseño, coordinación, planificación, costos y gestión."],
+   ["<b>Específico</b>","Profesionales y empresas AEC deben aplicar Digitalización BIM, automatización e IA en diseño, coordinación, planificación, costos y gestión."],
    ["<b>Medible</b>","Baja adopción, baja finalización, horas perdidas, tareas repetitivas, errores, retrabajo y nula visibilidad del avance."],
    ["<b>Alcanzable</b>","AECODE ya validó demanda con programas en vivo, ventas, comunidad, expertos y primeras líneas B2B y On-demand."],
    ["<b>Relevante</b>","La productividad del sector depende de que las personas adopten tecnología, no solo de que las empresas compren software."],
-   ["<b>Temporal</b>","2025–2030: BIM, IA y digitalización hacen urgente la formación práctica de talento tecnológico."],
+   ["<b>Temporal</b>","2025–2030: Digitalización BIM, automatización e IA hacen urgente la formación práctica de talento tecnológico."],
   ], hi=[0])}
 """)
 
@@ -272,7 +272,7 @@ S("light","II · Solución","cards",f"""
   {kicker("Propuesta de valor")}
   {title('Valor claro para <span class="grad">cada actor</span>')}
   {grid([
-   card("Para profesionales","Aprende BIM, IA y automatización para ahorrar tiempo, mejorar tu perfil y aplicar tecnología en proyectos reales.", num="01"),
+   card("Para profesionales","Aprende Digitalización BIM, automatización e IA para ahorrar tiempo, mejorar tu perfil y aplicar tecnología en proyectos reales.", num="01"),
    card("Para empresas","Capacita a tu equipo en herramientas digitales y mide su avance para acelerar adopción y productividad.", num="02", tone="green"),
    card("Para proyectos","Forma equipos capaces de reducir errores, automatizar procesos y ejecutar con más eficiencia.", num="03", tone="blue"),
    card("Para el sector","Construye talento digital para una industria más productiva, competitiva y preparada.", num="04"),
@@ -369,7 +369,7 @@ S("light","III · Mercado","chart",f"""
      ("Planea aumentar inversión en IA",94,"94%","violet"),
    ])}</div>
    <div class="split-r">
-     {lead('La brecha no es de <i>tecnología</i> — es de <b>adopción y capacidad operativa</b>. Entre 2025 y 2030, la presión por BIM, IA, automatización y digitalización hace urgente formar talento práctico.')}
+     {lead('La brecha no es de <i>tecnología</i> — es de <b>adopción y capacidad operativa</b>. Entre 2025 y 2030, la presión por Digitalización BIM, automatización e IA hace urgente formar talento práctico.')}
      {chip("El contenido se comoditiza · la adopción y la evidencia se vuelven el activo escaso")}
    </div>
   </div>
