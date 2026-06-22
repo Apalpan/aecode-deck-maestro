@@ -144,7 +144,7 @@ S("dark","AECODE","cover",f"""
   <h1 class="cover-title reveal">La <span class="grad">capa de capacidad</span><br>para la transformación<br>digital de la construcción</h1>
   <p class="cover-sub reveal">Convierte conocimiento técnico AEC en capacidad real de ejecución, validada con evidencia. <b>Aprende · Aplica · Demuestra.</b></p>
   <div class="cover-meta reveal"><span>Deck maestro de startup</span><span class="dot">·</span><span>file de entendimiento avanzado</span><span class="dot">·</span><span>{datetime.date.today().strftime('%b %Y')}</span></div>
-  <div class="cover-hint reveal">← → navegar · <b>T</b> tema · <b>F</b> pantalla completa · <b>O</b> índice</div>
+  <div class="cover-hint reveal">← → o swipe · <b>T</b> tema · <b>F</b> full · <b>O</b> índice · <b>P</b> auto · rueda del mouse</div>
 """)
 
 # 02 HOOK
@@ -927,7 +927,7 @@ S("dark","VIII · Cierre","close",f"""
 
 # ---------- render ----------
 def render_slide(i,s):
-    return (f'<section class="slide" data-base="{s["theme"]}" data-idx="{i}">'
+    return (f'<section class="slide" data-base="{s["theme"]}" data-ch="{esc(s["chapter"])}" data-idx="{i}">'
             f'<div class="slide-inner layout-{s["layout"]}">{s["content"]}</div>'
             f'<img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt="">'
             f'<div class="slide-foot"><span class="foot-ch">{esc(s["chapter"])}</span>'
@@ -967,7 +967,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .deck{position:fixed;inset:0;display:grid;place-items:center}
 .stage{width:1280px;height:720px;position:relative;transform-origin:center}
 .slide{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);color:var(--fg);
-  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s var(--ease);overflow:hidden}
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s var(--ease),transform .55s var(--ease-out);overflow:hidden}
 .slide::before{content:"";position:absolute;inset:-12%;z-index:0;
   background:radial-gradient(38% 50% at 14% 12%,var(--mesh-a),transparent 70%),
              radial-gradient(44% 52% at 88% 90%,var(--mesh-b),transparent 72%)}
@@ -1180,7 +1180,6 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .close-cta{font-weight:700;font-size:16px;color:var(--fg);margin-top:6px;padding-top:14px;border-top:1px solid var(--line)}
 /* chrome */
 .chrome{position:fixed;inset:0;z-index:50;pointer-events:none}
-.progress{position:absolute;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--violet),var(--green));width:0;transition:width .45s var(--ease)}
 .ctrl{position:absolute;bottom:20px;right:24px;display:flex;gap:8px;pointer-events:auto}
 .ctrl button{width:39px;height:39px;border-radius:11px;border:1px solid rgba(255,255,255,.16);background:rgba(20,26,61,.62);
   color:#fff;backdrop-filter:blur(10px);cursor:pointer;font-size:15px;display:grid;place-items:center;transition:transform .15s,background .2s}
@@ -1199,52 +1198,128 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .toc-item:hover{transform:translateY(-3px);border-color:#43d98f}
 .toc-n{font-weight:800;font-size:16px;color:#43d98f} .toc-t{font-size:12px;color:#a9b2da;line-height:1.25}
 .toc-close{position:absolute;top:26px;right:36px;font-size:22px;background:none;border:none;color:#fff;cursor:pointer}
+/* ---- interactividad ---- */
+.card,.stat{transition:transform .2s var(--ease),box-shadow .25s,border-color .25s}
+.slide.active .card:hover,.slide.active .stat:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 16px 34px rgba(8,10,30,.22)}
+.flow-step,.loop-step,.tree-node{transition:transform .18s var(--ease),border-color .2s}
+.slide.active .flow-step:hover,.slide.active .loop-step:hover,.slide.active .tree-node:hover{transform:translateY(-2px);border-color:var(--accent2)}
+.fn{transition:width .7s var(--ease-out),filter .2s}
+.slide.active .fn:hover{filter:brightness(1.08)}
+/* barra segmentada por capítulo */
+.segbar{position:absolute;top:0;left:0;right:0;height:6px;display:flex;gap:2px;pointer-events:auto}
+.seg{flex:var(--c) 1 0;height:5px;align-self:flex-start;background:rgba(140,151,220,.24);position:relative;cursor:pointer;
+  transition:height .2s,background .25s}
+.seg:hover,.seg.cur{height:8px;background:rgba(140,151,220,.4)}
+.seg i{position:absolute;left:0;top:0;height:100%;width:var(--f,0%);background:linear-gradient(90deg,#4465EE,#17B14E);transition:width .45s var(--ease)}
+.seg .lab{position:absolute;top:12px;left:0;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:#e7eaff;background:rgba(14,17,33,.94);border:1px solid rgba(124,126,223,.4);padding:4px 9px;border-radius:7px;white-space:nowrap;
+  opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:6}
+.seg:hover .lab{opacity:1;transform:none}
+#btn-play.playing{background:rgba(74,58,193,.85);color:#fff;box-shadow:0 0 18px rgba(124,126,223,.6)}
+/* ---- responsive móvil (reflow real) ---- */
+body.mobile .deck{place-items:stretch}
+body.mobile .stage{width:100vw;height:100dvh;transform:none!important}
+body.mobile .slide{display:block;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+body.mobile .slide-inner{position:static;height:auto;min-height:100%;justify-content:flex-start;
+  padding:56px clamp(18px,5.5vw,30px) 82px;gap:clamp(13px,3.4vw,20px)}
+body.mobile .slide-foot{left:clamp(18px,5.5vw,30px);right:clamp(18px,5.5vw,30px);bottom:18px}
+body.mobile .slide-mark{top:18px;right:18px;height:24px}
+body.mobile .split,body.mobile .ask-grid,body.mobile .grid-3,body.mobile .grid-4,
+body.mobile .tss,body.mobile .donut-wrap{display:flex;flex-direction:column;gap:13px}
+body.mobile .nsm-gauge{flex-wrap:wrap;gap:12px}
+body.mobile .statrow{grid-template-columns:1fr 1fr}
+body.mobile .s-title{font-size:clamp(24px,6.6vw,34px);max-width:none}
+body.mobile .cover-title{font-size:clamp(29px,8.4vw,44px)}
+body.mobile .div-title{font-size:clamp(32px,8.4vw,52px)}
+body.mobile .bigquote{font-size:clamp(21px,5.6vw,30px);max-width:none}
+body.mobile .lead,body.mobile .div-sub,body.mobile .cover-sub{font-size:clamp(15px,3.9vw,18px);max-width:none}
+body.mobile .layout-cover{padding-right:clamp(18px,5.5vw,30px)}
+body.mobile .aecodito{position:static;width:158px;align-self:center;margin:4px 0 0;animation:none}
+body.mobile .table-wrap{overflow-x:auto} body.mobile .dt{min-width:480px}
+body.mobile .tss-rings{margin:0 auto} body.mobile .fly{overflow:hidden}
+body.mobile .fly-ring{transform:scale(.6);margin:-60px auto}
+body.mobile .map2x2{height:230px}
+body.mobile .loop,body.mobile .flow{justify-content:center}
+body.mobile .ctrl{bottom:14px;right:11px;gap:7px} body.mobile .ctrl button{width:42px;height:42px}
+body.mobile .counter{bottom:18px;left:11px} body.mobile .arrow-zone{display:none}
+body.mobile .donut{width:150px;height:150px} body.mobile .donut-hole{inset:26px}
+body.mobile .toc{padding:48px 22px} body.mobile .toc-grid{grid-template-columns:repeat(2,1fr)}
 @media (prefers-reduced-motion:reduce){
   .reveal{transition:none!important;opacity:1!important;transform:none!important}
-  .bar-track i,.nsm-fill,.fn,.pyr-row{transition:none!important}
+  .slide{transition:opacity .2s!important}
+  .bar-track i,.nsm-fill,.fn,.pyr-row,.seg i{transition:none!important}
   .slide.active .bar-track i{transform:scaleX(1)} .slide.active .nsm-fill{width:42.5%}
 }
 """
 
 JS = r"""
 const slides=[...document.querySelectorAll('.slide')];const total=slides.length;let cur=0;
-const stage=document.querySelector('.stage'),progress=document.querySelector('.progress'),
-counter=document.querySelector('.counter');
+const stage=document.querySelector('.stage'),counter=document.querySelector('.counter'),segbar=document.querySelector('#segbar');
 let mode=localStorage.getItem('aecode-mode2')||'mix';
 const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+// capítulos -> barra segmentada
+const chapters=[];
+slides.forEach((s,i)=>{const c=s.dataset.ch,last=chapters[chapters.length-1];
+  if(last&&last.name===c){last.count++}else{chapters.push({name:c,start:i,count:1})}});
+chapters.forEach(ch=>{const seg=document.createElement('div');seg.className='seg';seg.style.setProperty('--c',ch.count);
+  seg.innerHTML='<i></i><span class="lab">'+ch.name+'</span>';
+  seg.title=ch.name;seg.onclick=()=>{stopPlay();go(ch.start)};segbar.appendChild(seg);
+  ch.el=seg;ch.fill=seg.querySelector('i');});
+function updateSeg(){chapters.forEach(ch=>{const endEx=ch.start+ch.count;let f=0;
+  if(cur>=endEx)f=100;else if(cur<ch.start)f=0;else f=((cur-ch.start+1)/ch.count)*100;
+  ch.fill.style.width=f+'%';ch.el.classList.toggle('cur',cur>=ch.start&&cur<endEx);});}
 function applyTheme(){slides.forEach(s=>{const b=s.dataset.base,e=mode==='mix'?b:mode;
   s.classList.toggle('is-dark',e==='dark');s.classList.toggle('is-light',e==='light');});}
-function fit(){stage.style.transform='scale('+Math.min(innerWidth/1280,innerHeight/720)+')';}
+function isMobile(){return matchMedia('(max-width:820px),(orientation:portrait) and (max-width:1024px)').matches}
+function fit(){if(isMobile()){document.body.classList.add('mobile');stage.style.transform='none';}
+  else{document.body.classList.remove('mobile');stage.style.transform='scale('+Math.min(innerWidth/1280,innerHeight/720)+')';}}
 function countUp(s){s.querySelectorAll('[data-count]').forEach(el=>{const t=parseFloat(el.dataset.count);
   if(isNaN(t))return;const dec=(el.dataset.count.split('.')[1]||'').length,d=850,t0=performance.now();
   (function st(n){const p=Math.min((n-t0)/d,1),e=1-Math.pow(1-p,3);el.textContent=(t*e).toFixed(dec);
   p<1?requestAnimationFrame(st):el.textContent=t.toFixed(dec);})(t0);});}
-function go(n){n=Math.max(0,Math.min(total-1,n));slides[cur].classList.remove('active');cur=n;
-  const s=slides[cur];s.classList.add('active');
-  [...s.querySelectorAll('.reveal')].forEach((el,i)=>el.style.transitionDelay=(reduced?0:Math.min(i*50,600))+'ms');
-  progress.style.width=((cur+1)/total*100)+'%';
+function go(n){n=Math.max(0,Math.min(total-1,n));if(n===cur&&slides[cur].classList.contains('active')){countUp(slides[cur]);return}
+  const dir=n>cur?1:-1,mob=document.body.classList.contains('mobile');
+  const out=slides[cur];out.classList.remove('active');
+  if(!reduced&&!mob)out.style.transform='translateX('+(-dir*34)+'px)';
+  cur=n;const s=slides[cur];
+  if(!reduced&&!mob){s.style.transition='none';s.style.transform='translateX('+(dir*34)+'px)';void s.offsetWidth;s.style.transition='';}
+  s.classList.add('active');s.style.transform='';if(mob)s.scrollTop=0;
+  [...s.querySelectorAll('.reveal')].forEach((el,i)=>el.style.transitionDelay=(reduced?0:Math.min(i*48,560))+'ms');
   counter.textContent=String(cur+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
-  if(!reduced)countUp(s);location.hash=cur+1;}
+  updateSeg();if(!reduced)countUp(s);location.hash=cur+1;}
 function next(){go(cur+1)}function prev(){go(cur-1)}
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();
-  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();next()}
-  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev()}
-  else if(e.key==='Home')go(0);else if(e.key==='End')go(total-1);
-  else if(k==='t')cycleMode();else if(k==='f')toggleFs();else if(k==='o')toggleToc();
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();stopPlay();next()}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();stopPlay();prev()}
+  else if(e.key==='Home'){stopPlay();go(0)}else if(e.key==='End'){stopPlay();go(total-1)}
+  else if(k==='t')cycleMode();else if(k==='f')toggleFs();else if(k==='o')toggleToc();else if(k==='p')togglePlay();
   else if(e.key==='Escape')document.querySelector('.toc').classList.remove('open');});
+let wlock=false;
+addEventListener('wheel',e=>{if(document.body.classList.contains('mobile')||wlock)return;
+  const d=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;if(Math.abs(d)<26)return;
+  wlock=true;setTimeout(()=>wlock=false,720);stopPlay();d>0?next():prev();},{passive:true});
 function cycleMode(){mode=mode==='mix'?'dark':mode==='dark'?'light':'mix';localStorage.setItem('aecode-mode2',mode);
   applyTheme();document.querySelector('#mode-ico').textContent=mode==='mix'?'◐':mode==='dark'?'●':'○';}
 function toggleFs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
 function toggleToc(){document.querySelector('.toc').classList.toggle('open')}
-document.querySelector('.left').onclick=prev;document.querySelector('.right').onclick=next;
-document.querySelector('#btn-prev').onclick=prev;document.querySelector('#btn-next').onclick=next;
+let timer=null;
+function setPlay(p){const b=document.querySelector('#btn-play');b.classList.toggle('playing',p);
+  b.querySelector('#play-ico').textContent=p?'❚❚':'▶';}
+function togglePlay(){timer?stopPlay():(timer=setInterval(()=>{cur>=total-1?stopPlay():next()},7000),setPlay(true));}
+function stopPlay(){if(timer){clearInterval(timer);timer=null;setPlay(false);}}
+document.querySelector('.left').onclick=()=>{stopPlay();prev()};
+document.querySelector('.right').onclick=()=>{stopPlay();next()};
+document.querySelector('#btn-prev').onclick=()=>{stopPlay();prev()};
+document.querySelector('#btn-next').onclick=()=>{stopPlay();next()};
 document.querySelector('#btn-mode').onclick=cycleMode;document.querySelector('#btn-fs').onclick=toggleFs;
-document.querySelector('#btn-toc').onclick=toggleToc;document.querySelector('.toc-close').onclick=toggleToc;
-document.querySelectorAll('.toc-item').forEach(b=>b.onclick=()=>{go(+b.dataset.go);toggleToc()});
-let tx=0;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
-addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)dx<0?next():prev()});
-addEventListener('resize',fit);applyTheme();fit();
-go(Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
+document.querySelector('#btn-toc').onclick=toggleToc;document.querySelector('#btn-play').onclick=togglePlay;
+document.querySelector('.toc-close').onclick=toggleToc;
+document.querySelectorAll('.toc-item').forEach(b=>b.onclick=()=>{stopPlay();go(+b.dataset.go);toggleToc()});
+let tx=0,ty=0;addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4){stopPlay();dx<0?next():prev()}});
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(fit,120)});
+applyTheme();fit();go(Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
 document.querySelector('#mode-ico').textContent=mode==='mix'?'◐':mode==='dark'?'●':'○';
 """
 
@@ -1255,9 +1330,10 @@ HTML=f"""<!DOCTYPE html><html lang="es"><head>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>{CSS}</style></head><body>
 <div class="deck"><div class="stage">{slides_html}</div></div>
-<div class="chrome"><div class="progress"></div><div class="counter">01 / {total:02d}</div>
+<div class="chrome"><div class="segbar" id="segbar"></div><div class="counter">01 / {total:02d}</div>
 <div class="ctrl">
 <button id="btn-toc" title="Índice (O)" aria-label="Índice">☰</button>
+<button id="btn-play" title="Auto-play (P)" aria-label="Auto-play"><span id="play-ico">▶</span></button>
 <button id="btn-mode" title="Tema (T)" aria-label="Tema"><span id="mode-ico">◐</span></button>
 <button id="btn-prev" title="Anterior (←)" aria-label="Anterior">‹</button>
 <button id="btn-next" title="Siguiente (→)" aria-label="Siguiente">›</button>

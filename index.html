@@ -32,7 +32,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .deck{position:fixed;inset:0;display:grid;place-items:center}
 .stage{width:1280px;height:720px;position:relative;transform-origin:center}
 .slide{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);color:var(--fg);
-  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s var(--ease);overflow:hidden}
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s var(--ease),transform .55s var(--ease-out);overflow:hidden}
 .slide::before{content:"";position:absolute;inset:-12%;z-index:0;
   background:radial-gradient(38% 50% at 14% 12%,var(--mesh-a),transparent 70%),
              radial-gradient(44% 52% at 88% 90%,var(--mesh-b),transparent 72%)}
@@ -245,7 +245,6 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .close-cta{font-weight:700;font-size:16px;color:var(--fg);margin-top:6px;padding-top:14px;border-top:1px solid var(--line)}
 /* chrome */
 .chrome{position:fixed;inset:0;z-index:50;pointer-events:none}
-.progress{position:absolute;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--violet),var(--green));width:0;transition:width .45s var(--ease)}
 .ctrl{position:absolute;bottom:20px;right:24px;display:flex;gap:8px;pointer-events:auto}
 .ctrl button{width:39px;height:39px;border-radius:11px;border:1px solid rgba(255,255,255,.16);background:rgba(20,26,61,.62);
   color:#fff;backdrop-filter:blur(10px);cursor:pointer;font-size:15px;display:grid;place-items:center;transition:transform .15s,background .2s}
@@ -264,21 +263,68 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .toc-item:hover{transform:translateY(-3px);border-color:#43d98f}
 .toc-n{font-weight:800;font-size:16px;color:#43d98f} .toc-t{font-size:12px;color:#a9b2da;line-height:1.25}
 .toc-close{position:absolute;top:26px;right:36px;font-size:22px;background:none;border:none;color:#fff;cursor:pointer}
+/* ---- interactividad ---- */
+.card,.stat{transition:transform .2s var(--ease),box-shadow .25s,border-color .25s}
+.slide.active .card:hover,.slide.active .stat:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 16px 34px rgba(8,10,30,.22)}
+.flow-step,.loop-step,.tree-node{transition:transform .18s var(--ease),border-color .2s}
+.slide.active .flow-step:hover,.slide.active .loop-step:hover,.slide.active .tree-node:hover{transform:translateY(-2px);border-color:var(--accent2)}
+.fn{transition:width .7s var(--ease-out),filter .2s}
+.slide.active .fn:hover{filter:brightness(1.08)}
+/* barra segmentada por capítulo */
+.segbar{position:absolute;top:0;left:0;right:0;height:6px;display:flex;gap:2px;pointer-events:auto}
+.seg{flex:var(--c) 1 0;height:5px;align-self:flex-start;background:rgba(140,151,220,.24);position:relative;cursor:pointer;
+  transition:height .2s,background .25s}
+.seg:hover,.seg.cur{height:8px;background:rgba(140,151,220,.4)}
+.seg i{position:absolute;left:0;top:0;height:100%;width:var(--f,0%);background:linear-gradient(90deg,#4465EE,#17B14E);transition:width .45s var(--ease)}
+.seg .lab{position:absolute;top:12px;left:0;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  color:#e7eaff;background:rgba(14,17,33,.94);border:1px solid rgba(124,126,223,.4);padding:4px 9px;border-radius:7px;white-space:nowrap;
+  opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:6}
+.seg:hover .lab{opacity:1;transform:none}
+#btn-play.playing{background:rgba(74,58,193,.85);color:#fff;box-shadow:0 0 18px rgba(124,126,223,.6)}
+/* ---- responsive móvil (reflow real) ---- */
+body.mobile .deck{place-items:stretch}
+body.mobile .stage{width:100vw;height:100dvh;transform:none!important}
+body.mobile .slide{display:block;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+body.mobile .slide-inner{position:static;height:auto;min-height:100%;justify-content:flex-start;
+  padding:56px clamp(18px,5.5vw,30px) 82px;gap:clamp(13px,3.4vw,20px)}
+body.mobile .slide-foot{left:clamp(18px,5.5vw,30px);right:clamp(18px,5.5vw,30px);bottom:18px}
+body.mobile .slide-mark{top:18px;right:18px;height:24px}
+body.mobile .split,body.mobile .ask-grid,body.mobile .grid-3,body.mobile .grid-4,
+body.mobile .tss,body.mobile .donut-wrap{display:flex;flex-direction:column;gap:13px}
+body.mobile .nsm-gauge{flex-wrap:wrap;gap:12px}
+body.mobile .statrow{grid-template-columns:1fr 1fr}
+body.mobile .s-title{font-size:clamp(24px,6.6vw,34px);max-width:none}
+body.mobile .cover-title{font-size:clamp(29px,8.4vw,44px)}
+body.mobile .div-title{font-size:clamp(32px,8.4vw,52px)}
+body.mobile .bigquote{font-size:clamp(21px,5.6vw,30px);max-width:none}
+body.mobile .lead,body.mobile .div-sub,body.mobile .cover-sub{font-size:clamp(15px,3.9vw,18px);max-width:none}
+body.mobile .layout-cover{padding-right:clamp(18px,5.5vw,30px)}
+body.mobile .aecodito{position:static;width:158px;align-self:center;margin:4px 0 0;animation:none}
+body.mobile .table-wrap{overflow-x:auto} body.mobile .dt{min-width:480px}
+body.mobile .tss-rings{margin:0 auto} body.mobile .fly{overflow:hidden}
+body.mobile .fly-ring{transform:scale(.6);margin:-60px auto}
+body.mobile .map2x2{height:230px}
+body.mobile .loop,body.mobile .flow{justify-content:center}
+body.mobile .ctrl{bottom:14px;right:11px;gap:7px} body.mobile .ctrl button{width:42px;height:42px}
+body.mobile .counter{bottom:18px;left:11px} body.mobile .arrow-zone{display:none}
+body.mobile .donut{width:150px;height:150px} body.mobile .donut-hole{inset:26px}
+body.mobile .toc{padding:48px 22px} body.mobile .toc-grid{grid-template-columns:repeat(2,1fr)}
 @media (prefers-reduced-motion:reduce){
   .reveal{transition:none!important;opacity:1!important;transform:none!important}
-  .bar-track i,.nsm-fill,.fn,.pyr-row{transition:none!important}
+  .slide{transition:opacity .2s!important}
+  .bar-track i,.nsm-fill,.fn,.pyr-row,.seg i{transition:none!important}
   .slide.active .bar-track i{transform:scaleX(1)} .slide.active .nsm-fill{width:42.5%}
 }
 </style></head><body>
-<div class="deck"><div class="stage"><section class="slide" data-base="dark" data-idx="0"><div class="slide-inner layout-cover">
+<div class="deck"><div class="stage"><section class="slide" data-base="dark" data-ch="AECODE" data-idx="0"><div class="slide-inner layout-cover">
   <div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>
   <img class="aecodito reveal" src="brand/assets/reference/aecodito-home.png" alt="">
   <h1 class="cover-title reveal">La <span class="grad">capa de capacidad</span><br>para la transformación<br>digital de la construcción</h1>
   <p class="cover-sub reveal">Convierte conocimiento técnico AEC en capacidad real de ejecución, validada con evidencia. <b>Aprende · Aplica · Demuestra.</b></p>
   <div class="cover-meta reveal"><span>Deck maestro de startup</span><span class="dot">·</span><span>file de entendimiento avanzado</span><span class="dot">·</span><span>Jun 2026</span></div>
-  <div class="cover-hint reveal">← → navegar · <b>T</b> tema · <b>F</b> pantalla completa · <b>O</b> índice</div>
+  <div class="cover-hint reveal">← → o swipe · <b>T</b> tema · <b>F</b> full · <b>O</b> índice · <b>P</b> auto · rueda del mouse</div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">AECODE</span><span class="foot-n">01<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="1"><div class="slide-inner layout-split">
+<section class="slide" data-base="dark" data-ch="Apertura" data-idx="1"><div class="slide-inner layout-split">
   <div class="kicker reveal">El hook</div>
   <h2 class="s-title reveal">La IA hizo <span class="grad">abundante el conocimiento</span>.<br>Lo escaso es demostrar capacidad.</h2>
   <div class="split">
@@ -293,18 +339,18 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">Apertura</span><span class="foot-n">02<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="2"><div class="slide-inner layout-statement">
+<section class="slide" data-base="dark" data-ch="Apertura" data-idx="2"><div class="slide-inner layout-statement">
   <div class="kicker reveal">La tesis en una frase</div>
   <blockquote class="bigquote reveal">AECODE es la <span class="grad">capa de capacidad</span> para la transformación digital del sector AEC: un sistema que convierte conocimiento técnico en <span class="grad">capacidad real de ejecución</span>, demostrada con evidencia.</blockquote>
   <div class="flow reveal"><div class="flow-step ">Aprende</div><i class="flow-arr">→</i><div class="flow-step hot">Aplica</div><i class="flow-arr">→</i><div class="flow-step win">Demuestra</div></div>
   <p class="lead reveal">La unidad de valor no es el curso ni el certificado de asistencia: es la <b>skill verificable</b> — una capacidad concreta demostrada con una evidencia técnica que un empleador puede comprobar.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">Apertura</span><span class="foot-n">03<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="3"><div class="slide-inner layout-divider">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="3"><div class="slide-inner layout-divider">
   <div class="div-index reveal">01</div>
   <h2 class="div-title reveal">La oportunidad<br>y el <span class="grad">por qué ahora</span></h2>
   <p class="div-sub reveal">Un sector gigante y subdigitalizado entra a su mayor disrupción justo cuando le falta el talento para aprovecharla.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">04<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="4"><div class="slide-inner layout-chart">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="4"><div class="slide-inner layout-chart">
   <div class="kicker reveal">La oportunidad</div>
   <h2 class="s-title reveal">El sector <span class="grad">más grande del planeta</span>, el peor digitalizado</h2>
   <div class="split">
@@ -317,7 +363,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <div class="source reveal">Fuente vault: AECODE-Tesis-de-Mercado-v1 · McKinsey · IMARC · Mordor</div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">05<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="5"><div class="slide-inner layout-chart">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="5"><div class="slide-inner layout-chart">
   <div class="kicker reveal">Por qué ahora</div>
   <h2 class="s-title reveal">El sector <span class="grad">dice usar IA</span>, pero casi nadie la ejecuta</h2>
   <div class="split">
@@ -331,12 +377,12 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <div class="vnote reveal">Datos del vault 2025–2026 · refrescar contra fuente oficial antes de un pitch público.</div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">06<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="6"><div class="slide-inner layout-table">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="6"><div class="slide-inner layout-table">
   <div class="kicker reveal">La tesis estructural</div>
   <h2 class="s-title reveal">Los <span class="grad">5 vectores</span> que abren la ventana</h2>
   <div class="table-wrap reveal"><table class="dt"><thead><tr><th>#</th><th>Vector</th><th>Evidencia clave</th></tr></thead><tbody><tr class="reveal"><td class="">1</td><td class="cell-hi"><b>Mercado AEC gigante y subdigitalizado</b></td><td class="">US$16.3T · &lt;1% en tech · productividad plana 20 años</td></tr><tr class="reveal"><td class="">2</td><td class="cell-hi"><b>Brecha de talento crítica</b></td><td class="">499k faltantes (EE.UU. 2026) · 62% sin candidatos con skills</td></tr><tr class="reveal"><td class="">3</td><td class="cell-hi"><b>Inflexión de IA 2025–2026</b></td><td class="">77% del capital contech fue a IA · de asistente a agente</td></tr><tr class="reveal"><td class="">4</td><td class="cell-hi"><b>Skills sin verificación</b></td><td class="">85% contrata por skills · solo 0.14% lo logra</td></tr><tr class="reveal"><td class="">5</td><td class="cell-hi"><b>LATAM + Perú = apalancamiento</b></td><td class="">EdTech LatAm ×3 a 2033 · Plan BIM Perú = mandato estatal</td></tr></tbody></table></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">07<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="7"><div class="slide-inner layout-tss">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="7"><div class="slide-inner layout-tss">
   <div class="kicker reveal">Mercado · dimensionamiento</div>
   <h2 class="s-title reveal">TAM / SAM / SOM — <span class="grad">dos marcos internos</span></h2>
   <div class="split">
@@ -354,7 +400,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
     </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">08<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="8"><div class="slide-inner layout-chart">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="8"><div class="slide-inner layout-chart">
   <div class="kicker reveal">El cuello de botella</div>
   <h2 class="s-title reveal">La brecha de talento es <span class="grad">digital y estructural</span></h2>
   <div class="split">
@@ -368,7 +414,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <p class="lead reveal">Coordinador VDC, modelador BIM, especialista en automatización: <b>roles de ruta crítica que hace una década no existían</b> y hoy nadie forma a escala.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">09<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="9"><div class="slide-inner layout-split">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="9"><div class="slide-inner layout-split">
   <div class="kicker reveal">Inflexión de IA · 2025–2026</div>
   <h2 class="s-title reveal">El capital ya votó: <span class="grad">la IA es la apuesta</span></h2>
   <div class="split">
@@ -382,7 +428,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">10<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="10"><div class="slide-inner layout-split">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="10"><div class="slide-inner layout-split">
   <div class="kicker reveal">La paradoja de verificación</div>
   <h2 class="s-title reveal">Todos quieren contratar por skills.<br><span class="grad">Nadie sabe probarlas.</span></h2>
   <div class="split">
@@ -395,7 +441,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">11<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="11"><div class="slide-inner layout-split">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="11"><div class="slide-inner layout-split">
   <div class="kicker reveal">Máximo apalancamiento</div>
   <h2 class="s-title reveal">Perú tiene un <span class="grad">viento regulatorio</span> único: Plan BIM</h2>
   <div class="split">
@@ -409,17 +455,17 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <p class="lead reveal">El Estado <b>genera la demanda</b> de talento verificado que AECODE forma: un mercado con comprador estructural.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">12<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="12"><div class="slide-inner layout-cards">
+<section class="slide" data-base="light" data-ch="I · Oportunidad" data-idx="12"><div class="slide-inner layout-cards">
   <div class="kicker reveal">Validación clara de mercado</div>
   <h2 class="s-title reveal">La demanda no es hipótesis: está <span class="grad">documentada</span></h2>
   <div class="grid grid-3 cards-sm"><div class="card reveal card-violet"><div class="card-tag">WEF 2025</div><div class="card-head"><span class="card-big">39%</span> de skills se transforman hacia 2030; 63% ve la brecha como barrera #1.</div><div class="card-body"></div></div><div class="card reveal card-violet"><div class="card-tag">Autodesk 2025</div><div class="card-head"><span class="card-big">46%</span> de líderes pone skills de IA como prioridad de contratación.</div><div class="card-body"></div></div><div class="card reveal card-green"><div class="card-tag">Coursera 2025</div><div class="card-head"><span class="card-big">96%</span> de empleadores: las microcredenciales fortalecen una postulación.</div><div class="card-body"></div></div><div class="card reveal card-violet"><div class="card-tag">PwC 2025</div><div class="card-head"><span class="card-big">56%</span> de premium salarial para quien tiene skills de IA.</div><div class="card-body"></div></div><div class="card reveal card-blue"><div class="card-tag">Stanford HAI</div><div class="card-head"><span class="card-big">78%</span> de organizaciones ya usó IA en 2024.</div><div class="card-body"></div></div><div class="card reveal card-violet"><div class="card-tag">RICS 2025</div><div class="card-head"><span class="card-big">56%</span> de inversionistas asignará más fondos a IA en construcción.</div><div class="card-body"></div></div></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">I · Oportunidad</span><span class="foot-n">13<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="13"><div class="slide-inner layout-divider">
+<section class="slide" data-base="dark" data-ch="II · El Problema" data-idx="13"><div class="slide-inner layout-divider">
   <div class="div-index reveal">02</div>
   <h2 class="div-title reveal">El problema<br>que <span class="grad">sí duele</span></h2>
   <p class="div-sub reveal">No es falta de cursos. Es falta de un sistema que conecte aprendizaje, evidencia y ejecución real.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">II · El Problema</span><span class="foot-n">14<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="14"><div class="slide-inner layout-split">
+<section class="slide" data-base="dark" data-ch="II · El Problema" data-idx="14"><div class="slide-inner layout-split">
   <div class="kicker reveal">Problema central</div>
   <h2 class="s-title reveal">Dos lados del mismo <span class="grad">vacío</span></h2>
   <div class="split">
@@ -432,35 +478,35 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <blockquote class="bigquote reveal">La hipótesis: la brecha crítica no es falta de tecnología — es falta de <span class="grad">adopción y capacidad operativa</span>.</blockquote>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">II · El Problema</span><span class="foot-n">15<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="15"><div class="slide-inner layout-cards">
+<section class="slide" data-base="dark" data-ch="II · El Problema" data-idx="15"><div class="slide-inner layout-cards">
   <div class="kicker reveal">Dolor específico</div>
   <h2 class="s-title reveal">Tres actores, <span class="grad">tres dolores</span></h2>
   <div class="grid grid-3 "><div class="card reveal card-violet"><div class="card-num">01</div><div class="card-head">Profesional</div><div class="card-body"><ul class="bullets"><li class="reveal">No sabe qué aprender primero</li><li class="reveal">Tiene certificados, no evidencia</li><li class="reveal">Quiere diferenciarse para empleo/ascenso</li><li class="reveal">Necesita resultados en días, no diplomas en meses</li></ul></div></div><div class="card reveal card-green"><div class="card-num">02</div><div class="card-head">Empresa AEC</div><div class="card-body"><ul class="bullets"><li class="reveal">Compra capacitación sin progreso medible</li><li class="reveal">No sabe si el equipo puede aplicar BIM/IA</li><li class="reveal">Necesita reducir retrabajo</li><li class="reveal">Debe justificar la inversión en upskilling</li></ul></div></div><div class="card reveal card-blue"><div class="card-num">03</div><div class="card-head">Instructor / experto</div><div class="card-body"><ul class="bullets"><li class="reveal">Tiene expertise pero no escala</li><li class="reveal">Necesita CMS y plantillas</li><li class="reveal">Quiere revenue share</li><li class="reveal">Necesita analítica de su contenido</li></ul></div></div></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">II · El Problema</span><span class="foot-n">16<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="16"><div class="slide-inner layout-table">
+<section class="slide" data-base="dark" data-ch="II · El Problema" data-idx="16"><div class="slide-inner layout-table">
   <div class="kicker reveal">Segmentos prioritarios</div>
   <h2 class="s-title reveal">A quién <span class="grad">resolvemos</span> y quién paga</h2>
   <div class="table-wrap reveal"><table class="dt"><thead><tr><th>Segmento</th><th>Dolor</th><th>Oferta AECODE</th></tr></thead><tbody><tr class="reveal"><td class="cell-hi"><b>Junior</b> (0–3 años)</td><td class="">Diferenciación, CV, portafolio</td><td class="">Beca AI Talent, rutas starter, certificados</td></tr><tr class="reveal"><td class="cell-hi"><b>Intermedio</b> (3–8)</td><td class="">Subir de rol, automatizar</td><td class="">Rutas premium, IA aplicada, BIM/VDC</td></tr><tr class="reveal"><td class="cell-hi"><b>Coordinador BIM/VDC</b></td><td class="">Estandarizar y demostrar impacto</td><td class="">Rutas avanzadas, BEP/ISO, automatización</td></tr><tr class="reveal"><td class="cell-hi"><b>Empresa AEC</b> (B2B)</td><td class="">Upskilling rápido, adopción</td><td class="">Licencias, in-house, dashboard de brechas</td></tr><tr class="reveal"><td class="cell-hi"><b>Experto / instructor</b></td><td class="">Monetizar conocimiento</td><td class="">Marketplace, revenue share, CMS</td></tr></tbody></table></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">II · El Problema</span><span class="foot-n">17<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="17"><div class="slide-inner layout-divider">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="17"><div class="slide-inner layout-divider">
   <div class="div-index reveal">03</div>
   <h2 class="div-title reveal">La solución<br>y el <span class="grad">producto</span></h2>
   <p class="div-sub reveal">Un Learning OS que cierra el loop que nadie más cierra: práctica aplicada, evidencia y validación.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">18<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="18"><div class="slide-inner layout-cards">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="18"><div class="slide-inner layout-cards">
   <div class="kicker reveal">La solución</div>
   <h2 class="s-title reveal">Una plataforma de <span class="grad">capacidad</span>, no de cursos</h2>
   <div class="grid grid-3 "><div class="card reveal card-violet"><div class="card-num">01</div><div class="card-head">Aprende</div><div class="card-body">Rutas por rol, cápsulas de microlearning (5–12 min) y diagnóstico inteligente que ordena el camino.</div></div><div class="card reveal card-blue"><div class="card-num">02</div><div class="card-head">Aplica</div><div class="card-body">Sandbox activo: el usuario ejecuta flujos reales —no consume teoría— y produce un entregable.</div></div><div class="card reveal card-green"><div class="card-num">03</div><div class="card-head">Demuestra</div><div class="card-body">Evidencia + rúbrica 1–4 + validación → badge y Evidence Wallet verificable.</div></div></div>
   <blockquote class="bigquote reveal">La tecnología no transforma. Tu gente sí. <span class="grad">AECODE convierte conocimiento técnico en capacidad real de ejecución.</span></blockquote>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">19<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="19"><div class="slide-inner layout-flow">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="19"><div class="slide-inner layout-flow">
   <div class="kicker reveal">El núcleo · Learning OS</div>
   <h2 class="s-title reveal">El loop que <span class="grad">nadie más cierra</span></h2>
   <div class="flow reveal"><div class="flow-step ">Diagnóstico</div><i class="flow-arr">→</i><div class="flow-step ">Ruta por rol</div><i class="flow-arr">→</i><div class="flow-step ">Skill</div><i class="flow-arr">→</i><div class="flow-step hot">Sandbox · práctica</div><i class="flow-arr">→</i><div class="flow-step hot">Evidencia</div><i class="flow-arr">→</i><div class="flow-step hot">Validación</div><i class="flow-arr">→</i><div class="flow-step win">Skill Passport</div></div>
   <p class="lead reveal">La diferencia está en los pasos antes del resultado: <b>práctica aplicada → evidencia → validación</b>. Eso no lo hacen Udemy, YouTube ni cursos grabados — requiere sandbox, rúbrica, feedback y verificación.</p>
   <div class="grid grid-3 cards-sm"><div class="card reveal card-violet"><div class="card-num">◆</div><div class="card-head">Diagnóstico de brechas</div><div class="card-body">Rol, experiencia, objetivo, herramienta y urgencia.</div></div><div class="card reveal card-blue"><div class="card-num">◆</div><div class="card-head">Sandbox activo</div><div class="card-body">Entorno donde se ejecutan flujos reales.</div></div><div class="card reveal card-green"><div class="card-num">◆</div><div class="card-head">Evidence Wallet</div><div class="card-body">Portafolio verificable de competencias técnicas.</div></div></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">20<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="20"><div class="slide-inner layout-pyramid">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="20"><div class="slide-inner layout-pyramid">
   <div class="kicker reveal">Modelo de 3 capas</div>
   <h2 class="s-title reveal">Wedge → Engine → <span class="grad">Moat</span></h2>
   <div class="split">
@@ -471,19 +517,19 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">21<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="21"><div class="slide-inner layout-cards">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="21"><div class="slide-inner layout-cards">
   <div class="kicker reveal">Arquitectura de producto</div>
   <h2 class="s-title reveal">La unidad central es la <span class="grad">Skill</span>, no el video</h2>
   <p class="lead reveal">Una skill es una <b>capacidad demostrable</b>. Cada una contiene:</p>
   <div class="grid grid-4 cards-xs"><div class="card reveal card-violet"><div class="card-num">01</div><div class="card-head">Objetivo observable</div><div class="card-body">Qué puede <i>hacer</i> el usuario al terminar.</div></div><div class="card reveal card-violet"><div class="card-num">02</div><div class="card-head">Cápsulas</div><div class="card-body">Microcontenidos de teoría y demo.</div></div><div class="card reveal card-blue"><div class="card-num">03</div><div class="card-head">Práctica</div><div class="card-body">Ejercicio aplicado en sandbox.</div></div><div class="card reveal card-green"><div class="card-num">04</div><div class="card-head">Evidencia</div><div class="card-body">Entregable verificable: reporte, modelo, script, dashboard.</div></div><div class="card reveal card-violet"><div class="card-num">05</div><div class="card-head">Rúbrica</div><div class="card-body">Criterios de evaluación 1–4.</div></div><div class="card reveal card-violet"><div class="card-num">06</div><div class="card-head">Feedback</div><div class="card-body">Comentario humano / IA.</div></div><div class="card reveal card-green"><div class="card-num">07</div><div class="card-head">Certificación</div><div class="card-body">Badge / microcredencial con QR.</div></div><div class="card reveal card-blue"><div class="card-num">08</div><div class="card-head">Datos</div><div class="card-body">Eventos que alimentan recomendación.</div></div></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">22<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="22"><div class="slide-inner layout-table">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="22"><div class="slide-inner layout-table">
   <div class="kicker reveal">Jerarquía del producto</div>
   <h2 class="s-title reveal">De la <span class="grad">ruta</span> a la <span class="grad">evidencia</span></h2>
   <div class="flow reveal"><div class="flow-step ">Route</div><i class="flow-arr">→</i><div class="flow-step ">Cluster</div><i class="flow-arr">→</i><div class="flow-step hot">Skill</div><i class="flow-arr">→</i><div class="flow-step ">Capsule</div><i class="flow-arr">→</i><div class="flow-step ">Practice</div><i class="flow-arr">→</i><div class="flow-step win">Evidence</div><i class="flow-arr">→</i><div class="flow-step win">Certificate</div></div>
   <div class="table-wrap reveal"><table class="dt"><thead><tr><th>Nivel</th><th>Definición</th><th>Ejemplo</th></tr></thead><tbody><tr class="reveal"><td class="cell-hi"><b>Ruta</b></td><td class="">Secuencia orientada a rol o resultado</td><td class="">Automation BIM Starter</td></tr><tr class="reveal"><td class="cell-hi"><b>Skill</b></td><td class="">Capacidad demostrable con evidencia</td><td class="">Automatizar parámetros en Revit</td></tr><tr class="reveal"><td class="cell-hi"><b>Cápsula</b></td><td class="">Microcontenido de concepto</td><td class="">Nodos básicos de selección</td></tr><tr class="reveal"><td class="cell-hi"><b>Evidencia</b></td><td class="">Entrega verificable</td><td class="">Archivo .dyn + capturas antes/después</td></tr></tbody></table></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">23<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="23"><div class="slide-inner layout-flow">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="23"><div class="slide-inner layout-flow">
   <div class="kicker reveal">Learning OS · lo nuevo</div>
   <h2 class="s-title reveal">Sandbox Activo + <span class="grad">Evidence Wallet</span></h2>
   <div class="flow reveal"><div class="flow-step ">Diagnóstico de brechas</div><i class="flow-arr">→</i><div class="flow-step ">Rutas guiadas por rol</div><i class="flow-arr">→</i><div class="flow-step hot">Sandbox Activo</div><i class="flow-arr">→</i><div class="flow-step win">Evidence Wallet</div></div>
@@ -493,7 +539,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <div class="vnote reveal">AI Coach sectorial y capacidades avanzadas: <b>ASUMIDO · VALIDAR</b> en el dossier operativo.</div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">24<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="24"><div class="slide-inner layout-split">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="24"><div class="slide-inner layout-split">
   <div class="kicker reveal">Skill piloto · cuña de validación</div>
   <h2 class="s-title reveal">“Generar un <span class="grad">reporte técnico de obra</span> asistido por IA”</h2>
   <div class="split">
@@ -506,29 +552,29 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">25<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="25"><div class="slide-inner layout-cards">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="25"><div class="slide-inner layout-cards">
   <div class="kicker reveal">Experiencia de usuario</div>
   <h2 class="s-title reveal">Tres superficies que el usuario <span class="grad">vive cada día</span></h2>
   <div class="grid grid-3 "><div class="card reveal card-violet"><div class="card-num">01</div><div class="card-head">Dashboard</div><div class="card-body"><ul class="bullets"><li class="reveal">Qué skill toca hoy</li><li class="reveal">Progreso por ruta</li><li class="reveal">Créditos y evidencias pendientes</li></ul></div></div><div class="card reveal card-blue"><div class="card-num">02</div><div class="card-head">Skill Page</div><div class="card-body"><ul class="bullets"><li class="reveal">Cápsulas → práctica → evidencia</li><li class="reveal">Rúbrica y feedback</li><li class="reveal">Foro, recursos y badge</li></ul></div></div><div class="card reveal card-green"><div class="card-num">03</div><div class="card-head">Skill Passport</div><div class="card-body"><ul class="bullets"><li class="reveal">Skills + evidencias</li><li class="reveal">Certificados con QR verificable</li><li class="reveal">CV y LinkedIn listos</li></ul></div></div></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">26<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="26"><div class="slide-inner layout-table">
+<section class="slide" data-base="light" data-ch="III · Solución" data-idx="26"><div class="slide-inner layout-table">
   <div class="kicker reveal">Módulos de plataforma</div>
   <h2 class="s-title reveal">Un sistema completo, no una <span class="grad">colección de videos</span></h2>
   <div class="table-wrap reveal"><table class="dt"><thead><tr><th>Módulo</th><th>Función</th></tr></thead><tbody><tr class="reveal"><td class="cell-hi"><b>Onboarding inteligente</b></td><td class="">Perfil, rol, objetivo, software, urgencia</td></tr><tr class="reveal"><td class="cell-hi"><b>AI Coach</b></td><td class="">Recomendación, feedback preliminar, nudges</td></tr><tr class="reveal"><td class="cell-hi"><b>Evidence Engine</b></td><td class="">Evidencia como unidad de validación, no quiz</td></tr><tr class="reveal"><td class="cell-hi"><b>Skill Passport</b></td><td class="">Portafolio verificable de skills y certificados</td></tr><tr class="reveal"><td class="cell-hi"><b>CMS Instructor + Marketplace</b></td><td class="">Crear, publicar, revenue share, reputación</td></tr><tr class="reveal"><td class="cell-hi"><b>B2B Dashboard</b></td><td class="">Matriz de brechas, progreso y evidencia por equipo</td></tr><tr class="reveal"><td class="cell-hi"><b>AI Hub</b></td><td class="">+100 bots verticales AEC, normativa y software</td></tr></tbody></table></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">27<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="27"><div class="slide-inner layout-cards">
+<section class="slide" data-base="dark" data-ch="III · Solución" data-idx="27"><div class="slide-inner layout-cards">
   <div class="kicker reveal">Arquitectura del producto</div>
   <h2 class="s-title reveal">Frontstage · Backstage · <span class="grad">IA</span></h2>
   <div class="grid grid-3 "><div class="card reveal card-violet"><div class="card-num">◐</div><div class="card-head">Frontstage</div><div class="card-body"><ul class="bullets"><li class="reveal">Landing → diagnóstico</li><li class="reveal">Dashboard personal</li><li class="reveal">Skill Page + Evidence Upload</li><li class="reveal">Feedback → Badge → Passport</li></ul></div></div><div class="card reveal card-blue"><div class="card-num">◑</div><div class="card-head">Backstage</div><div class="card-body"><ul class="bullets"><li class="reveal">CMS de skills + rúbricas</li><li class="reveal">Cola de revisión humana</li><li class="reveal">Admin analytics</li><li class="reveal">B2B dashboard + performance</li></ul></div></div><div class="card reveal card-green"><div class="card-num">◓</div><div class="card-head">Capa de IA</div><div class="card-body"><ul class="bullets"><li class="reveal">Diagnóstico + recomendación</li><li class="reveal">Feedback preliminar (RAG)</li><li class="reveal">Detección de errores</li><li class="reveal">Nudges de abandono</li></ul></div></div></div>
   <p class="lead reveal">Regla de oro del producto: <b>medir habilidad demostrada, no consumo de contenido</b>. El control humano valida las skills críticas.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">28<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="28"><div class="slide-inner layout-cards">
+<section class="slide" data-base="dark" data-ch="III · Solución" data-idx="28"><div class="slide-inner layout-cards">
   <div class="kicker reveal">Innovación tecnológica</div>
   <h2 class="s-title reveal">Cinco activos que <span class="grad">se acumulan</span></h2>
   <div class="grid grid-3 cards-sm"><div class="card reveal card-violet"><div class="card-num">01</div><div class="card-head">Skill Graph AEC</div><div class="card-body">Taxonomía propia de roles, skills, rutas y evidencias.</div></div><div class="card reveal card-green"><div class="card-num">02</div><div class="card-head">Evidence Engine</div><div class="card-body">La evidencia es la unidad de validación, no un quiz.</div></div><div class="card reveal card-blue"><div class="card-num">03</div><div class="card-head">AI Coach</div><div class="card-body">Diagnóstico, RAG, feedback preliminar y nudges.</div></div><div class="card reveal card-violet"><div class="card-num">04</div><div class="card-head">Skill Passport</div><div class="card-body">Perfil verificable de skills y certificados.</div></div><div class="card reveal card-green"><div class="card-num">05</div><div class="card-head">Live-to-platform</div><div class="card-body">Cada curso live → cápsulas, rúbricas, evidencias y datos.</div></div><div class="card reveal card-blue"><div class="card-num">06</div><div class="card-head">B2B talent intelligence</div><div class="card-body">Matriz de brechas y evidencia por equipo.</div></div></div>
   <span class="chip reveal">Más usuarios → más datos → mejores rutas y evaluación · sin escalar horas humanas</span>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">29<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="29"><div class="slide-inner layout-table">
+<section class="slide" data-base="dark" data-ch="III · Solución" data-idx="29"><div class="slide-inner layout-table">
   <div class="kicker reveal">Stack tecnológico</div>
   <h2 class="s-title reveal">Infraestructura para <span class="grad">escalar sin colapsar</span></h2>
   <div class="split">
@@ -539,19 +585,19 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">III · Solución</span><span class="foot-n">30<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="30"><div class="slide-inner layout-cards">
+<section class="slide" data-base="dark" data-ch="IV · Negocio" data-idx="30"><div class="slide-inner layout-cards">
   <div class="kicker reveal">Modelo de negocio</div>
   <h2 class="s-title reveal">Cuatro motores, <span class="grad">un solo flywheel</span></h2>
   <div class="grid grid-4 cards-sm"><div class="card reveal card-violet"><div class="card-num">◆</div><div class="card-head">1 · Live Training B2C</div><div class="card-body">Caja, comunidad y validación. Motor de hoy.</div></div><div class="card reveal card-green"><div class="card-num">◆</div><div class="card-head">2 · B2B institucional</div><div class="card-body">Contratos de mayor valor, recurrencia, brechas.</div></div><div class="card reveal card-blue"><div class="card-num">◆</div><div class="card-head">3 · On-demand + IA</div><div class="card-body">Margen SaaS y escala (microlearning).</div></div><div class="card reveal card-violet"><div class="card-num">◆</div><div class="card-head">4 · B2B2C</div><div class="card-body">Empresa paga o impulsa; profesional aprende; evidencia valida.</div></div></div>
   <p class="lead reveal">Líneas escalables: <b>freemium · créditos · premium · rutas certificadas · certificaciones · B2B team · corporate academy · marketplace · Summit/sponsors</b>.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">IV · Negocio</span><span class="foot-n">31<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="31"><div class="slide-inner layout-flow">
+<section class="slide" data-base="dark" data-ch="IV · Negocio" data-idx="31"><div class="slide-inner layout-flow">
   <div class="kicker reveal">Modelo B2B2C</div>
   <h2 class="s-title reveal">La comunidad es el <span class="grad">canal</span>; la empresa, el <span class="grad">ticket</span></h2>
   <div class="flow reveal"><div class="flow-step ">Profesional aprende y valida</div><i class="flow-arr">→</i><div class="flow-step hot">Comparte evidencia</div><i class="flow-arr">→</i><div class="flow-step hot">Empresa ve el valor</div><i class="flow-arr">→</i><div class="flow-step win">Compra rutas para el equipo</div><i class="flow-arr">→</i><div class="flow-step ">Data mejora el producto</div></div>
   <p class="lead reveal">El mismo motor de contenido sirve al profesional (<b>B2C</b>) y a la empresa que necesita upskilling medible (<b>B2B</b>). La comunidad orgánica baja el CAC; la empresa sube el ticket y la recurrencia. Patrón <b>BuildWitt</b> aplicado a LATAM: medios propios → audiencia → conversión barata.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">IV · Negocio</span><span class="foot-n">32<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="32"><div class="slide-inner layout-table">
+<section class="slide" data-base="dark" data-ch="IV · Negocio" data-idx="32"><div class="slide-inner layout-table">
   <div class="kicker reveal">Pricing</div>
   <h2 class="s-title reveal">Una escalera del <span class="grad">free al enterprise</span></h2>
   <div class="split">
@@ -559,13 +605,13 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    <div class="split-r"><div class="card reveal card-blue"><div class="card-tag">ASUMIDO · VALIDAR</div><div class="card-head">Pricing canónico en USD</div><div class="card-body"><div class="table-wrap reveal"><table class="dt"><thead><tr><th>Oferta</th><th>Rango</th></tr></thead><tbody><tr class="reveal"><td class="">Workshop live B2C</td><td class="">US$40–60</td></tr><tr class="reveal"><td class="">Programa / cohorte</td><td class="">US$120–250</td></tr><tr class="reveal"><td class="">B2B Starter (≤15)</td><td class="">~US$3,000</td></tr><tr class="reveal"><td class="">B2B Growth (≤40)</td><td class="">~US$8,000</td></tr><tr class="reveal"><td class="">On-demand</td><td class="">US$19/mes · US$180/año</td></tr><tr class="reveal"><td class="">Teams B2B2C</td><td class="">US$12–15 usuario/mes</td></tr></tbody></table></div></div></div></div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">IV · Negocio</span><span class="foot-n">33<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="33"><div class="slide-inner layout-table">
+<section class="slide" data-base="dark" data-ch="IV · Negocio" data-idx="33"><div class="slide-inner layout-table">
   <div class="kicker reveal">Modelo actual vs. futuro</div>
   <h2 class="s-title reveal">De <span class="grad">servicios</span> a plataforma <span class="grad">recurrente</span></h2>
   <div class="table-wrap reveal"><table class="dt"><thead><tr><th>Etapa</th><th>Modelo</th><th>Estado</th><th>Riesgo</th></tr></thead><tbody><tr class="reveal"><td class="cell-hi"><b>Actual</b></td><td class="">Live training, diplomados, talleres</td><td class="">Activo</td><td class="">Depende de horas y ventas one-time</td></tr><tr class="reveal"><td class="cell-hi"><b>Transición</b></td><td class="">Microlearning, retos, 1ª skill verificable</td><td class="">En validación</td><td class="">Debe probar evidencia y retención</td></tr><tr class="reveal"><td class="cell-hi"><b>Plataforma</b></td><td class="">Freemium, créditos, premium, certificados</td><td class="">Futuro cercano</td><td class="">Requiere MRR real</td></tr><tr class="reveal"><td class="cell-hi"><b>B2B</b></td><td class="">Licencias, corporate academy, dashboard</td><td class="">Early</td><td class="">Falta cuantificar pilotos</td></tr><tr class="reveal"><td class="cell-hi"><b>Marketplace</b></td><td class="">Instructores, revenue share</td><td class="">Posterior</td><td class="">Riesgo de calidad → curaduría</td></tr></tbody></table></div>
   <p class="lead reveal">Cada venta live <b>alimenta la plataforma</b>: el curso se convierte en cápsulas, skills, rúbricas, evidencias y datos.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">IV · Negocio</span><span class="foot-n">34<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="34"><div class="slide-inner layout-chart">
+<section class="slide" data-base="dark" data-ch="IV · Negocio" data-idx="34"><div class="slide-inner layout-chart">
   <div class="kicker reveal">Unit economics</div>
   <h2 class="s-title reveal">La unidad económica <span class="grad">ya cierra</span></h2>
   <div class="statrow">
@@ -579,7 +625,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    <div class="split-r"><div class="vnote reveal">Unit economics por motor: <b>ASUMIDO · VALIDAR</b> (B2C $100/CAC $20 · B2B $5,000/CAC $400 · On-demand $19mes/CAC $15). Churn mensual ~8% (borde alto) y MRR real a separar del one-time.</div></div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">IV · Negocio</span><span class="foot-n">35<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="35"><div class="slide-inner layout-funnel">
+<section class="slide" data-base="dark" data-ch="IV · Negocio" data-idx="35"><div class="slide-inner layout-funnel">
   <div class="kicker reveal">Funnel comercial</div>
   <h2 class="s-title reveal">B2C y B2B con <span class="grad">gates de validación</span></h2>
   <div class="split">
@@ -605,7 +651,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">IV · Negocio</span><span class="foot-n">36<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="36"><div class="slide-inner layout-nsm">
+<section class="slide" data-base="light" data-ch="V · Métricas" data-idx="36"><div class="slide-inner layout-nsm">
   <div class="kicker reveal">North Star Metric</div>
   <h2 class="s-title reveal">Skills verificadas con evidencia <span class="grad">/ usuario activo</span></h2>
   <div class="nsm reveal">
@@ -622,7 +668,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
     </div>
   <p class="lead reveal">Una sola palanca mueve 4 streams: empleabilidad → recomienda (baja CAC) → empresas pagan por el Skill Graph → las credenciales valen. <b>No se infla con marketing: o verificas la skill, o no.</b></p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">V · Métricas</span><span class="foot-n">37<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="37"><div class="slide-inner layout-chart">
+<section class="slide" data-base="light" data-ch="V · Métricas" data-idx="37"><div class="slide-inner layout-chart">
   <div class="kicker reveal">Tracción · snapshot</div>
   <h2 class="s-title reveal">Demanda validada <span class="grad">antes de terminar el producto</span></h2>
   <div class="statrow">
@@ -636,7 +682,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    <div class="split-r"><div class="vnote reveal">Cifras aportadas por Alejandro para pitch · <b>pendiente conciliación</b> con contabilidad, analytics y CRM antes de due diligence. ProInnóvate Hito 1 aprobado.</div></div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">V · Métricas</span><span class="foot-n">38<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="38"><div class="slide-inner layout-chart">
+<section class="slide" data-base="light" data-ch="V · Métricas" data-idx="38"><div class="slide-inner layout-chart">
   <div class="kicker reveal">Retención &amp; NPS</div>
   <h2 class="s-title reveal">Retiene <span class="grad">mejor que la media</span> — aún sin terminar</h2>
   <div class="split">
@@ -647,7 +693,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">V · Métricas</span><span class="foot-n">39<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="39"><div class="slide-inner layout-split">
+<section class="slide" data-base="light" data-ch="V · Métricas" data-idx="39"><div class="slide-inner layout-split">
   <div class="kicker reveal">Honestidad métrica</div>
   <h2 class="s-title reveal">Lo que un analista <span class="grad">atacaría primero</span></h2>
   <div class="split">
@@ -661,7 +707,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <blockquote class="bigquote reveal">Mostrar el gap <span class="grad">nosotros mismos</span>, con plan, construye más confianza que esconderlo.</blockquote>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">V · Métricas</span><span class="foot-n">40<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="40"><div class="slide-inner layout-flywheel">
+<section class="slide" data-base="light" data-ch="V · Métricas" data-idx="40"><div class="slide-inner layout-flywheel">
   <div class="kicker reveal">Comunidad &amp; flywheel</div>
   <h2 class="s-title reveal">El volante: cada vuelta <span class="grad">cuesta menos y empuja más</span></h2>
   <div class="fly reveal">
@@ -677,18 +723,18 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <p class="lead reveal">La comunidad es <b>canal, producto y moat</b>. Cada evento produce: grabación, cápsula, resumen, post, base de Q&A para el AI Hub y un CTA a diagnóstico. Ecosistema: GEN+ (ticket alto), THESIA (I+D), VisionPro (datos de obra), Summit (autoridad).</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">V · Métricas</span><span class="foot-n">41<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="41"><div class="slide-inner layout-table">
+<section class="slide" data-base="dark" data-ch="VI · Defensibilidad" data-idx="41"><div class="slide-inner layout-table">
   <div class="kicker reveal">Diferenciación</div>
   <h2 class="s-title reveal">Las academias certifican asistencia.<br>AECODE <span class="grad">valida capacidad</span>.</h2>
   <div class="table-wrap reveal"><table class="dt"><thead><tr><th>Dimensión</th><th>Cursos tradicionales</th><th>AECODE</th></tr></thead><tbody><tr class="reveal"><td class="">Unidad de valor</td><td class="">Curso o certificado</td><td class="cell-hi"><b>Skill verificable</b></td></tr><tr class="reveal"><td class="">Progreso</td><td class="">Clases vistas</td><td class="cell-hi"><b>Evidencia aprobada</b></td></tr><tr class="reveal"><td class="">Personalización</td><td class="">Temario fijo</td><td class="cell-hi"><b>Ruta por rol + diagnóstico</b></td></tr><tr class="reveal"><td class="">Evaluación</td><td class="">Quiz o examen</td><td class="cell-hi"><b>Rúbrica + entregable real</b></td></tr><tr class="reveal"><td class="">Resultado</td><td class="">Constancia</td><td class="cell-hi"><b>Skill Passport</b></td></tr><tr class="reveal"><td class="">B2B</td><td class="">Capacitación genérica</td><td class="cell-hi"><b>Dashboard de brechas</b></td></tr></tbody></table></div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">VI · Defensibilidad</span><span class="foot-n">42<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="42"><div class="slide-inner layout-cards">
+<section class="slide" data-base="dark" data-ch="VI · Defensibilidad" data-idx="42"><div class="slide-inner layout-cards">
   <div class="kicker reveal">Moat compuesto</div>
   <h2 class="s-title reveal">El contenido se copia. <span class="grad">El moat, no.</span></h2>
   <div class="grid grid-3 cards-sm"><div class="card reveal card-violet"><div class="card-num">01</div><div class="card-head">Comunidad vertical AEC</div><div class="card-body">65–95k de alcance → CAC $35 vs. $100–300.</div></div><div class="card reveal card-blue"><div class="card-num">02</div><div class="card-head">Skill Graph AEC</div><div class="card-body">Taxonomía propietaria de roles y skills.</div></div><div class="card reveal card-green"><div class="card-num">03</div><div class="card-head">Datos de evidencia</div><div class="card-body">Grafo de habilidades reales de la región.</div></div><div class="card reveal card-violet"><div class="card-num">04</div><div class="card-head">Rúbricas + feedback</div><div class="card-body">Estándar de validación que se calibra.</div></div><div class="card reveal card-blue"><div class="card-num">05</div><div class="card-head">AI Coach contextual</div><div class="card-body">Personalización sin escalar horas humanas.</div></div><div class="card reveal card-green"><div class="card-num">06</div><div class="card-head">Ecosistema GEN+/THESIA</div><div class="card-body">Casos reales que alimentan el producto.</div></div></div>
   <p class="lead reveal">Más: <b>Summit y autoridad</b>, <b>B2B talent intelligence</b>, <b>alianzas institucionales</b> y <b>mandato Plan BIM Perú</b>. El moat está en datos, comunidad, evidencia, certificación y distribución.</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">VI · Defensibilidad</span><span class="foot-n">43<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="43"><div class="slide-inner layout-map">
+<section class="slide" data-base="dark" data-ch="VI · Defensibilidad" data-idx="43"><div class="slide-inner layout-map">
   <div class="kicker reveal">Panorama competitivo</div>
   <h2 class="s-title reveal">Ser <span class="grad">profundo</span> donde todos son <span class="grad">anchos</span></h2>
   <div class="split">
@@ -702,7 +748,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <span class="chip reveal">Profundidad AEC + evidencia verificable + comunidad LATAM + IA contextualizada</span>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">VI · Defensibilidad</span><span class="foot-n">44<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="44"><div class="slide-inner layout-split">
+<section class="slide" data-base="light" data-ch="VII · Crecimiento" data-idx="44"><div class="slide-inner layout-split">
   <div class="kicker reveal">Go-to-Market</div>
   <h2 class="s-title reveal">Distribución <span class="grad">antes</span> que perfección</h2>
   <div class="flow reveal"><div class="flow-step ">Contenido técnico</div><i class="flow-arr">→</i><div class="flow-step ">Diagnóstico gratis</div><i class="flow-arr">→</i><div class="flow-step hot">Reto 7 días</div><i class="flow-arr">→</i><div class="flow-step hot">1ª evidencia</div><i class="flow-arr">→</i><div class="flow-step ">Premium</div><i class="flow-arr">→</i><div class="flow-step win">B2B / equipo</div></div>
@@ -712,7 +758,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <div class="vnote reveal">No escalar adquisición paga antes de mejorar activación, evidencia y retención.</div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">VII · Crecimiento</span><span class="foot-n">45<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="45"><div class="slide-inner layout-timeline">
+<section class="slide" data-base="light" data-ch="VII · Crecimiento" data-idx="45"><div class="slide-inner layout-timeline">
   <div class="kicker reveal">Roadmap · escalabilidad · milestones</div>
   <h2 class="s-title reveal">De cerrar el loop a <span class="grad">estándar regional</span></h2>
   <div class="tl reveal">
@@ -723,7 +769,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <p class="lead reveal">Escalar = que cada unidad vendida fortalezca margen, retención y capacidad operativa — no solo sume complejidad (principio Kaman).</p>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">VII · Crecimiento</span><span class="foot-n">46<i>/</i>50</span></div></section>
-<section class="slide" data-base="light" data-idx="46"><div class="slide-inner layout-split">
+<section class="slide" data-base="light" data-ch="VII · Crecimiento" data-idx="46"><div class="slide-inner layout-split">
   <div class="kicker reveal">Riesgos &amp; mitigación</div>
   <h2 class="s-title reveal">Los riesgos están <span class="grad">nombrados y cubiertos</span></h2>
   <div class="split">
@@ -731,13 +777,13 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
    <div class="split-r"><div class="card reveal card-green"><div class="card-tag">El riesgo que decide</div><div class="card-head">La herida central</div><div class="card-body">La tesis se vuelve defendible cuando <b>una empresa usa evidencia AECODE para tomar una decisión real</b>: asignar proyecto, promover, contratar o cerrar una brecha. Hasta ese caso, la capa de evidencia es una hipótesis fuerte.</div></div></div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">VII · Crecimiento</span><span class="foot-n">47<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="47"><div class="slide-inner layout-cards">
+<section class="slide" data-base="dark" data-ch="VIII · Cierre" data-idx="47"><div class="slide-inner layout-cards">
   <div class="kicker reveal">Equipo</div>
   <h2 class="s-title reveal">Núcleo complementario con <span class="grad">ejecución técnica y comercial</span></h2>
   <div class="grid grid-4 cards-sm"><div class="card reveal card-violet"><div class="card-tag">Estrategia / Producto</div><div class="card-head">Alejandro Palpan</div><div class="card-body">CEO & Fundador. Visión, estrategia, producto, mercado y fundraising. Lidera AECODE + GEN+.</div></div><div class="card reveal card-green"><div class="card-tag">Growth / Educación</div><div class="card-head">Anggie</div><div class="card-body">Growth, narrativa y educación. Diseño instruccional y experiencia académica.</div></div><div class="card reveal card-blue"><div class="card-tag">Producto / Plataforma</div><div class="card-head">Fabrizio</div><div class="card-body">Producto y startup. Desarrollo web, plataforma e integraciones.</div></div><div class="card reveal card-violet"><div class="card-tag">Tech / Ops</div><div class="card-head">Yudely / Daniela</div><div class="card-body">Tecnología y operaciones digitales · operación comercial (según fuente).</div></div></div>
   <div class="vnote reveal">Equipo extendido + red de expertos AEC (BIM, IA, VDC, estructuras, datos). <b>VACÍO:</b> cap table, equity y roles legales definitivos.</div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">VIII · Cierre</span><span class="foot-n">48<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="48"><div class="slide-inner layout-ask">
+<section class="slide" data-base="dark" data-ch="VIII · Cierre" data-idx="48"><div class="slide-inner layout-ask">
   <div class="kicker reveal">El Ask</div>
   <h2 class="s-title reveal">US$125K SAFE para cerrar la brecha <span class="grad">0.17 → 0.40</span></h2>
   <div class="ask-grid reveal">
@@ -752,7 +798,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
     </div>
   </div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">VIII · Cierre</span><span class="foot-n">49<i>/</i>50</span></div></section>
-<section class="slide" data-base="dark" data-idx="49"><div class="slide-inner layout-close">
+<section class="slide" data-base="dark" data-ch="VIII · Cierre" data-idx="49"><div class="slide-inner layout-close">
   <div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>
   <blockquote class="bigquote reveal">No buscamos que más profesionales vean más clases.<br>Buscamos que la construcción pueda <span class="grad">saber quién sabe hacer qué</span>, con qué evidencia y con qué nivel de confianza.</blockquote>
   <div class="close-cols reveal">
@@ -761,9 +807,10 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
   </div>
   <div class="close-cta reveal">apalpan@genplusdesign.com · AECODE × GEN+ · La capa de capacidad para AEC</div>
 </div><img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt=""><div class="slide-foot"><span class="foot-ch">VIII · Cierre</span><span class="foot-n">50<i>/</i>50</span></div></section></div></div>
-<div class="chrome"><div class="progress"></div><div class="counter">01 / 50</div>
+<div class="chrome"><div class="segbar" id="segbar"></div><div class="counter">01 / 50</div>
 <div class="ctrl">
 <button id="btn-toc" title="Índice (O)" aria-label="Índice">☰</button>
+<button id="btn-play" title="Auto-play (P)" aria-label="Auto-play"><span id="play-ico">▶</span></button>
 <button id="btn-mode" title="Tema (T)" aria-label="Tema"><span id="mode-ico">◐</span></button>
 <button id="btn-prev" title="Anterior (←)" aria-label="Anterior">‹</button>
 <button id="btn-next" title="Siguiente (→)" aria-label="Siguiente">›</button>
@@ -774,42 +821,71 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 <h3>Índice · 50 slides</h3><div class="toc-grid"><button class="toc-item" data-go="0"><span class="toc-n">01</span><span class="toc-t">AECODE</span></button><button class="toc-item" data-go="1"><span class="toc-n">02</span><span class="toc-t">Apertura</span></button><button class="toc-item" data-go="2"><span class="toc-n">03</span><span class="toc-t">Apertura</span></button><button class="toc-item" data-go="3"><span class="toc-n">04</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="4"><span class="toc-n">05</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="5"><span class="toc-n">06</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="6"><span class="toc-n">07</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="7"><span class="toc-n">08</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="8"><span class="toc-n">09</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="9"><span class="toc-n">10</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="10"><span class="toc-n">11</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="11"><span class="toc-n">12</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="12"><span class="toc-n">13</span><span class="toc-t">I · Oportunidad</span></button><button class="toc-item" data-go="13"><span class="toc-n">14</span><span class="toc-t">II · El Problema</span></button><button class="toc-item" data-go="14"><span class="toc-n">15</span><span class="toc-t">II · El Problema</span></button><button class="toc-item" data-go="15"><span class="toc-n">16</span><span class="toc-t">II · El Problema</span></button><button class="toc-item" data-go="16"><span class="toc-n">17</span><span class="toc-t">II · El Problema</span></button><button class="toc-item" data-go="17"><span class="toc-n">18</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="18"><span class="toc-n">19</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="19"><span class="toc-n">20</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="20"><span class="toc-n">21</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="21"><span class="toc-n">22</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="22"><span class="toc-n">23</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="23"><span class="toc-n">24</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="24"><span class="toc-n">25</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="25"><span class="toc-n">26</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="26"><span class="toc-n">27</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="27"><span class="toc-n">28</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="28"><span class="toc-n">29</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="29"><span class="toc-n">30</span><span class="toc-t">III · Solución</span></button><button class="toc-item" data-go="30"><span class="toc-n">31</span><span class="toc-t">IV · Negocio</span></button><button class="toc-item" data-go="31"><span class="toc-n">32</span><span class="toc-t">IV · Negocio</span></button><button class="toc-item" data-go="32"><span class="toc-n">33</span><span class="toc-t">IV · Negocio</span></button><button class="toc-item" data-go="33"><span class="toc-n">34</span><span class="toc-t">IV · Negocio</span></button><button class="toc-item" data-go="34"><span class="toc-n">35</span><span class="toc-t">IV · Negocio</span></button><button class="toc-item" data-go="35"><span class="toc-n">36</span><span class="toc-t">IV · Negocio</span></button><button class="toc-item" data-go="36"><span class="toc-n">37</span><span class="toc-t">V · Métricas</span></button><button class="toc-item" data-go="37"><span class="toc-n">38</span><span class="toc-t">V · Métricas</span></button><button class="toc-item" data-go="38"><span class="toc-n">39</span><span class="toc-t">V · Métricas</span></button><button class="toc-item" data-go="39"><span class="toc-n">40</span><span class="toc-t">V · Métricas</span></button><button class="toc-item" data-go="40"><span class="toc-n">41</span><span class="toc-t">V · Métricas</span></button><button class="toc-item" data-go="41"><span class="toc-n">42</span><span class="toc-t">VI · Defensibilidad</span></button><button class="toc-item" data-go="42"><span class="toc-n">43</span><span class="toc-t">VI · Defensibilidad</span></button><button class="toc-item" data-go="43"><span class="toc-n">44</span><span class="toc-t">VI · Defensibilidad</span></button><button class="toc-item" data-go="44"><span class="toc-n">45</span><span class="toc-t">VII · Crecimiento</span></button><button class="toc-item" data-go="45"><span class="toc-n">46</span><span class="toc-t">VII · Crecimiento</span></button><button class="toc-item" data-go="46"><span class="toc-n">47</span><span class="toc-t">VII · Crecimiento</span></button><button class="toc-item" data-go="47"><span class="toc-n">48</span><span class="toc-t">VIII · Cierre</span></button><button class="toc-item" data-go="48"><span class="toc-n">49</span><span class="toc-t">VIII · Cierre</span></button><button class="toc-item" data-go="49"><span class="toc-n">50</span><span class="toc-t">VIII · Cierre</span></button></div></div>
 <script>
 const slides=[...document.querySelectorAll('.slide')];const total=slides.length;let cur=0;
-const stage=document.querySelector('.stage'),progress=document.querySelector('.progress'),
-counter=document.querySelector('.counter');
+const stage=document.querySelector('.stage'),counter=document.querySelector('.counter'),segbar=document.querySelector('#segbar');
 let mode=localStorage.getItem('aecode-mode2')||'mix';
 const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+// capítulos -> barra segmentada
+const chapters=[];
+slides.forEach((s,i)=>{const c=s.dataset.ch,last=chapters[chapters.length-1];
+  if(last&&last.name===c){last.count++}else{chapters.push({name:c,start:i,count:1})}});
+chapters.forEach(ch=>{const seg=document.createElement('div');seg.className='seg';seg.style.setProperty('--c',ch.count);
+  seg.innerHTML='<i></i><span class="lab">'+ch.name+'</span>';
+  seg.title=ch.name;seg.onclick=()=>{stopPlay();go(ch.start)};segbar.appendChild(seg);
+  ch.el=seg;ch.fill=seg.querySelector('i');});
+function updateSeg(){chapters.forEach(ch=>{const endEx=ch.start+ch.count;let f=0;
+  if(cur>=endEx)f=100;else if(cur<ch.start)f=0;else f=((cur-ch.start+1)/ch.count)*100;
+  ch.fill.style.width=f+'%';ch.el.classList.toggle('cur',cur>=ch.start&&cur<endEx);});}
 function applyTheme(){slides.forEach(s=>{const b=s.dataset.base,e=mode==='mix'?b:mode;
   s.classList.toggle('is-dark',e==='dark');s.classList.toggle('is-light',e==='light');});}
-function fit(){stage.style.transform='scale('+Math.min(innerWidth/1280,innerHeight/720)+')';}
+function isMobile(){return matchMedia('(max-width:820px),(orientation:portrait) and (max-width:1024px)').matches}
+function fit(){if(isMobile()){document.body.classList.add('mobile');stage.style.transform='none';}
+  else{document.body.classList.remove('mobile');stage.style.transform='scale('+Math.min(innerWidth/1280,innerHeight/720)+')';}}
 function countUp(s){s.querySelectorAll('[data-count]').forEach(el=>{const t=parseFloat(el.dataset.count);
   if(isNaN(t))return;const dec=(el.dataset.count.split('.')[1]||'').length,d=850,t0=performance.now();
   (function st(n){const p=Math.min((n-t0)/d,1),e=1-Math.pow(1-p,3);el.textContent=(t*e).toFixed(dec);
   p<1?requestAnimationFrame(st):el.textContent=t.toFixed(dec);})(t0);});}
-function go(n){n=Math.max(0,Math.min(total-1,n));slides[cur].classList.remove('active');cur=n;
-  const s=slides[cur];s.classList.add('active');
-  [...s.querySelectorAll('.reveal')].forEach((el,i)=>el.style.transitionDelay=(reduced?0:Math.min(i*50,600))+'ms');
-  progress.style.width=((cur+1)/total*100)+'%';
+function go(n){n=Math.max(0,Math.min(total-1,n));if(n===cur&&slides[cur].classList.contains('active')){countUp(slides[cur]);return}
+  const dir=n>cur?1:-1,mob=document.body.classList.contains('mobile');
+  const out=slides[cur];out.classList.remove('active');
+  if(!reduced&&!mob)out.style.transform='translateX('+(-dir*34)+'px)';
+  cur=n;const s=slides[cur];
+  if(!reduced&&!mob){s.style.transition='none';s.style.transform='translateX('+(dir*34)+'px)';void s.offsetWidth;s.style.transition='';}
+  s.classList.add('active');s.style.transform='';if(mob)s.scrollTop=0;
+  [...s.querySelectorAll('.reveal')].forEach((el,i)=>el.style.transitionDelay=(reduced?0:Math.min(i*48,560))+'ms');
   counter.textContent=String(cur+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
-  if(!reduced)countUp(s);location.hash=cur+1;}
+  updateSeg();if(!reduced)countUp(s);location.hash=cur+1;}
 function next(){go(cur+1)}function prev(){go(cur-1)}
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();
-  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();next()}
-  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();prev()}
-  else if(e.key==='Home')go(0);else if(e.key==='End')go(total-1);
-  else if(k==='t')cycleMode();else if(k==='f')toggleFs();else if(k==='o')toggleToc();
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();stopPlay();next()}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();stopPlay();prev()}
+  else if(e.key==='Home'){stopPlay();go(0)}else if(e.key==='End'){stopPlay();go(total-1)}
+  else if(k==='t')cycleMode();else if(k==='f')toggleFs();else if(k==='o')toggleToc();else if(k==='p')togglePlay();
   else if(e.key==='Escape')document.querySelector('.toc').classList.remove('open');});
+let wlock=false;
+addEventListener('wheel',e=>{if(document.body.classList.contains('mobile')||wlock)return;
+  const d=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;if(Math.abs(d)<26)return;
+  wlock=true;setTimeout(()=>wlock=false,720);stopPlay();d>0?next():prev();},{passive:true});
 function cycleMode(){mode=mode==='mix'?'dark':mode==='dark'?'light':'mix';localStorage.setItem('aecode-mode2',mode);
   applyTheme();document.querySelector('#mode-ico').textContent=mode==='mix'?'◐':mode==='dark'?'●':'○';}
 function toggleFs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
 function toggleToc(){document.querySelector('.toc').classList.toggle('open')}
-document.querySelector('.left').onclick=prev;document.querySelector('.right').onclick=next;
-document.querySelector('#btn-prev').onclick=prev;document.querySelector('#btn-next').onclick=next;
+let timer=null;
+function setPlay(p){const b=document.querySelector('#btn-play');b.classList.toggle('playing',p);
+  b.querySelector('#play-ico').textContent=p?'❚❚':'▶';}
+function togglePlay(){timer?stopPlay():(timer=setInterval(()=>{cur>=total-1?stopPlay():next()},7000),setPlay(true));}
+function stopPlay(){if(timer){clearInterval(timer);timer=null;setPlay(false);}}
+document.querySelector('.left').onclick=()=>{stopPlay();prev()};
+document.querySelector('.right').onclick=()=>{stopPlay();next()};
+document.querySelector('#btn-prev').onclick=()=>{stopPlay();prev()};
+document.querySelector('#btn-next').onclick=()=>{stopPlay();next()};
 document.querySelector('#btn-mode').onclick=cycleMode;document.querySelector('#btn-fs').onclick=toggleFs;
-document.querySelector('#btn-toc').onclick=toggleToc;document.querySelector('.toc-close').onclick=toggleToc;
-document.querySelectorAll('.toc-item').forEach(b=>b.onclick=()=>{go(+b.dataset.go);toggleToc()});
-let tx=0;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
-addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)dx<0?next():prev()});
-addEventListener('resize',fit);applyTheme();fit();
-go(Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
+document.querySelector('#btn-toc').onclick=toggleToc;document.querySelector('#btn-play').onclick=togglePlay;
+document.querySelector('.toc-close').onclick=toggleToc;
+document.querySelectorAll('.toc-item').forEach(b=>b.onclick=()=>{stopPlay();go(+b.dataset.go);toggleToc()});
+let tx=0,ty=0;addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4){stopPlay();dx<0?next():prev()}});
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(fit,120)});
+applyTheme();fit();go(Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
 document.querySelector('#mode-ico').textContent=mode==='mix'?'◐':mode==='dark'?'●':'○';
 </script></body></html>

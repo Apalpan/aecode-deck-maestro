@@ -19,10 +19,14 @@ mapa competitivo 2×2, donut de uso de fondos, flywheel, timeline de roadmap y d
 ## Cómo usar
 
 - **Abrir**: doble clic en `index.html` (cualquier navegador) o desde Obsidian.
-- **Navegar**: `←` / `→` o barra espaciadora · clic en los bordes · swipe en móvil.
+- **Navegar**: `←` / `→` o barra espaciadora · rueda del mouse · clic en los bordes · swipe en móvil.
+- **Barra de capítulos** (arriba): clic en cualquier segmento salta a ese capítulo; muestra el avance.
 - **Índice**: tecla `O` o el botón ☰.
+- **Auto-play**: tecla `P` o el botón ▶ (avanza cada 7 s; cualquier acción lo pausa).
 - **Tema**: tecla `T` o el botón ◐ — cicla **mix (combinado) → todo oscuro → todo claro**.
 - **Pantalla completa**: tecla `F`.
+- **Responsive**: en escritorio escala 16:9; en móvil/vertical el contenido **reflowea** (columnas se apilan,
+  tablas con scroll, diagramas reescalados) — completo y legible en cualquier pantalla.
 
 ## Cómo iterar
 
