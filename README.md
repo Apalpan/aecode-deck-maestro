@@ -1,16 +1,21 @@
-# Deck Maestro AECODE Startup · 50 slides
+# Deck Maestro AECODE Startup · v4 "Enfoque Final 10/10"
 
 Presentación autocontenida (un solo `index.html`, sin build ni dependencias) que sirve como
-**file completo de entendimiento avanzado** de AECODE como startup: oportunidad, problema,
-producto, mercado, modelo, tracción, métricas, moat, competencia, roadmap, equipo y ask.
+**file completo de entendimiento avanzado** de AECODE como startup. Posicionamiento:
+**plataforma de adopción tecnológica para construcción** — *aprende, aplica, construye mejor*.
+Cubre problema, dolor por cliente, solución/producto, categoría, diferenciación, mercado,
+modelo de 3 motores (Live valida · B2B ancla · On-demand AI escala), **finanzas** (ventas por
+año, mix por modelo, márgenes de contribución), NSM dual, growth, moat, ask e impacto del capital.
 
 **Live:** https://apalpan.github.io/aecode-deck-maestro/
 
-## Diseño (v2)
+## Diseño
 
-Usa el **design system oficial de AECODE**: violeta `#4a3ac1` (primario) + verde `#26b96f` +
-azul `#4465ee` sobre lavanda claro `#f7f8fe` y navy `#0c0f29`. Tipografía Inter.
-Ritmo **light + dark combinado** por capítulo, con toggle global.
+Usa el **design system oficial de AECODE** (`brand/DESIGN.md`): **Manrope**, navy `#0E1121`,
+violeta `#4A3AC1`, verde `#17B14E`, azul `#4465EE`, lavanda `#A6A7FF`. Logos reales en portada,
+cierre e isotipo por slide + Aecodito. Ritmo **light + dark combinado** por capítulo, con toggle global.
+Gráficas: barras, **barras apiladas** (mix de ingresos), TAM/SAM/SOM concéntrico, donut de fondos,
+mapa competitivo 2×2, flywheel y diagramas de flujo.
 
 Esquemas y gráficas incluidas: barras animadas, TAM/SAM/SOM concéntrico, pirámide de 3 capas
 (Wedge/Engine/Moat), driver tree de la NSM, gauge de North Star, funnels B2C/B2B,

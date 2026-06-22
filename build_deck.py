@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-Generador del Deck Maestro AECODE Startup — 50 slides · v2
-Paleta OFICIAL AECODE (violeta #4a3ac1 + verde #26b96f + azul #4465ee · navy #0c0f29),
-ritmo light+dark combinado, esquemas y gráficas (TAM/SAM/SOM, pirámide 3 capas, driver
-tree, barras, mapa 2x2, donut, flywheel, funnel, timeline). Autocontenido: un index.html.
+Generador del Deck Maestro AECODE Startup — v4 "Enfoque Final 10/10"
+Posicionamiento: plataforma de adopción tecnológica para construcción ("aprende, aplica, construye mejor").
+Design system OFICIAL AECODE (DESIGN.md): Manrope · navy #0E1121 · violeta #4A3AC1 · verde #17B14E · azul #4465EE.
+Light+dark combinado, logos reales, esquemas/gráficas (barras, apiladas, TAM/SAM/SOM, donut, mapa 2x2, flywheel,
+timeline), responsive con reflow móvil e interactividad (barra de capítulos, transiciones, rueda, auto-play).
 Ejecutar:  python build_deck.py
 """
 import html, datetime, pathlib
@@ -59,7 +60,6 @@ def quote(t):
 
 # ---------- gráficas ----------
 def barchart(rows):
-    # rows: (label, pct0-100, display, tone)
     out='<div class="barchart reveal">'
     for r in rows:
         label,pct,disp=r[0],r[1],r[2]; tone=r[3] if len(r)>3 else "violet"
@@ -67,8 +67,21 @@ def barchart(rows):
               f'<b>{disp}</b></div><div class="bar-track"><i style="--w:{pct:.1f}%"></i></div></div>')
     return out+'</div>'
 
+def stackbar(years, segdefs, maxtotal):
+    # years: [(label, [vals], total_disp)] · segdefs: [(name,color)]
+    cols=""
+    for label,vals,tot in years:
+        total=sum(vals); h=total/maxtotal*100
+        segs=""
+        for i,v in enumerate(vals):
+            ph=(v/total*100) if total else 0
+            segs+=f'<span class="sb-seg" style="height:{ph:.2f}%;background:{segdefs[i][1]}"></span>'
+        cols+=(f'<div class="sb-col"><div class="sb-bar" style="height:{h:.1f}%">{segs}</div>'
+               f'<div class="sb-tot">{tot}</div><div class="sb-lab">{label}</div></div>')
+    legend="".join(f'<span class="sb-leg"><i style="background:{c}"></i>{n}</span>' for n,c in segdefs)
+    return f'<div class="stackbar reveal"><div class="sb-cols">{cols}</div><div class="sb-legend">{legend}</div></div>'
+
 def tamsamsom(items):
-    # items: [(label, value, desc)] big->small
     legend="".join(
         f'<div class="tss-leg reveal"><span class="dot d{i}"></span><div><b>{l}</b> · {v}<small>{d}</small></div></div>'
         for i,(l,v,d) in enumerate(items))
@@ -81,33 +94,14 @@ def tamsamsom(items):
       <div class="tss-legend">{legend}</div>
     </div>'''
 
-def pyramid(layers):
-    # layers top->bottom: (name, desc, tone)
-    rows=""
-    widths=["58%","78%","100%"]
-    for i,(n,d,t) in enumerate(layers):
-        rows+=(f'<div class="pyr-row reveal" style="--w:{widths[i]}"><div class="pyr-band band-{t}">'
-               f'<b>{n}</b><span>{d}</span></div></div>')
-    return f'<div class="pyramid">{rows}</div>'
-
 def flow(steps):
-    # steps: list of (text, kind)  kind: '', 'hot', 'win'
     out='<div class="flow reveal">'
     for i,(t,k) in enumerate(steps):
         out+=f'<div class="flow-step {k}">{t}</div>'
         if i<len(steps)-1: out+='<i class="flow-arr">→</i>'
     return out+'</div>'
 
-def tree(root, drivers):
-    items="".join(f'<div class="tree-node reveal">{d}</div>' for d in drivers)
-    return f'''<div class="tree reveal">
-      <div class="tree-root">{root}</div>
-      <div class="tree-line"></div>
-      <div class="tree-branches">{items}</div>
-    </div>'''
-
 def donut(segs):
-    # segs: [(label, pct, color)]
     stops=[]; acc=0
     for l,p,c in segs:
         stops.append(f"{c} {acc}% {acc+p}%"); acc+=p
@@ -120,7 +114,6 @@ def donut(segs):
       <div class="donut-legend">{legend}</div></div>'''
 
 def map2x2(points, xlab, ylab):
-    # points: (left%, top%, label, tone, big)
     dots=""
     for x,y,l,t,big in points:
         dots+=(f'<div class="mp-dot {"mp-big" if big else ""} mp-{t} reveal" '
@@ -132,6 +125,16 @@ def map2x2(points, xlab, ylab):
       <div class="mp-axis-x">{xlab[0]}<i></i>{xlab[1]}</div>
     </div>'''
 
+def flywheel(core):
+    return f'''<div class="fly reveal"><div class="fly-ring">
+      <div class="fly-node n1">Comunidad atrae profesionales AEC</div>
+      <div class="fly-node n2">Eventos y contenido activan demanda</div>
+      <div class="fly-node n3">Live Training vende y valida temas</div>
+      <div class="fly-node n4">Se vuelve cápsulas, rutas y prácticas</div>
+      <div class="fly-node n5">Data de adopción mejora el producto</div>
+      <div class="fly-node n6">Empresas compran B2B + expertos</div>
+      <div class="fly-core">{core}</div></div></div>'''
+
 # ---------- definición de slides ----------
 SLIDES=[]
 def S(theme, chapter, layout, content):
@@ -141,25 +144,24 @@ def S(theme, chapter, layout, content):
 S("dark","AECODE","cover",f"""
   <div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>
   <img class="aecodito reveal" src="brand/assets/reference/aecodito-home.png" alt="">
-  <h1 class="cover-title reveal">La <span class="grad">capa de capacidad</span><br>para la transformación<br>digital de la construcción</h1>
-  <p class="cover-sub reveal">Convierte conocimiento técnico AEC en capacidad real de ejecución, validada con evidencia. <b>Aprende · Aplica · Demuestra.</b></p>
-  <div class="cover-meta reveal"><span>Deck maestro de startup</span><span class="dot">·</span><span>file de entendimiento avanzado</span><span class="dot">·</span><span>{datetime.date.today().strftime('%b %Y')}</span></div>
+  <h1 class="cover-title reveal">La plataforma de<br><span class="grad">adopción tecnológica</span><br>para la construcción</h1>
+  <p class="cover-sub reveal">Ayuda a profesionales y empresas AEC a aprender, aplicar y medir el uso de BIM, IA, automatización y herramientas digitales en el trabajo real. <b>Aprende · Aplica · Construye mejor.</b></p>
+  <div class="cover-meta reveal"><span>Enfoque final de startup · 10/10</span><span class="dot">·</span><span>file de entendimiento avanzado</span><span class="dot">·</span><span>{datetime.date.today().strftime('%b %Y')}</span></div>
   <div class="cover-hint reveal">← → o swipe · <b>T</b> tema · <b>F</b> full · <b>O</b> índice · <b>P</b> auto · rueda del mouse</div>
 """)
 
 # 02 HOOK
 S("dark","Apertura","split",f"""
   {kicker("El hook")}
-  {title('La IA hizo <span class="grad">abundante el conocimiento</span>.<br>Lo escaso es demostrar capacidad.')}
+  {title('No faltan cursos.<br>Falta <span class="grad">adoptar tecnología</span> en el trabajo real.')}
   <div class="split">
    <div class="split-l">
-     {stat("85","De empleadores dice contratar por skills, no por títulos","HBS + Burning Glass", suffix="%")}
-     {stat("0.14","De contrataciones realmente ocurrió sin exigir título","la paradoja de la verificación", suffix="%", tone="green")}
+     {lead('La construcción está incorporando BIM, IA, automatización y datos. Pero la adopción <b>no avanza al ritmo que el sector necesita</b>.')}
+     {bullets(["No faltan cursos.","No faltan tutoriales.","No falta información.","No falta IA."])}
    </div>
    <div class="split-r">
-     {lead('En construcción, <b>saber nunca fue saber hacer</b>. Lo verdaderamente escaso es demostrar que alguien puede aplicar BIM, IA, automatización y datos en trabajo real.')}
-     {barchart([("Intención: contratar por skill",100,"85%","violet"),("Realidad: lo logran",2,"0.14%","green")])}
-     {chip("El contenido se comoditiza · la evidencia se vuelve el activo escaso")}
+     {card("El problema real", 'El conocimiento está <b>disperso</b>, no estructurado por rol y desconectado de las tareas reales. Eso abre una brecha entre lo que el profesional aprende, lo que la empresa necesita y lo que el proyecto exige.', tag="La grieta", tone="green")}
+     {chip("El conocimiento es commodity · adoptarlo y aplicarlo es lo escaso")}
    </div>
   </div>
 """)
@@ -167,410 +169,157 @@ S("dark","Apertura","split",f"""
 # 03 TESIS
 S("dark","Apertura","statement",f"""
   {kicker("La tesis en una frase")}
-  {quote('AECODE es la <span class="grad">capa de capacidad</span> para la transformación digital del sector AEC: un sistema que convierte conocimiento técnico en <span class="grad">capacidad real de ejecución</span>, demostrada con evidencia.')}
-  {flow([("Aprende",""),("Aplica","hot"),("Demuestra","win")])}
-  {lead('La unidad de valor no es el curso ni el certificado de asistencia: es la <b>skill verificable</b> — una capacidad concreta demostrada con una evidencia técnica que un empleador puede comprobar.')}
+  {quote('AECODE acelera la <span class="grad">adopción tecnológica</span> en construcción: forma talento capaz de usar BIM, IA y automatización para trabajar mejor, ahorrar tiempo y aumentar productividad.')}
+  {flow([("Aprende",""),("Aplica","hot"),("Construye mejor","win")])}
+  {lead('AECODE <b>no existe para vender cursos</b>. Existe para que profesionales y empresas adopten tecnología más rápido y la conviertan en mejor empleabilidad, menos retrabajo y más productividad.')}
 """)
 
 # 04 DIVIDER I
-S("light","I · Oportunidad","divider",f"""
+S("dark","I · Problema","divider",f"""
   <div class="div-index reveal">01</div>
-  <h2 class="div-title reveal">La oportunidad<br>y el <span class="grad">por qué ahora</span></h2>
-  <p class="div-sub reveal">Un sector gigante y subdigitalizado entra a su mayor disrupción justo cuando le falta el talento para aprovecharla.</p>
-""")
-
-# 05 OPORTUNIDAD
-S("light","I · Oportunidad","chart",f"""
-  {kicker("La oportunidad")}
-  {title('El sector <span class="grad">más grande del planeta</span>, el peor digitalizado')}
-  <div class="split">
-   <div class="split-l">
-     {barchart([
-       ("Sector AEC global · TAM macro",100,"US$16.3 T","violet"),
-       ("Software AEC 2033 (desde $11.3B '25)",60,"US$32.1 B","blue"),
-       ("EdTech LatAm 2033 (CAGR 12.4%)",48,"US$50.4 B","green"),
-       ("Inversión histórica en tech (de ingresos)",6,"<1%","ink"),
-     ])}
-   </div>
-   <div class="split-r">
-     {bullets([
-       '~13% del PIB mundial · <b>200M+</b> empleos.',
-       'Productividad <b>plana 20 años</b> mientras el resto de industrias se multiplicaba.',
-       'McKinsey: lo digital puede subir productividad <b>15–20% inmediato</b>, 50–60% con 7 palancas.',
-       'US$50,000M de VC/PE a tech AEC 2020–2022 (<b>+85%</b>).',
-     ])}
-   </div>
-  </div>
-  {src("AECODE-Tesis-de-Mercado-v1 · McKinsey · IMARC · Mordor")}
-""")
-
-# 06 POR QUÉ AHORA
-S("light","I · Oportunidad","chart",f"""
-  {kicker("Por qué ahora")}
-  {title('El sector <span class="grad">dice usar IA</span>, pero casi nadie la ejecuta')}
-  <div class="split">
-   <div class="split-l">
-     {barchart([
-       ("Firmas AEC que “usan IA”",75,"75%","violet"),
-       ("La usa de forma regular",12,"12%","blue"),
-       ("Confía en su propia data",29,"29%","green"),
-       ("Planea aumentar inversión en IA",94,"94%","violet"),
-     ])}
-   </div>
-   <div class="split-r">
-     {lead('La brecha no es de <i>tecnología</i> — es de <b>adopción y capacidad operativa</b>. Las empresas compran herramientas que sus equipos aún no pueden ejecutar en proyectos reales.')}
-     {card("Tres condiciones recién alineadas", bullets(["Madurez de datos (década de BIM/ERP/sensores)","Presión operativa (sobrecostos → predicción)","Capital selectivo: 77% del contech fue a IA en 2025"]), tag="Inflexión", tone="green")}
-   </div>
-  </div>
-  {note('Datos del vault 2025–2026 · refrescar contra fuente oficial antes de un pitch público.')}
-""")
-
-# 07 5 VECTORES
-S("light","I · Oportunidad","table",f"""
-  {kicker("La tesis estructural")}
-  {title('Los <span class="grad">5 vectores</span> que abren la ventana')}
-  {table(["#","Vector","Evidencia clave"],[
-   ["1","<b>Mercado AEC gigante y subdigitalizado</b>","US$16.3T · &lt;1% en tech · productividad plana 20 años"],
-   ["2","<b>Brecha de talento crítica</b>","499k faltantes (EE.UU. 2026) · 62% sin candidatos con skills"],
-   ["3","<b>Inflexión de IA 2025–2026</b>","77% del capital contech fue a IA · de asistente a agente"],
-   ["4","<b>Skills sin verificación</b>","85% contrata por skills · solo 0.14% lo logra"],
-   ["5","<b>LATAM + Perú = apalancamiento</b>","EdTech LatAm ×3 a 2033 · Plan BIM Perú = mandato estatal"],
-  ], hi=[1])}
-""")
-
-# 08 TAM/SAM/SOM
-S("light","I · Oportunidad","tss",f"""
-  {kicker("Mercado · dimensionamiento")}
-  {title('TAM / SAM / SOM — <span class="grad">dos marcos internos</span>')}
-  <div class="split">
-    <div class="split-l">{tamsamsom([
-      ("TAM","US$2.5 B","Upskilling AEC LATAM"),
-      ("SAM","US$600–800 M","Hispanohablante"),
-      ("SOM","US$3–5 M","Capturable a 3 años"),
-    ])}</div>
-    <div class="split-r">
-      {card("Marco operativo bottom-up", table(["","Valor"],[["TAM","US$360 M"],["SAM","US$87.5 M"],["SOM 3 años","US$2.5 M"]]), tag="Alternativa", tone="blue")}
-      {note('Ambos marcos están <b>ASUMIDO · VALIDAR</b>. Antes de un pitch externo hay que elegir una metodología y dejar los supuestos explícitos.')}
-    </div>
-  </div>
-""")
-
-# 09 BRECHA TALENTO
-S("light","I · Oportunidad","chart",f"""
-  {kicker("El cuello de botella")}
-  {title('La brecha de talento es <span class="grad">digital y estructural</span>')}
-  <div class="split">
-   <div class="split-l">
-     {stat("499","Trabajadores AEC faltantes en EE.UU. (2026)","Deloitte", suffix="K")}
-     {stat("124","En valor en riesgo si la brecha persiste","US$ mil millones · Deloitte", prefix="US$", suffix="B", tone="green")}
-   </div>
-   <div class="split-r">
-     {barchart([
-       ("Empresas con dificultad para cubrir vacantes",92,"92%","violet"),
-       ("Proyectos con retrasos reportados",80,"80%","blue"),
-       ("Empresas sin candidatos con skills",62,"62%","violet"),
-       ("Fuerza laboral sin formación formal",50,">50%","green"),
-       ("Trabajadores 55+ sin relevo",20,">20%","ink"),
-     ])}
-   </div>
-  </div>
-  {lead('Coordinador VDC, modelador BIM, especialista en automatización: <b>roles de ruta crítica que hace una década no existían</b> y hoy nadie forma a escala.')}
-""")
-
-# 10 INFLEXIÓN IA
-S("light","I · Oportunidad","split",f"""
-  {kicker("Inflexión de IA · 2025–2026")}
-  {title('El capital ya votó: <span class="grad">la IA es la apuesta</span>')}
-  <div class="split">
-   <div class="split-l">
-     {stat("77","Del capital contech fue a IA en 2025","vs. 35% en 2024 — Cemex Ventures", suffix="%")}
-     {stat("30","Mercado IA generativa en construcción 2034","desde US$3.64B (2025), CAGR 26.6%", prefix="US$", suffix="B+", tone="green")}
-   </div>
-   <div class="split-r">
-     {bullets([
-       'Early adopters: <b>68% ahorró &gt;US$50,000/año</b>.',
-       '<b>46% ahorró 500–1,000 horas</b> al año.',
-       'La IA pasó de <i>asistente</i> a <i>agente</i> — cambia qué skills se necesitan.',
-       'Cuanto más rápido avanza la IA, <b>más urgente reconvertir</b> al profesional AEC.',
-     ])}
-     {chip("AECODE es la capa de reconversión de ese talento")}
-   </div>
-  </div>
-""")
-
-# 11 ECONOMÍA SIN VERIFICACIÓN
-S("light","I · Oportunidad","split",f"""
-  {kicker("La paradoja de verificación")}
-  {title('Todos quieren contratar por skills.<br><span class="grad">Nadie sabe probarlas.</span>')}
-  <div class="split">
-   <div class="split-l">
-     {table(["Señal de mercado","Dato"],[
-       ["Empleadores que dicen contratar por habilidades","<b>85%</b>"],
-       ["Empresas que eliminaron el requisito de título","<b>53%</b>"],
-       ["Contrataciones reales sin título","<b>0.14%</b>"],
-       ["RR.HH. para quien validar skills es el reto #1","<b>62%</b>"],
-       ["Credenciales en circulación EE.UU.","<b>1.8M</b>"],
-     ], hi=[1])}
-   </div>
-   <div class="split-r">
-     {lead('La intención existe; la <b>infraestructura de verificación no</b>. Open Badges 3.0 (sobre W3C Verifiable Credentials) recién se estandarizó en 2023.')}
-     {quote('La Estrella Polar de AECODE —<b>skills verificadas con evidencia / usuario activo</b>— es la respuesta exacta a ese vacío.')}
-   </div>
-  </div>
-""")
-
-# 12 LATAM + PERÚ
-S("light","I · Oportunidad","split",f"""
-  {kicker("Máximo apalancamiento")}
-  {title('Perú tiene un <span class="grad">viento regulatorio</span> único: Plan BIM')}
-  <div class="split">
-   <div class="split-l">
-     {bullets([
-       '<b>Mandato del MEF</b>: BIM progresivo y obligatorio en inversión pública.',
-       'Hitos: 2025 → <b>agosto 2026</b> (clave) → 2030 (tres niveles de gobierno).',
-       '<b>50+ entidades</b> ya iniciaron: PRONIS, PROVIAS, PRONIED, Vivienda.',
-       'El Estado nombró las brechas: formación desigual, falta de talento, certificadoras.',
-     ])}
-   </div>
-   <div class="split-r">
-     {stat("2300","Obras públicas paralizadas en Perú","errores técnicos / gestión — lo que BIM previene", suffix="+", tone="green")}
-     {stat("26.9","Valor paralizado","miles de millones de soles", prefix="S/", suffix="MM", tone="green")}
-   </div>
-  </div>
-  {lead('El Estado <b>genera la demanda</b> de talento verificado que AECODE forma: un mercado con comprador estructural.')}
-""")
-
-# 13 VALIDACIÓN MERCADO
-S("light","I · Oportunidad","cards",f"""
-  {kicker("Validación clara de mercado")}
-  {title('La demanda no es hipótesis: está <span class="grad">documentada</span>')}
-  {grid([
-   card('<span class="card-big">39%</span> de skills se transforman hacia 2030; 63% ve la brecha como barrera #1.',"", tag="WEF 2025"),
-   card('<span class="card-big">46%</span> de líderes pone skills de IA como prioridad de contratación.',"", tag="Autodesk 2025"),
-   card('<span class="card-big">96%</span> de empleadores: las microcredenciales fortalecen una postulación.',"", tag="Coursera 2025", tone="green"),
-   card('<span class="card-big">56%</span> de premium salarial para quien tiene skills de IA.',"", tag="PwC 2025"),
-   card('<span class="card-big">78%</span> de organizaciones ya usó IA en 2024.',"", tag="Stanford HAI", tone="blue"),
-   card('<span class="card-big">56%</span> de inversionistas asignará más fondos a IA en construcción.',"", tag="RICS 2025"),
-  ], 3, "cards-sm")}
-""")
-
-# 14 DIVIDER II
-S("dark","II · El Problema","divider",f"""
-  <div class="div-index reveal">02</div>
   <h2 class="div-title reveal">El problema<br>que <span class="grad">sí duele</span></h2>
-  <p class="div-sub reveal">No es falta de cursos. Es falta de un sistema que conecte aprendizaje, evidencia y ejecución real.</p>
+  <p class="div-sub reveal">La construcción necesita adoptar tecnología más rápido, pero aprende de forma dispersa, lenta y desconectada del trabajo real.</p>
 """)
 
-# 15 PROBLEMA CENTRAL
-S("dark","II · El Problema","split",f"""
+# 05 PROBLEMA
+S("dark","I · Problema","split",f"""
   {kicker("Problema central")}
-  {title('Dos lados del mismo <span class="grad">vacío</span>')}
+  {title('El conocimiento está <span class="grad">disperso</span>, no conectado al trabajo')}
   <div class="split">
    <div class="split-l">
-     {card("El profesional", 'Invierte tiempo y dinero en cursos <b>sin ruta clara</b> conectada a roles reales: aprendizaje desordenado, certificados débiles y nada que demuestre capacidad.', num="◐", tag="Lado oferta")}
+     {lead('El conocimiento no siempre está estructurado por rol, ni conectado con tareas reales, ni orientado a mejorar productividad. Eso genera una brecha entre tres mundos:')}
+     {bullets(["Lo que el <b>profesional</b> aprende.","Lo que la <b>empresa</b> necesita.","Lo que el <b>proyecto</b> exige."])}
    </div>
    <div class="split-r">
-     {card("La empresa", 'No tiene sistema confiable para <b>diagnosticar brechas, formar equipos y verificar</b> quién puede ejecutar habilidades digitales críticas. Compra tech que el equipo no sabe usar.', num="◑", tag="Lado demanda", tone="green")}
+     {card("Cómo se mide el problema", 'Baja adopción, baja finalización, poca aplicación práctica, horas perdidas, tareas repetitivas, errores, retrabajo y falta de visibilidad del avance del equipo.', tag="Medible", tone="blue")}
    </div>
   </div>
-  {quote('La hipótesis: la brecha crítica no es falta de tecnología — es falta de <span class="grad">adopción y capacidad operativa</span>.')}
 """)
 
-# 16 DOLOR ESPECÍFICO
-S("dark","II · El Problema","cards",f"""
-  {kicker("Dolor específico")}
-  {title('Tres actores, <span class="grad">tres dolores</span>')}
-  {grid([
-   card("Profesional", bullets(["No sabe qué aprender primero","Tiene certificados, no evidencia","Quiere diferenciarse para empleo/ascenso","Necesita resultados en días, no diplomas en meses"]), num="01"),
-   card("Empresa AEC", bullets(["Compra capacitación sin progreso medible","No sabe si el equipo puede aplicar BIM/IA","Necesita reducir retrabajo","Debe justificar la inversión en upskilling"]), num="02", tone="green"),
-   card("Instructor / experto", bullets(["Tiene expertise pero no escala","Necesita CMS y plantillas","Quiere revenue share","Necesita analítica de su contenido"]), num="03", tone="blue"),
-  ], 3)}
-""")
-
-# 17 SEGMENTOS
-S("dark","II · El Problema","table",f"""
-  {kicker("Segmentos prioritarios")}
-  {title('A quién <span class="grad">resolvemos</span> y quién paga')}
-  {table(["Segmento","Dolor","Oferta AECODE"],[
-   ["<b>Junior</b> (0–3 años)","Diferenciación, CV, portafolio","Beca AI Talent, rutas starter, certificados"],
-   ["<b>Intermedio</b> (3–8)","Subir de rol, automatizar","Rutas premium, IA aplicada, BIM/VDC"],
-   ["<b>Coordinador BIM/VDC</b>","Estandarizar y demostrar impacto","Rutas avanzadas, BEP/ISO, automatización"],
-   ["<b>Empresa AEC</b> (B2B)","Upskilling rápido, adopción","Licencias, in-house, dashboard de brechas"],
-   ["<b>Experto / instructor</b>","Monetizar conocimiento","Marketplace, revenue share, CMS"],
+# 06 PROBLEMA SMART
+S("dark","I · Problema","table",f"""
+  {kicker("Formulación SMART")}
+  {title('Un problema <span class="grad">específico y temporal</span>')}
+  {table(["Dimensión","Formulación"],[
+   ["<b>Específico</b>","Profesionales y empresas AEC deben aplicar BIM, IA y automatización en diseño, coordinación, planificación, costos y gestión."],
+   ["<b>Medible</b>","Baja adopción, baja finalización, horas perdidas, tareas repetitivas, errores, retrabajo y nula visibilidad del avance."],
+   ["<b>Alcanzable</b>","AECODE ya validó demanda con programas en vivo, ventas, comunidad, expertos y primeras líneas B2B y On-demand."],
+   ["<b>Relevante</b>","La productividad del sector depende de que las personas adopten tecnología, no solo de que las empresas compren software."],
+   ["<b>Temporal</b>","2025–2030: BIM, IA y digitalización hacen urgente la formación práctica de talento tecnológico."],
   ], hi=[0])}
 """)
 
-# 18 DIVIDER III
-S("light","III · Solución","divider",f"""
-  <div class="div-index reveal">03</div>
-  <h2 class="div-title reveal">La solución<br>y el <span class="grad">producto</span></h2>
-  <p class="div-sub reveal">Un Learning OS que cierra el loop que nadie más cierra: práctica aplicada, evidencia y validación.</p>
-""")
-
-# 19 SOLUCIÓN APRENDE/APLICA/DEMUESTRA
-S("light","III · Solución","cards",f"""
-  {kicker("La solución")}
-  {title('Una plataforma de <span class="grad">capacidad</span>, no de cursos')}
+# 07 DOLOR POR CLIENTE
+S("dark","I · Problema","cards",f"""
+  {kicker("Dolor por cliente")}
+  {title('Tres clientes, <span class="grad">un mismo síntoma</span>')}
   {grid([
-   card("Aprende","Rutas por rol, cápsulas de microlearning (5–12 min) y diagnóstico inteligente que ordena el camino.", num="01"),
-   card("Aplica","Sandbox activo: el usuario ejecuta flujos reales —no consume teoría— y produce un entregable.", num="02", tone="blue"),
-   card("Demuestra","Evidencia + rúbrica 1–4 + validación → badge y Evidence Wallet verificable.", num="03", tone="green"),
+   card("Profesional · B2C", 'Quiere ahorrar tiempo, automatizar, usar IA sin perderse y diferenciarse para mejores proyectos y salario.<br><br><b>Dolor:</b> aprende disperso y no traduce lo aprendido en valor profesional concreto.', num="01"),
+   card("Empresa · B2B", 'Quiere equipos productivos, adopción real de herramientas y visibilidad del avance.<br><br><b>Dolor:</b> invierte en capacitación o tecnología, pero el equipo no cambia su forma de trabajar.', num="02", tone="green"),
+   card("Proyecto", 'Necesita menos errores, menos retrabajo, mejor coordinación y procesos más automatizados.<br><br><b>Dolor:</b> la baja adopción termina afectando tiempos, costos, calidad y productividad.', num="03", tone="blue"),
   ], 3)}
-  {quote('La tecnología no transforma. Tu gente sí. <span class="grad">AECODE convierte conocimiento técnico en capacidad real de ejecución.</span>')}
 """)
 
-# 20 LOOP / LEARNING OS
-S("light","III · Solución","flow",f"""
-  {kicker("El núcleo · Learning OS")}
-  {title('El loop que <span class="grad">nadie más cierra</span>')}
-  {flow([("Diagnóstico",""),("Ruta por rol",""),("Skill",""),("Sandbox · práctica","hot"),("Evidencia","hot"),("Validación","hot"),("Skill Passport","win")])}
-  {lead('La diferencia está en los pasos antes del resultado: <b>práctica aplicada → evidencia → validación</b>. Eso no lo hacen Udemy, YouTube ni cursos grabados — requiere sandbox, rúbrica, feedback y verificación.')}
+# 08 DIVIDER II
+S("light","II · Solución","divider",f"""
+  <div class="div-index reveal">02</div>
+  <h2 class="div-title reveal">La solución<br>y el <span class="grad">producto</span></h2>
+  <p class="div-sub reveal">No entras a ver videos. Entras a aprender herramientas, aplicar casos reales, automatizar tareas y medir tu avance.</p>
+""")
+
+# 09 SOLUCIÓN + FLUJO
+S("light","II · Solución","flow",f"""
+  {kicker("La solución")}
+  {title('Acelera la adopción con <span class="grad">rutas prácticas + IA</span>')}
+  {flow([("Diagnóstico",""),("Ruta por rol",""),("Microlearning",""),("Práctica","hot"),("Evidencia","hot"),("Progreso","win")])}
+  {lead('AECODE estructura el conocimiento técnico AEC en <b>rutas por rol</b>. El profesional aprende herramientas, aplica casos reales, automatiza tareas y genera evidencia de avance. La empresa no compra capacitación: compra una forma de <b>acelerar la adopción tecnológica</b> de su equipo.')}
   {grid([
-   card("Diagnóstico de brechas","Rol, experiencia, objetivo, herramienta y urgencia.", num="◆"),
-   card("Sandbox activo","Entorno donde se ejecutan flujos reales.", num="◆", tone="blue"),
-   card("Evidence Wallet","Portafolio verificable de competencias técnicas.", num="◆", tone="green"),
+   card("Diagnóstico","Nivel actual, objetivo y brechas.", num="◆"),
+   card("Práctica aplicada","Casos reales sobre tareas concretas.", num="◆", tone="blue"),
+   card("Progreso medible","Evidencia y dashboard de adopción.", num="◆", tone="green"),
   ], 3, "cards-sm")}
 """)
 
-# 21 MODELO 3 CAPAS
-S("light","III · Solución","pyramid",f"""
-  {kicker("Modelo de 3 capas")}
-  {title('Wedge → Engine → <span class="grad">Moat</span>')}
-  <div class="split">
-   <div class="split-l">{pyramid([
-     ("Wedge","El profesional entra por productividad y relevancia","violet"),
-     ("Engine","La empresa paga por transformación y capacidad de equipo","blue"),
-     ("Moat","Ecosistema de talento, evidencia y datos AEC","green"),
-   ])}</div>
-   <div class="split-r">
-     {lead('El profesional es la <b>cuña</b> de entrada (CAC bajo vía comunidad); la empresa es el <b>motor</b> de revenue; los datos de evidencia son el <b>foso</b> que se acumula con cada vuelta.')}
-     {chip("“Demuestra” empieza como evidencia accionable para empresas, no como credencial masiva")}
-   </div>
-  </div>
-""")
-
-# 22 UNIDAD CENTRAL SKILL
-S("light","III · Solución","cards",f"""
-  {kicker("Arquitectura de producto")}
-  {title('La unidad central es la <span class="grad">Skill</span>, no el video')}
-  {lead('Una skill es una <b>capacidad demostrable</b>. Cada una contiene:')}
-  {grid([
-   card("Objetivo observable","Qué puede <i>hacer</i> el usuario al terminar.", num="01"),
-   card("Cápsulas","Microcontenidos de teoría y demo.", num="02"),
-   card("Práctica","Ejercicio aplicado en sandbox.", num="03", tone="blue"),
-   card("Evidencia","Entregable verificable: reporte, modelo, script, dashboard.", num="04", tone="green"),
-   card("Rúbrica","Criterios de evaluación 1–4.", num="05"),
-   card("Feedback","Comentario humano / IA.", num="06"),
-   card("Certificación","Badge / microcredencial con QR.", num="07", tone="green"),
-   card("Datos","Eventos que alimentan recomendación.", num="08", tone="blue"),
-  ], 4, "cards-xs")}
-""")
-
-# 23 JERARQUÍA
-S("light","III · Solución","table",f"""
-  {kicker("Jerarquía del producto")}
-  {title('De la <span class="grad">ruta</span> a la <span class="grad">evidencia</span>')}
-  {flow([("Route",""),("Cluster",""),("Skill","hot"),("Capsule",""),("Practice",""),("Evidence","win"),("Certificate","win")])}
-  {table(["Nivel","Definición","Ejemplo"],[
-   ["<b>Ruta</b>","Secuencia orientada a rol o resultado","Automation BIM Starter"],
-   ["<b>Skill</b>","Capacidad demostrable con evidencia","Automatizar parámetros en Revit"],
-   ["<b>Cápsula</b>","Microcontenido de concepto","Nodos básicos de selección"],
-   ["<b>Evidencia</b>","Entrega verificable","Archivo .dyn + capturas antes/después"],
-  ], hi=[0])}
-""")
-
-# 24 SANDBOX + EVIDENCE WALLET
-S("light","III · Solución","flow",f"""
-  {kicker("Learning OS · lo nuevo")}
-  {title('Sandbox Activo + <span class="grad">Evidence Wallet</span>')}
-  {flow([("Diagnóstico de brechas",""),("Rutas guiadas por rol",""),("Sandbox Activo","hot"),("Evidence Wallet","win")])}
-  <div class="split">
-   <div class="split-l">{card("Sandbox Activo", 'Entorno donde el usuario <b>ejecuta flujos reales</b> de ingeniería, no solo consume teoría. La práctica produce el entregable que se valida.', tag="Aplicar", tone="blue")}</div>
-   <div class="split-r">{card("Evidence Wallet", 'Portafolio verificable de competencias técnicas — útil para el <b>profesional</b> (carrera) y para el <b>reclutador corporativo</b> (decisión de equipo).', tag="Demostrar", tone="green")}</div>
-  </div>
-  {note('AI Coach sectorial y capacidades avanzadas: <b>ASUMIDO · VALIDAR</b> en el dossier operativo.')}
-""")
-
-# 25 SKILL PILOTO
-S("light","III · Solución","split",f"""
-  {kicker("Skill piloto · cuña de validación")}
-  {title('“Generar un <span class="grad">reporte técnico de obra</span> asistido por IA”')}
+# 10 LEARNING OS
+S("light","II · Solución","split",f"""
+  {kicker("Cómo se combina")}
+  {title('Un <span class="grad">Learning OS</span> para construcción')}
   <div class="split">
    <div class="split-l">
-     {bullets([
-       'Dolor frecuente y transversal: supervisor, residente, oficina técnica, PM.',
-       'Resultado visible en <b>≤ 90 min</b> o menos de 7 días.',
-       'Evidencia clara: el reporte técnico final.',
-       'Usa IA sin prometer automatización excesiva.',
-     ])}
-     {chip("TTFP — Time to First Practice como métrica de activación")}
+     {bullets(["<b>Diagnóstico</b> de nivel, objetivo y brechas.","<b>Rutas por rol</b> conectadas a tareas reales.","<b>Microlearning</b> de conceptos y herramientas.","<b>Práctica aplicada</b> con casos reales."])}
    </div>
    <div class="split-r">
-     {card("Rúbrica mínima (1–4)", table(["Criterio","Nivel aceptable"],[
-       ["Claridad","Situación, ubicación, fecha, contexto"],
-       ["Evidencia","Observaciones / fotos referenciadas"],
-       ["Análisis","Distingue hallazgo, impacto y riesgo"],
-       ["Accionabilidad","Responsable, fecha, siguiente acción"],
-     ]), tag="Validación", tone="green")}
+     {bullets(["<b>Evidencia</b> de avance: reportes, dashboards, modelos, scripts.","<b>AI Coach</b> que diagnostica, recomienda y guía.","<b>Dashboard</b> de rutas, prácticas y adopción del equipo.","<b>Comunidad de expertos</b> del sector."])}
    </div>
   </div>
+  {chip("El usuario no consume teoría: ejecuta, aplica y demuestra avance")}
 """)
 
-# 26 UX
-S("light","III · Solución","cards",f"""
-  {kicker("Experiencia de usuario")}
-  {title('Tres superficies que el usuario <span class="grad">vive cada día</span>')}
+# 11 CATEGORÍA
+S("light","II · Solución","cards",f"""
+  {kicker("Categoría correcta")}
+  {title('No es solo EdTech: es <span class="grad">adopción tecnológica</span>')}
   {grid([
-   card("Dashboard", bullets(["Qué skill toca hoy","Progreso por ruta","Créditos y evidencias pendientes"]), num="01"),
-   card("Skill Page", bullets(["Cápsulas → práctica → evidencia","Rúbrica y feedback","Foro, recursos y badge"]), num="02", tone="blue"),
-   card("Skill Passport", bullets(["Skills + evidencias","Certificados con QR verificable","CV y LinkedIn listos"]), num="03", tone="green"),
-  ], 3)}
+   card("Plataforma de adopción tecnológica","La categoría más fuerte y defendible para construcción.", num="◆", tone="green"),
+   card("Learning OS para construcción","Sistema operativo de aprendizaje aplicado por rol.", num="◆"),
+   card("Workforce transformation","Plataforma de transformación de talento AEC en LATAM.", num="◆", tone="blue"),
+  ], 3, "cards-sm")}
+  {quote('Para un jurado no técnico: <span class="grad">AECODE ayuda a que profesionales y empresas de construcción adopten tecnología más rápido.</span>')}
 """)
 
-# 27 MÓDULOS
-S("light","III · Solución","table",f"""
-  {kicker("Módulos de plataforma")}
-  {title('Un sistema completo, no una <span class="grad">colección de videos</span>')}
+# 12 PROPUESTA DE VALOR
+S("light","II · Solución","cards",f"""
+  {kicker("Propuesta de valor")}
+  {title('Valor claro para <span class="grad">cada actor</span>')}
+  {grid([
+   card("Para profesionales","Aprende BIM, IA y automatización para ahorrar tiempo, mejorar tu perfil y aplicar tecnología en proyectos reales.", num="01"),
+   card("Para empresas","Capacita a tu equipo en herramientas digitales y mide su avance para acelerar adopción y productividad.", num="02", tone="green"),
+   card("Para proyectos","Forma equipos capaces de reducir errores, automatizar procesos y ejecutar con más eficiencia.", num="03", tone="blue"),
+   card("Para el sector","Construye talento digital para una industria más productiva, competitiva y preparada.", num="04"),
+  ], 4, "cards-sm")}
+""")
+
+# 13 PRODUCTO 7 MÓDULOS
+S("light","II · Solución","table",f"""
+  {kicker("Producto")}
+  {title('Siete módulos, <span class="grad">un sistema</span>')}
   {table(["Módulo","Función"],[
-   ["<b>Onboarding inteligente</b>","Perfil, rol, objetivo, software, urgencia"],
-   ["<b>AI Coach</b>","Recomendación, feedback preliminar, nudges"],
-   ["<b>Evidence Engine</b>","Evidencia como unidad de validación, no quiz"],
-   ["<b>Skill Passport</b>","Portafolio verificable de skills y certificados"],
-   ["<b>CMS Instructor + Marketplace</b>","Crear, publicar, revenue share, reputación"],
-   ["<b>B2B Dashboard</b>","Matriz de brechas, progreso y evidencia por equipo"],
-   ["<b>AI Hub</b>","+100 bots verticales AEC, normativa y software"],
+   ["<b>1 · Diagnóstico</b>","Identifica nivel actual, objetivo profesional y brechas."],
+   ["<b>2 · Rutas por rol</b>","BIM, planificación, costos, coordinación, gestión, automatización, IA."],
+   ["<b>3 · Microlearning</b>","Cápsulas cortas de conceptos, herramientas y procedimientos."],
+   ["<b>4 · Práctica aplicada</b>","Casos reales para aplicar lo aprendido en tareas concretas."],
+   ["<b>5 · Evidencia</b>","Entregables, reportes, dashboards, modelos o scripts que demuestran avance."],
+   ["<b>6 · AI Coach</b>","Diagnostica, recomienda, guía, resuelve dudas y mide progreso."],
+   ["<b>7 · Dashboard</b>","Rutas, avance, prácticas, evidencias y adopción del equipo."],
   ], hi=[0])}
 """)
 
-# 28 ARQUITECTURA front/back/AI
-S("dark","III · Solución","cards",f"""
+# 14 INNOVACIÓN IA
+S("light","II · Solución","cards",f"""
+  {kicker("Innovación · IA aplicada")}
+  {title('La IA es el <span class="grad">motor</span>, no un curso más')}
+  {grid([
+   card("Diagnostica","Detecta nivel, rol, objetivo y brecha de cada usuario.", num="01"),
+   card("Recomienda y guía","Arma la ruta, sugiere cápsulas y acompaña la práctica.", num="02", tone="blue"),
+   card("Mide y da feedback","Revisa evidencias, da feedback preliminar y mide progreso real.", num="03", tone="green"),
+  ], 3)}
+  {lead('Ventaja compuesta: <b>más usuarios → más datos de adopción → mejores rutas y recomendaciones</b>. La IA escala personalización y acompañamiento sin escalar horas humanas, lo que protege el margen.')}
+""")
+
+# 15 ARQUITECTURA
+S("dark","II · Solución","cards",f"""
   {kicker("Arquitectura del producto")}
   {title('Frontstage · Backstage · <span class="grad">IA</span>')}
   {grid([
-   card("Frontstage", bullets(["Landing → diagnóstico","Dashboard personal","Skill Page + Evidence Upload","Feedback → Badge → Passport"]), num="◐"),
-   card("Backstage", bullets(["CMS de skills + rúbricas","Cola de revisión humana","Admin analytics","B2B dashboard + performance"]), num="◑", tone="blue"),
-   card("Capa de IA", bullets(["Diagnóstico + recomendación","Feedback preliminar (RAG)","Detección de errores","Nudges de abandono"]), num="◓", tone="green"),
+   card("Frontstage", bullets(["Diagnóstico → ruta por rol","Dashboard personal","Skill / práctica + evidencia","Progreso y badges"]), num="◐"),
+   card("Backstage", bullets(["CMS de rutas y cápsulas","Rúbricas y revisión humana","Admin analytics","Dashboard B2B por equipo"]), num="◑", tone="blue"),
+   card("Capa de IA", bullets(["Diagnóstico + recomendación","AI Coach (RAG sectorial)","Feedback preliminar de evidencia","Nudges de abandono"]), num="◓", tone="green"),
   ], 3)}
-  {lead('Regla de oro del producto: <b>medir habilidad demostrada, no consumo de contenido</b>. El control humano valida las skills críticas.')}
+  {lead('Regla de oro: <b>medir adopción y práctica aplicada</b>, no solo consumo de contenido. El control humano valida lo crítico.')}
 """)
 
-# 29 INNOVACIÓN
-S("dark","III · Solución","cards",f"""
-  {kicker("Innovación tecnológica")}
-  {title('Cinco activos que <span class="grad">se acumulan</span>')}
-  {grid([
-   card("Skill Graph AEC","Taxonomía propia de roles, skills, rutas y evidencias.", num="01"),
-   card("Evidence Engine","La evidencia es la unidad de validación, no un quiz.", num="02", tone="green"),
-   card("AI Coach","Diagnóstico, RAG, feedback preliminar y nudges.", num="03", tone="blue"),
-   card("Skill Passport","Perfil verificable de skills y certificados.", num="04"),
-   card("Live-to-platform","Cada curso live → cápsulas, rúbricas, evidencias y datos.", num="05", tone="green"),
-   card("B2B talent intelligence","Matriz de brechas y evidencia por equipo.", num="06", tone="blue"),
-  ], 3, "cards-sm")}
-  {chip("Más usuarios → más datos → mejores rutas y evaluación · sin escalar horas humanas")}
-""")
-
-# 30 STACK
-S("dark","III · Solución","table",f"""
+# 16 STACK
+S("dark","II · Solución","table",f"""
   {kicker("Stack tecnológico")}
   {title('Infraestructura para <span class="grad">escalar sin colapsar</span>')}
   <div class="split">
@@ -583,346 +332,470 @@ S("dark","III · Solución","table",f"""
      ["Analytics","Eventos del funnel desde día 1"],
    ], hi=[0])}</div>
    <div class="split-r">
-     {card("Eventos mínimos del funnel", '<code>landing_view · cta_clicked · signup_completed · onboarding_completed · route_accepted · skill_started · evidence_uploaded · skill_verified · payment_completed</code>', tag="Analytics", tone="blue")}
-     {note('Infra de soporte: AgentFlow (n8n privado + Redis + Cloudflare) · VisionPro (computer vision de obra). No escalar usuarios sin base estable.')}
+     {card("Eventos mínimos del funnel", '<code>landing_view · signup_completed · onboarding_completed · route_accepted · skill_started · practice_completed · evidence_uploaded · payment_completed</code>', tag="Analytics", tone="blue")}
+     {note('Mock data al inicio · analítica de eventos desde el día 1 para medir adopción y práctica.')}
    </div>
   </div>
 """)
 
-# 31 MODELO DE NEGOCIO
-S("dark","IV · Negocio","cards",f"""
-  {kicker("Modelo de negocio")}
-  {title('Cuatro motores, <span class="grad">un solo flywheel</span>')}
-  {grid([
-   card("1 · Live Training B2C","Caja, comunidad y validación. Motor de hoy.", num="◆"),
-   card("2 · B2B institucional","Contratos de mayor valor, recurrencia, brechas.", num="◆", tone="green"),
-   card("3 · On-demand + IA","Margen SaaS y escala (microlearning).", num="◆", tone="blue"),
-   card("4 · B2B2C","Empresa paga o impulsa; profesional aprende; evidencia valida.", num="◆", tone="violet"),
-  ], 4, "cards-sm")}
-  {lead('Líneas escalables: <b>freemium · créditos · premium · rutas certificadas · certificaciones · B2B team · corporate academy · marketplace · Summit/sponsors</b>.')}
+# 17 DIFERENCIACIÓN
+S("dark","II · Solución","table",f"""
+  {kicker("Diferenciación")}
+  {title('AECODE <span class="grad">vs. todo lo demás</span>')}
+  {table(["Comparación","Ellos","AECODE"],[
+   ["<b>vs. Academia</b>","Vende cursos, mide asistencia, entrega contenido","Acelera adopción, mide práctica y aplicación"],
+   ["<b>vs. Plataformas horizontales</b>","Enseñan de todo para todos","Se especializa en construcción"],
+   ["<b>vs. ChatGPT</b>","Entrega respuestas","Entrega ruta, contexto, práctica, acompañamiento y medición"],
+   ["<b>vs. Consultora</b>","Capacita proyecto por proyecto","Convierte conocimiento validado en producto escalable"],
+  ], hi=[2])}
 """)
 
-# 32 B2B2C
-S("dark","IV · Negocio","flow",f"""
-  {kicker("Modelo B2B2C")}
-  {title('La comunidad es el <span class="grad">canal</span>; la empresa, el <span class="grad">ticket</span>')}
-  {flow([("Profesional aprende y valida",""),("Comparte evidencia","hot"),("Empresa ve el valor","hot"),("Compra rutas para el equipo","win"),("Data mejora el producto","")])}
-  {lead('El mismo motor de contenido sirve al profesional (<b>B2C</b>) y a la empresa que necesita upskilling medible (<b>B2B</b>). La comunidad orgánica baja el CAC; la empresa sube el ticket y la recurrencia. Patrón <b>BuildWitt</b> aplicado a LATAM: medios propios → audiencia → conversión barata.')}
+# 18 DIVIDER III
+S("light","III · Mercado","divider",f"""
+  <div class="div-index reveal">03</div>
+  <h2 class="div-title reveal">Mercado<br>y <span class="grad">por qué ahora</span></h2>
+  <p class="div-sub reveal">Una vertical con alto dolor, necesidad creciente y un comprador estructural emergente.</p>
 """)
 
-# 33 PRICING
-S("dark","IV · Negocio","table",f"""
-  {kicker("Pricing")}
-  {title('Una escalera del <span class="grad">free al enterprise</span>')}
-  <div class="split">
-   <div class="split-l">{table(["Oferta","Rango","Objetivo"],[
-     ["<b>Free</b>","S/ 0","Adquisición"],
-     ["<b>Starter créditos</b>","S/ 49–99","Primer pago"],
-     ["<b>Premium individual</b>","S/ 59–129/mes","Recurrencia B2C"],
-     ["<b>Ruta certificada</b>","S/ 199–699","Ticket medio"],
-     ["<b>B2B Team</b>","S/ 80–180 usuario/mes","Recurrencia B2B"],
-     ["<b>Training in-house</b>","S/ 8,000–60,000","Ticket alto"],
-   ], hi=[0,1])}</div>
-   <div class="split-r">{card("Pricing canónico en USD", table(["Oferta","Rango"],[
-     ["Workshop live B2C","US$40–60"],
-     ["Programa / cohorte","US$120–250"],
-     ["B2B Starter (≤15)","~US$3,000"],
-     ["B2B Growth (≤40)","~US$8,000"],
-     ["On-demand","US$19/mes · US$180/año"],
-     ["Teams B2B2C","US$12–15 usuario/mes"],
-   ]), tag="ASUMIDO · VALIDAR", tone="blue")}</div>
-  </div>
-""")
-
-# 34 ACTUAL VS FUTURO
-S("dark","IV · Negocio","table",f"""
-  {kicker("Modelo actual vs. futuro")}
-  {title('De <span class="grad">servicios</span> a plataforma <span class="grad">recurrente</span>')}
-  {table(["Etapa","Modelo","Estado","Riesgo"],[
-   ["<b>Actual</b>","Live training, diplomados, talleres","Activo","Depende de horas y ventas one-time"],
-   ["<b>Transición</b>","Microlearning, retos, 1ª skill verificable","En validación","Debe probar evidencia y retención"],
-   ["<b>Plataforma</b>","Freemium, créditos, premium, certificados","Futuro cercano","Requiere MRR real"],
-   ["<b>B2B</b>","Licencias, corporate academy, dashboard","Early","Falta cuantificar pilotos"],
-   ["<b>Marketplace</b>","Instructores, revenue share","Posterior","Riesgo de calidad → curaduría"],
-  ], hi=[0])}
-  {lead('Cada venta live <b>alimenta la plataforma</b>: el curso se convierte en cápsulas, skills, rúbricas, evidencias y datos.')}
-""")
-
-# 35 UNIT ECONOMICS + por motor
-S("dark","IV · Negocio","chart",f"""
-  {kicker("Unit economics")}
-  {title('La unidad económica <span class="grad">ya cierra</span>')}
-  <div class="statrow">
-    {stat("35","CAC blended","8× mejor que benchmark EdTech", prefix="$", tone="green")}
-    {stat("3.1","LTV : CAC","gate de inversión: &gt;3× ✓", suffix="×", tone="green")}
-    {stat("74","Gross margin plataforma","cockpit · cercano a SaaS", suffix="%", tone="green")}
-    {stat("7","Payback","meses · benchmark Kaman &lt;12", suffix=" m")}
-  </div>
+# 19 POR QUÉ AHORA
+S("light","III · Mercado","chart",f"""
+  {kicker("Por qué ahora")}
+  {title('El sector <span class="grad">dice usar IA</span>, pero casi nadie la ejecuta')}
   <div class="split">
    <div class="split-l">{barchart([
-     ("B2C Live · LTV:CAC ≈ 4.5×",45,"GM 50%","violet"),
-     ("B2B · LTV:CAC ≈ 30×",100,"GM 62%","green"),
-     ("On-demand · LTV:CAC ≈ 12×",78,"GM 82%","blue"),
+     ("Firmas AEC que “usan IA”",75,"75%","violet"),
+     ("La usa de forma regular",12,"12%","blue"),
+     ("Confía en su propia data",29,"29%","green"),
+     ("Planea aumentar inversión en IA",94,"94%","violet"),
    ])}</div>
-   <div class="split-r">{note('Unit economics por motor: <b>ASUMIDO · VALIDAR</b> (B2C $100/CAC $20 · B2B $5,000/CAC $400 · On-demand $19mes/CAC $15). Churn mensual ~8% (borde alto) y MRR real a separar del one-time.')}</div>
+   <div class="split-r">
+     {lead('La brecha no es de <i>tecnología</i> — es de <b>adopción y capacidad operativa</b>. Entre 2025 y 2030, la presión por BIM, IA, automatización y digitalización hace urgente formar talento práctico.')}
+     {chip("El contenido se comoditiza · la adopción y la evidencia se vuelven el activo escaso")}
+   </div>
   </div>
+  {note('Datos del vault 2025–2026 · refrescar contra fuente oficial antes de un pitch público.')}
 """)
 
-# 36 FUNNEL
-S("dark","IV · Negocio","funnel",f"""
-  {kicker("Funnel comercial")}
-  {title('B2C y B2B con <span class="grad">gates de validación</span>')}
+# 20 5 VECTORES / BRECHA
+S("light","III · Mercado","split",f"""
+  {kicker("La presión estructural")}
+  {title('Tecnología que entra, <span class="grad">talento que falta</span>')}
   <div class="split">
    <div class="split-l">
-     <div class="funnel reveal">
-       <div class="fn" style="--w:100%"><span>Lead · diagnóstico</span><b>conv &gt;15%</b></div>
-       <div class="fn" style="--w:82%"><span>Reto / taller</span><b>registro &gt;75%</b></div>
-       <div class="fn" style="--w:64%"><span>1ª evidencia</span><b>skill start &gt;40%</b></div>
-       <div class="fn hot" style="--w:46%"><span>Skill verificada</span><b>&gt;70% · NSM</b></div>
-       <div class="fn win" style="--w:30%"><span>Premium / 2ª skill</span><b>free→paid &gt;10%</b></div>
-     </div>
-     <div class="fn-cap">B2C</div>
+     {stat("499","Trabajadores AEC faltantes (EE.UU. 2026)","Deloitte", suffix="K")}
+     {stat("77","Del capital contech fue a IA en 2025","vs. 35% en 2024", suffix="%", tone="green")}
    </div>
    <div class="split-r">
-     <div class="funnel reveal">
-       <div class="fn" style="--w:100%"><span>Contacto empresa</span><b></b></div>
-       <div class="fn" style="--w:80%"><span>Diagnóstico de brechas</span><b></b></div>
-       <div class="fn hot" style="--w:60%"><span>Piloto 30 días + dashboard</span><b></b></div>
-       <div class="fn" style="--w:44%"><span>Reporte ROI</span><b></b></div>
-       <div class="fn win" style="--w:30%"><span>Contrato team</span><b>ACV · NRR</b></div>
-     </div>
-     <div class="fn-cap">B2B</div>
-   </div>
-  </div>
-""")
-
-# 37 NSM DRIVER TREE + GAUGE
-S("light","V · Métricas","nsm",f"""
-  {kicker("North Star Metric")}
-  {title('Skills verificadas con evidencia <span class="grad">/ usuario activo</span>')}
-  <div class="nsm reveal">
-    <div class="nsm-gauge">
-      <div class="nsm-now"><span class="nsm-val" data-count="0.17">0.17</span><small>hoy</small></div>
-      <div class="nsm-track"><div class="nsm-fill"></div><div class="nsm-target">0.40</div></div>
-      <div class="nsm-goal"><span class="nsm-val">0.40+</span><small>target</small></div>
-    </div>
-  </div>
-  {tree("NSM", ["usuarios activos","onboarding completado","ruta aceptada","skill start","cápsulas","evidencia subida","evidencia aprobada","2ª skill iniciada"])}
-  {lead('Una sola palanca mueve 4 streams: empleabilidad → recomienda (baja CAC) → empresas pagan por el Skill Graph → las credenciales valen. <b>No se infla con marketing: o verificas la skill, o no.</b>')}
-""")
-
-# 38 TRACCIÓN
-S("light","V · Métricas","chart",f"""
-  {kicker("Tracción · snapshot")}
-  {title('Demanda validada <span class="grad">antes de terminar el producto</span>')}
-  <div class="statrow">
-    {stat("130","Ventas acumuladas","US$ · x3 crecimiento 2024→2025", prefix="US$", suffix="K+", tone="green")}
-    {stat("300","Clientes activos (90 días)","tracción reciente", tone="violet")}
-    {stat("95","Alcance de comunidad","8k WhatsApp activo", suffix="K+", tone="blue")}
-    {stat("14","Países con presencia","+100 alianzas · +200 expertos", tone="violet")}
-  </div>
-  <div class="split">
-   <div class="split-l">{barchart([
-     ("Ventas 2024",33,"×1","violet"),
-     ("Ventas 2025",100,"×3","green"),
-     ("Run-rate 2026",98,"≈US$118K","blue"),
-   ])}</div>
-   <div class="split-r">{note('Cifras aportadas por Alejandro para pitch · <b>pendiente conciliación</b> con contabilidad, analytics y CRM antes de due diligence. ProInnóvate Hito 1 aprobado.')}</div>
-  </div>
-""")
-
-# 39 RETENCIÓN & NPS
-S("light","V · Métricas","chart",f"""
-  {kicker("Retención & NPS")}
-  {title('Retiene <span class="grad">mejor que la media</span> — aún sin terminar')}
-  <div class="split">
-   <div class="split-l">{barchart([
-     ("NPS de cohortes",78,"66–78","green"),
-     ("Completion de cohortes",85,"71–85%","blue"),
-     ("Retención W4 / M1",38,"38%","violet"),
-     ("Evidence upload rate",42,"42%","green"),
-   ])}</div>
-   <div class="split-r">
-     {lead('El loop de <b>evidencia + validación</b> es el antídoto estructural a la deserción de EdTech: el progreso profesional se <i>siente</i> real. La retención W4 (38%) ya supera el benchmark B2C (25–35%).')}
-     {table(["Gap a instrumentar","Estado"],[
-       ["M3 / M6 retention por cohorte","🟠 urgente"],
-       ["TTFSV / TTFP en días","🟠 urgente"],
-       ["Re-compra por cohortes","🟡 medir"],
+     {bullets([
+       'Mercado AEC <b>gigante y subdigitalizado</b> (productividad plana 20 años).',
+       'Inflexión de IA 2025–2026: de asistente a agente.',
+       'El mercado contrata por <b>capacidad</b>, pero no sabe verificarla.',
+       'Perú: <b>Plan BIM</b> = mandato estatal de digitalización (demanda estructural).',
      ])}
    </div>
   </div>
 """)
 
-# 40 REVENUE QUALITY
-S("light","V · Métricas","split",f"""
-  {kicker("Honestidad métrica")}
-  {title('Lo que un analista <span class="grad">atacaría primero</span>')}
-  <div class="split">
-   <div class="split-l">
-     {card("El problema", 'Gran parte del revenue es <b>one-time</b> (programas live). El “MRR” de $5,150 es <i>Monthly Revenue</i>, no <i>Recurring</i>. Churn ~8% en el borde alto.', tag="Revenue quality", tone="green")}
-     {card("Por qué importa", 'Una empresa con MRR real vale 5–10× ese MRR; un negocio de servicios one-time, mucho menos. Diferencia de 3–7× sobre el mismo ingreso.', tag="Valuación")}
-   </div>
-   <div class="split-r">
-     {card("El plan", bullets(["Separar y medir MRR real vs. one-time","Proyectar el bridge a suscripción","Comunicar en dos fases: live (caja) → plataforma (escala)","No reportar caja de cohortes como MRR"]), tag="Acción", tone="blue")}
-   </div>
-  </div>
-  {quote('Mostrar el gap <span class="grad">nosotros mismos</span>, con plan, construye más confianza que esconderlo.')}
+# 21 VALIDACIÓN DE MERCADO
+S("light","III · Mercado","cards",f"""
+  {kicker("Validación clara de mercado")}
+  {title('La demanda <span class="grad">ya paga</span>')}
+  {grid([
+   card('<span class="card-big">×4</span> ventas 2024 → 2025 (US$30K → US$120K).',"", tag="Crecimiento"),
+   card('<span class="card-big">300</span> clientes activos en los últimos 90 días.',"", tag="Tracción", tone="green"),
+   card('<span class="card-big">95K</span> de alcance de comunidad en 14 países.',"", tag="Distribución", tone="blue"),
+   card('<span class="card-big">+200</span> expertos / aliados del sector.',"", tag="Red"),
+   card('<span class="card-big">+100</span> alianzas activas.',"", tag="Partners", tone="green"),
+   card('<span class="card-big">3</span> motores ya en marcha: Live, B2B y On-demand.',"", tag="Modelo", tone="blue"),
+  ], 3, "cards-sm")}
 """)
 
-# 41 COMUNIDAD & FLYWHEEL
-S("light","V · Métricas","flywheel",f"""
-  {kicker("Comunidad & flywheel")}
-  {title('El volante: cada vuelta <span class="grad">cuesta menos y empuja más</span>')}
-  <div class="fly reveal">
-    <div class="fly-ring">
-      <div class="fly-node n1">Contenido gratuito atrae AEC</div>
-      <div class="fly-node n2">Comunidad capta leads y confianza</div>
-      <div class="fly-node n3">Programas live → caja + contenido</div>
-      <div class="fly-node n4">Se vuelve cápsulas, skills, evidencias</div>
-      <div class="fly-node n5">Data alimenta rutas y demanda B2B</div>
-      <div class="fly-node n6">Summit trae sponsors y autoridad</div>
-      <div class="fly-core">AECODE<br><small>95k · 14 países</small></div>
+# 22 TAM/SAM/SOM
+S("light","III · Mercado","tss",f"""
+  {kicker("Mercado · dimensionamiento bottom-up")}
+  {title('TAM / SAM / <span class="grad">SOM</span>')}
+  <div class="split">
+    <div class="split-l">{tamsamsom([
+      ("TAM","US$360 M","1.2M usuarios × US$300/año"),
+      ("SAM","US$87.5 M","350K usuarios × US$250/año"),
+      ("SOM 3 años","US$2.5 M","10K clientes × US$250/año"),
+    ])}</div>
+    <div class="split-r">
+      {lead('La meta de 3 años es ambiciosa pero defendible: <b>capturar US$2.5M es &lt;3% del SAM</b>.')}
+      {chip("AECODE no necesita dominar el mercado: captura una porción de una vertical con alto dolor")}
     </div>
   </div>
-  {lead('La comunidad es <b>canal, producto y moat</b>. Cada evento produce: grabación, cápsula, resumen, post, base de Q&A para el AI Hub y un CTA a diagnóstico. Ecosistema: GEN+ (ticket alto), THESIA (I+D), VisionPro (datos de obra), Summit (autoridad).')}
 """)
 
-# 42 DIFERENCIACIÓN
-S("dark","VI · Defensibilidad","table",f"""
-  {kicker("Diferenciación")}
-  {title('Las academias certifican asistencia.<br>AECODE <span class="grad">valida capacidad</span>.')}
-  {table(["Dimensión","Cursos tradicionales","AECODE"],[
-   ["Unidad de valor","Curso o certificado","<b>Skill verificable</b>"],
-   ["Progreso","Clases vistas","<b>Evidencia aprobada</b>"],
-   ["Personalización","Temario fijo","<b>Ruta por rol + diagnóstico</b>"],
-   ["Evaluación","Quiz o examen","<b>Rúbrica + entregable real</b>"],
-   ["Resultado","Constancia","<b>Skill Passport</b>"],
-   ["B2B","Capacitación genérica","<b>Dashboard de brechas</b>"],
-  ], hi=[2])}
-""")
-
-# 43 MOAT
-S("dark","VI · Defensibilidad","cards",f"""
-  {kicker("Moat compuesto")}
-  {title('El contenido se copia. <span class="grad">El moat, no.</span>')}
-  {grid([
-   card("Comunidad vertical AEC","65–95k de alcance → CAC $35 vs. $100–300.", num="01"),
-   card("Skill Graph AEC","Taxonomía propietaria de roles y skills.", num="02", tone="blue"),
-   card("Datos de evidencia","Grafo de habilidades reales de la región.", num="03", tone="green"),
-   card("Rúbricas + feedback","Estándar de validación que se calibra.", num="04"),
-   card("AI Coach contextual","Personalización sin escalar horas humanas.", num="05", tone="blue"),
-   card("Ecosistema GEN+/THESIA","Casos reales que alimentan el producto.", num="06", tone="green"),
-  ], 3, "cards-sm")}
-  {lead('Más: <b>Summit y autoridad</b>, <b>B2B talent intelligence</b>, <b>alianzas institucionales</b> y <b>mandato Plan BIM Perú</b>. El moat está en datos, comunidad, evidencia, certificación y distribución.')}
-""")
-
-# 44 COMPETENCIA + 2x2
-S("dark","VI · Defensibilidad","map",f"""
+# 23 COMPETENCIA
+S("dark","III · Mercado","map",f"""
   {kicker("Panorama competitivo")}
   {title('Ser <span class="grad">profundo</span> donde todos son <span class="grad">anchos</span>')}
   <div class="split">
    <div class="split-l">{map2x2([
      (78,18,"AECODE","green",True),
-     (18,72,"Coursera / Udemy","ink",False),
-     (32,58,"Platzi / Crehana","ink",False),
-     (60,60,"Autodesk Learning","ink",False),
-     (70,74,"BIM local","ink",False),
-     (14,86,"YouTube / IA","ink",False),
-   ], ("Horizontal","Vertical AEC"), ("Evidencia verificable","Sin evidencia"))}</div>
-   <div class="split-r">{table(["Competidor","Límite frente a AECODE"],[
-     ["Coursera / Udemy","Horizontal, poca evidencia AEC"],
-     ["Platzi / Crehana","Sin foco profundo AEC ni evidencia"],
-     ["Maven","Sin Skill Passport AEC ni comunidad propia"],
-     ["Autodesk / Procore","Vendor-specific, no ruta por rol"],
-     ["BIM local","Artesanal, poca escala y data"],
+     (16,70,"Coursera / Udemy / Platzi","ink",False),
+     (62,40,"Academias BIM","ink",False),
+     (40,30,"Consultoras","ink",False),
+     (14,86,"YouTube","ink",False),
+     (34,84,"ChatGPT","ink",False),
+   ], ("Horizontal","Vertical AEC"), ("Adopción + práctica","Solo contenido"))}</div>
+   <div class="split-r">{table(["Competidor","Limitación"],[
+     ["Coursera / Udemy / Platzi","Poca especialización AEC"],
+     ["Academias BIM","Menor escalabilidad e IA"],
+     ["Consultoras","Intensivo en horas humanas"],
+     ["YouTube","Sin ruta ni medición"],
+     ["ChatGPT","Sin estructura sectorial ni práctica"],
    ])}</div>
   </div>
-  {chip("Profundidad AEC + evidencia verificable + comunidad LATAM + IA contextualizada")}
+  {chip("AECODE no compite por cantidad de contenido: por especialización, aplicación y adopción")}
 """)
 
-# 45 GTM
-S("light","VII · Crecimiento","split",f"""
-  {kicker("Go-to-Market")}
-  {title('Distribución <span class="grad">antes</span> que perfección')}
-  {flow([("Contenido técnico",""),("Diagnóstico gratis",""),("Reto 7 días","hot"),("1ª evidencia","hot"),("Premium",""),("B2B / equipo","win")])}
-  <div class="split">
-   <div class="split-l">{card("Motor orgánico (B2C)", bullets(["WhatsApp + LinkedIn (canal dominante)","Webinars y retos de 7 días","AI Construction Summit","Embajadores y referidos"]), tag="CAC bajo", tone="violet")}</div>
-   <div class="split-r">{card("Expansión (B2B / B2G)", bullets(["Pilotos B2B de 30 días ligados a outcome","Training in-house + dashboards","Canal B2G vía Plan BIM Perú","Partners, gremios, universidades"]), tag="Ticket alto", tone="green")}</div>
-  </div>
-  {note('No escalar adquisición paga antes de mejorar activación, evidencia y retención.')}
+# 24 DIVIDER IV
+S("dark","IV · Modelo & Finanzas","divider",f"""
+  <div class="div-index reveal">04</div>
+  <h2 class="div-title reveal">Modelo de negocio<br>y <span class="grad">finanzas</span></h2>
+  <p class="div-sub reveal">Live valida. B2B ancla. On-demand AI escala. La historia no es solo crecimiento: es transición de mix.</p>
 """)
 
-# 46 ROADMAP
-S("light","VII · Crecimiento","timeline",f"""
-  {kicker("Roadmap · escalabilidad · milestones")}
-  {title('De cerrar el loop a <span class="grad">estándar regional</span>')}
-  <div class="tl reveal">
-    <div class="tl-item"><div class="tl-dot"></div><div class="tl-when">0–90 días</div><div class="tl-what">Landing skill piloto · instrumentar eventos · <b>TTFSV</b> · piloto B2B 30 días · separar MRR real.</div></div>
-    <div class="tl-item"><div class="tl-dot"></div><div class="tl-when">3–6 meses</div><div class="tl-what"><b>3 rutas</b> · 30–50 cápsulas · Evidence Engine v1 · AI Coach básico · 10 instructores.</div></div>
-    <div class="tl-item"><div class="tl-dot"></div><div class="tl-when">6–8 meses</div><div class="tl-what"><b>1,000+ usuarios</b> · 500+ skills con evidencia · 200+ certificados · 3+ pilotos B2B · MRR S/15k+.</div></div>
-    <div class="tl-item win"><div class="tl-dot"></div><div class="tl-when">2027–2030</div><div class="tl-what">Expansión LATAM (México/Colombia) · B2B robusto · B2G · <b>referencia regional</b>.</div></div>
-  </div>
-  {lead('Escalar = que cada unidad vendida fortalezca margen, retención y capacidad operativa — no solo sume complejidad (principio Kaman).')}
-""")
-
-# 47 RIESGOS
-S("light","VII · Crecimiento","split",f"""
-  {kicker("Riesgos & mitigación")}
-  {title('Los riesgos están <span class="grad">nombrados y cubiertos</span>')}
-  <div class="split">
-   <div class="split-l">{table(["Riesgo","Mitigación"],[
-     ["Parecer academia online","Skill verificable como unidad central"],
-     ["MRR inflado con one-time","Separar revenue, MRR real y cohortes"],
-     ["IA sin data propia","Capturar perfiles, evidencias, rúbricas, outcomes"],
-     ["Certificado débil","QR + evidencia + rúbrica + respaldo institucional"],
-     ["CAC alto al escalar","Comunidad, referidos, SEO, partners antes de paid"],
-     ["Sobreconstrucción","Solo features que mueven el loop F3"],
-   ], hi=[0])}</div>
-   <div class="split-r">{card("La herida central", 'La tesis se vuelve defendible cuando <b>una empresa usa evidencia AECODE para tomar una decisión real</b>: asignar proyecto, promover, contratar o cerrar una brecha. Hasta ese caso, la capa de evidencia es una hipótesis fuerte.', tag="El riesgo que decide", tone="green")}</div>
-  </div>
-""")
-
-# 48 EQUIPO
-S("dark","VIII · Cierre","cards",f"""
-  {kicker("Equipo")}
-  {title('Núcleo complementario con <span class="grad">ejecución técnica y comercial</span>')}
+# 25 MODELO 3 MOTORES
+S("dark","IV · Modelo & Finanzas","cards",f"""
+  {kicker("Modelo de negocio")}
+  {title('<span class="grad">Live valida. B2B ancla. On-demand AI escala.</span>')}
   {grid([
-   card("Alejandro Palpan","CEO & Fundador. Visión, estrategia, producto, mercado y fundraising. Lidera AECODE + GEN+.", tag="Estrategia / Producto", tone="violet"),
-   card("Anggie","Growth, narrativa y educación. Diseño instruccional y experiencia académica.", tag="Growth / Educación", tone="green"),
-   card("Fabrizio","Producto y startup. Desarrollo web, plataforma e integraciones.", tag="Producto / Plataforma", tone="blue"),
-   card("Yudely / Daniela","Tecnología y operaciones digitales · operación comercial (según fuente).", tag="Tech / Ops", tone="violet"),
-  ], 4, "cards-sm")}
-  {note('Equipo extendido + red de expertos AEC (BIM, IA, VDC, estructuras, datos). <b>VACÍO:</b> cap table, equity y roles legales definitivos.')}
+   card("Motor 1 · B2C Live","Programas en vivo, cohortes y workshops. Genera caja, valida demanda, construye comunidad y produce contenido fuente.", num="◆"),
+   card("Motor 2 · B2B","Venta a empresas, constructoras, consultoras e instituciones. Sube ticket, mejora recurrencia y conecta capacitación con productividad.", num="◆", tone="green"),
+   card("Motor 3 · On-demand AI","Microlearning, suscripción, certificaciones y AI Coach. Escala con menor costo marginal, mejora margen y crea activos reutilizables.", num="◆", tone="blue"),
+  ], 3)}
 """)
 
-# 49 ASK
-S("dark","VIII · Cierre","ask",f"""
-  {kicker("El Ask")}
-  {title('US$125K SAFE para cerrar la brecha <span class="grad">0.17 → 0.40</span>')}
+# 26 B2B2C
+S("dark","IV · Modelo & Finanzas","flow",f"""
+  {kicker("Modelo B2B2C")}
+  {title('<span class="grad">Empresa paga. Profesional aprende. Industria valida.</span>')}
+  {flow([("Empresa impulsa y paga","hot"),("Profesional aprende y aplica",""),("Industria valida la adopción","win")])}
+  {lead('La empresa gana productividad. El profesional gana empleabilidad. AECODE gana <b>mayor LTV y menor CAC relativo</b>. El producto, además, genera datos de avance, práctica y adopción que mejoran todo el sistema.')}
+  {grid([
+   card("Empresa","Gana productividad y adopción real.", num="◆", tone="green"),
+   card("Profesional","Gana empleabilidad y mejor perfil.", num="◆"),
+   card("AECODE","Gana LTV, datos y menor CAC.", num="◆", tone="blue"),
+  ], 3, "cards-sm")}
+""")
+
+# 27 VENTAS POR AÑO
+S("dark","IV · Modelo & Finanzas","chart",f"""
+  {kicker("Tracción financiera")}
+  {title('De US$30K a una meta de <span class="grad">US$420K</span>')}
+  <div class="split">
+   <div class="split-l">{barchart([
+     ("2024 · validación inicial",7.1,"US$30K","ink"),
+     ("2025 · ×4",28.6,"US$120K","violet"),
+     ("2026E · diversificado",52.4,"US$220K","blue"),
+     ("2027 Target con inversión",100,"US$420K","green"),
+   ])}</div>
+   <div class="split-r">
+     {lead('AECODE ya validó que el mercado paga: pasó de US$30K (2024) a <b>US$120K (2025), ×4</b>. Proyecta US$220K en 2026 con una estructura más diversificada.')}
+     {chip("El objetivo con capital: acelerar 2027 a US$420K mejorando la calidad del revenue")}
+   </div>
+  </div>
+  {note('2027 base sin inversión ≈ US$370K. Cifras de trabajo · conciliar con contabilidad antes de due diligence.')}
+""")
+
+# 28 MIX DE INGRESOS
+S("dark","IV · Modelo & Finanzas","chart",f"""
+  {kicker("Mix de ingresos por modelo")}
+  {title('La historia no es crecimiento: es <span class="grad">transición</span>')}
+  {stackbar([
+    ("2024",[30,0,0],"US$30K"),
+    ("2025",[107,8,5],"US$120K"),
+    ("2026E",[132,55,33],"US$220K"),
+    ("2027 Target",[160,140,120],"US$420K"),
+  ], [("B2C Live","#4465EE"),("B2B","#17B14E"),("On-demand AI","#6D70F9")], 420)}
+  {lead('En 2024 AECODE era <b>100% B2C Live</b>. En 2026, B2B + On-demand AI representan <b>40%</b>. En 2027 Target, <b>62%</b>. Es una migración hacia líneas más escalables, rentables y defendibles.')}
+""")
+
+# 29 MÁRGENES DE CONTRIBUCIÓN
+S("dark","IV · Modelo & Finanzas","chart",f"""
+  {kicker("Márgenes de contribución")}
+  {title('No solo más ventas: <span class="grad">mejor economía</span>')}
+  <div class="split">
+   <div class="split-l">{barchart([
+     ("2024",35,"35.0%","ink"),
+     ("2025",37,"37.0%","violet"),
+     ("2026E",42.5,"42.5%","blue"),
+     ("2027 Target",47.1,"47.1%","green"),
+   ])}</div>
+   <div class="split-r">{table(["Línea","Margen contrib.","Contrib. 2027T"],[
+     ["B2C Live","35%","US$56K"],
+     ["B2B","50%","US$70K"],
+     ["On-demand AI","60%","US$72K"],
+     ["<b>Total</b>","<b>47.1% pond.</b>","<b>US$198K</b>"],
+   ], hi=[0])}</div>
+  </div>
+  {lead('El margen ponderado sube de <b>35% a 47.1%</b> porque el negocio migra a B2B y On-demand AI. Esa mejora de mix es lo que hace a la startup más invertible. (Margen de contribución por línea, no neto consolidado.)')}
+""")
+
+# 30 B2C LIVE 2026
+S("dark","IV · Modelo & Finanzas","chart",f"""
+  {kicker("Realidad reciente · B2C Live 2026")}
+  {title('Caja mensual <span class="grad">probada y prudente</span>')}
+  <div class="split">
+   <div class="split-l">{barchart([
+     ("Marzo 2026",87,"US$13K","violet"),
+     ("Abril 2026",80,"US$12K","blue"),
+     ("Mayo 2026",100,"US$15K","green"),
+   ])}</div>
+   <div class="split-r">
+     {lead('El B2C Live ya genera <b>US$12K–15K mensuales</b> en meses recientes.')}
+     {chip("Forecast anual B2C Live 2026 = US$132K (~US$11K/mes): prudente y defendible")}
+   </div>
+  </div>
+""")
+
+# 31 PRICING
+S("dark","IV · Modelo & Finanzas","table",f"""
+  {kicker("Pricing")}
+  {title('Una escalera del <span class="grad">workshop al enterprise</span>')}
+  {table(["Oferta","Rango","Objetivo"],[
+   ["<b>Workshop live B2C</b>","US$40–60","Adquisición + caja"],
+   ["<b>Programa / cohorte</b>","US$120–250","Ticket medio B2C"],
+   ["<b>On-demand individual</b>","US$19/mes · US$180/año","Recurrencia escalable"],
+   ["<b>Teams B2B2C</b>","US$12–15 usuario/mes","Recurrencia por equipo"],
+   ["<b>B2B Starter (≤15)</b>","~US$3,000","Entrada empresa"],
+   ["<b>B2B Growth (≤40)</b>","~US$8,000","Cuenta empresa"],
+  ], hi=[0,1])}
+  {note('Rangos de trabajo · validar contra histórico real de tickets antes de fundraising externo.')}
+""")
+
+# 32 DIVIDER V
+S("light","V · Métricas & Growth","divider",f"""
+  <div class="div-index reveal">05</div>
+  <h2 class="div-title reveal">Métricas norte<br>y <span class="grad">growth</span></h2>
+  <p class="div-sub reveal">No basta crecer en ventas: AECODE crece con mejor calidad de ingresos y práctica aplicada real.</p>
+""")
+
+# 33 NORTH STAR DUAL
+S("light","V · Métricas & Growth","cards",f"""
+  {kicker("North Star Metric")}
+  {title('Dos estrellas: <span class="grad">producto y negocio</span>')}
+  {grid([
+   card("NSM de producto", '<b>Prácticas aplicadas completadas por mes.</b><br><br>No mide consumo pasivo: mide aplicación real. Sirve para B2C, B2B y On-demand, y conecta aprendizaje con productividad.', tag="Producto", tone="green"),
+   card("NSM de negocio", '<b>% de revenue escalable (B2B + On-demand AI).</b><br><br>Mide la transformación del negocio. La meta: pasar de <b>40% (2026)</b> a <b>62% (2027 Target)</b>.', tag="Negocio", tone="blue"),
+  ], 2)}
+  {chip("Crecer en ventas no basta · AECODE debe crecer con mejor calidad de ingresos")}
+""")
+
+# 34 NSM POR MODELO
+S("light","V · Métricas & Growth","table",f"""
+  {kicker("NSM por modelo")}
+  {title('Cada motor con su <span class="grad">métrica norte</span>')}
+  {table(["Modelo","NSM","Métricas clave"],[
+   ["<b>B2C Live</b>","Alumnos que completan una práctica final aplicable por cohorte","Seats, finalización, recompra, margen por cohorte, NPS"],
+   ["<b>B2B</b>","Colaboradores activos por empresa que completan prácticas/mes","ACV, usuarios/cuenta, renovación, NRR, CAC B2B, payback"],
+   ["<b>On-demand AI</b>","Usuarios que completan una práctica asistida por IA/mes","MAU, rutas, uso del AI Coach, free→pago, W4/M3, MRR/ARR"],
+  ], hi=[0])}
+""")
+
+# 35 RETENCIÓN & NPS
+S("light","V · Métricas & Growth","split",f"""
+  {kicker("Retención & calidad")}
+  {title('Objetivos de <span class="grad">retención y recurrencia</span>')}
+  <div class="split">
+   <div class="split-l">{table(["Métrica","Objetivo"],[
+     ["Retención W4","30%–45%"],
+     ["Retención M3","20%–35%"],
+     ["LTV / CAC",">3"],
+     ["Renovación B2B",">70%"],
+     ["NRR B2B",">100%"],
+   ], hi=[0])}</div>
+   <div class="split-r">
+     {lead('El loop de <b>práctica + evidencia + progreso visible</b> es el antídoto a la deserción: el avance se siente real.')}
+     {note('Métricas recurrentes (MRR/ARR, CAC por canal, cohortes) aún inmaduras. La inversión las consolida. Hoy se reporta ventas, run-rate y contribución por línea — no se infla recurrencia.')}
+   </div>
+  </div>
+""")
+
+# 36 GROWTH METRICS
+S("light","V · Métricas & Growth","chart",f"""
+  {kicker("Métricas de growth")}
+  {title('No empezamos desde <span class="grad">tráfico frío</span>')}
+  <div class="statrow">
+    {stat("95","Alcance de comunidad","8k WhatsApp activo", suffix="K+", tone="blue")}
+    {stat("14","Países con presencia","alcance regional", tone="violet")}
+    {stat("300","Clientes activos (90 días)","tracción reciente", tone="green")}
+    {stat("200","Expertos / aliados","+100 alianzas", suffix="+", tone="violet")}
+  </div>
+  {lead('La ventaja de AECODE es que parte de <b>comunidad, autoridad sectorial y contenido validado</b>. La inversión debe mejorar el sistema de conversión, retención y monetización — no crear demanda desde cero.')}
+""")
+
+# 37 GTM
+S("light","V · Métricas & Growth","flow",f"""
+  {kicker("Go-to-Market")}
+  {title('Un canal <span class="grad">natural y barato</span>')}
+  {flow([("Comunidad","hot"),("Live Training",""),("Microlearning",""),("B2B","hot"),("Expansión LATAM","win")])}
+  <div class="split">
+   <div class="split-l">{bullets([
+     '<b>Comunidad vertical</b> (+95K, 14 países) = adquisición, validación y distribución.',
+     '<b>Contenido y eventos</b>: webinars, talleres y charlas activan demanda.',
+     '<b>Live Training</b> convierte demanda y valida qué temas pagan.',
+   ])}</div>
+   <div class="split-r">{bullets([
+     '<b>Microlearning</b> convierte cursos exitosos en rutas reutilizables.',
+     '<b>B2B2C</b> entra a empresas, sube ticket y retención.',
+     '<b>Expansión LATAM</b> vía comunidad, expertos, alianzas e instituciones.',
+   ])}</div>
+  </div>
+  {chip("Comunidad baja CAC · Live valida · B2B sube ticket · On-demand AI escala margen")}
+""")
+
+# 38 COMUNIDAD & FLYWHEEL
+S("light","V · Métricas & Growth","flywheel",f"""
+  {kicker("Comunidad & flywheel")}
+  {title('La comunidad es <span class="grad">canal, producto y moat</span>')}
+  {flywheel('AECODE<br><small>95k · 14 países</small>')}
+  {lead('Cada evento produce grabación, cápsula, resumen, post, base de Q&A para el AI Hub y un CTA a diagnóstico. La comunidad reduce CAC, valida temas y alimenta el producto con datos de adopción.')}
+""")
+
+# 39 MOAT
+S("dark","VI · Defensibilidad","cards",f"""
+  {kicker("Moat compuesto")}
+  {title('El contenido se copia. <span class="grad">El moat, no.</span>')}
+  {grid([
+   card("Comunidad vertical AEC","+95K en 14 países → CAC bajo.", num="01"),
+   card("Red de expertos","+200 especialistas del sector.", num="02", tone="blue"),
+   card("Programas validados","Vendidos y probados con demanda real.", num="03", tone="green"),
+   card("Rutas por rol + casos reales","Conocimiento estructurado y aplicado.", num="04"),
+   card("Data de habilidades AEC","Avance, práctica y adopción propietarios.", num="05", tone="blue"),
+   card("IA especializada + B2B2C","Contexto sectorial y modelo de distribución.", num="06", tone="green"),
+  ], 3, "cards-sm")}
+  {lead('Más: <b>marca sectorial</b> y la <b>conversión de cursos en activos digitales</b> reutilizables. El moat está en la combinación de comunidad, data, expertos, producto, distribución y especialización.')}
+""")
+
+# 40 DIVIDER VII
+S("dark","VII · Inversión","divider",f"""
+  <div class="div-index reveal">06</div>
+  <h2 class="div-title reveal">La inversión<br>y el <span class="grad">impacto</span></h2>
+  <p class="div-sub reveal">El capital no financia una idea: financia convertir una operación validada en plataforma escalable.</p>
+""")
+
+# 41 USO DE CAPITAL
+S("dark","VII · Inversión","ask",f"""
+  {kicker("Uso de capital")}
+  {title('US$125K para escalar la <span class="grad">plataforma</span>')}
   <div class="ask-grid reveal">
-    <div class="ask-left">
-      {donut([("Producto e IA",60,"#6f63e6"),("Expansión MX/CO",30,"#43d98f"),("Microlearning",10,"#6f8cff")])}
-    </div>
+    <div class="ask-left">{donut([("IA + plataforma",60,"#6D70F9"),("Growth LATAM / B2B2C",30,"#17B14E"),("Microlearning",10,"#4465EE")])}</div>
     <div class="ask-right">
       {bullets([
-        '<b>60%</b> producto / IA — AI Coach multi-agente, motor on-demand y evidence layer.',
-        '<b>30%</b> expansión — entrada a México y Colombia.',
-        '<b>10%</b> contenido — convertir live en microlearning reutilizable.',
+        '<b>60% · US$75K</b> — AI Coach, rutas, dashboard, evidencia y analytics.',
+        '<b>30% · US$37.5K</b> — adquisición, alianzas y ventas B2B (LATAM).',
+        '<b>10% · US$12.5K</b> — cápsulas, prácticas y rutas reutilizables.',
       ])}
-      {note('SAFE post-money · cap ~US$1.5M (rango 1.2–2.0M) · dilución 7–9%. Alternativas por audiencia: ProInnóvate (S/200k), Platanus (US$200K). <b>ASUMIDO · VALIDAR</b> con abogado y cap table.')}
+      {note('Instrumento tipo SAFE o capital semilla estratégico. Alternativas por audiencia: ProInnóvate, angels, clientes B2B.')}
     </div>
   </div>
 """)
 
-# 50 CIERRE
+# 42 IMPACTO DEL CAPITAL
+S("dark","VII · Inversión","table",f"""
+  {kicker("Impacto esperado del capital")}
+  {title('Cinco variables que <span class="grad">se mueven juntas</span>')}
+  {table(["Métrica","2026E","2027 Target"],[
+   ["Revenue total","US$220K","<b>US$420K</b>"],
+   ["B2B + On-demand","40%","<b>62%</b>"],
+   ["Margen de contribución ponderado","42.5%","<b>47.1%</b>"],
+   ["Contribución estimada","US$93.5K","<b>US$198K</b>"],
+   ["Dependencia de Live","60%","<b>38%</b>"],
+   ["On-demand AI","15%","<b>29%</b>"],
+  ], hi=[2])}
+  {chip("Más revenue · más B2B · más On-demand · más margen · menos dependencia de Live")}
+""")
+
+# 43 EQUIPO
+S("dark","VII · Inversión","split",f"""
+  {kicker("Equipo")}
+  {title('+12 personas que <span class="grad">ya ejecutaron</span>')}
+  <div class="split">
+   <div class="split-l">
+     {bullets([
+       'Producto · desarrollo full stack · sistemas · data.',
+       'Automatización e inteligencia artificial.',
+       'Estrategia comercial · business development.',
+       'Marketing · growth · coordinación académica.',
+       'Administración · finanzas · soporte operativo.',
+     ])}
+   </div>
+   <div class="split-r">
+     {quote('No es un equipo con intención: ya construyó comunidad, vendió programas y <span class="grad">creció ×4</span> de 2024 a 2025.')}
+     {lead('La pregunta no es si pueden vender. Ya vendieron. Es si pueden convertir esa tracción en <b>plataforma escalable</b> — y la inversión está diseñada para eso.')}
+   </div>
+  </div>
+""")
+
+# 44 RIESGOS
+S("dark","VII · Inversión","table",f"""
+  {kicker("Riesgos & mitigación")}
+  {title('Riesgos <span class="grad">nombrados y cubiertos</span>')}
+  {table(["Riesgo","Mitigación"],[
+   ["Ser percibidos como academia","Posicionamiento como plataforma de adopción tecnológica"],
+   ["Dependencia de Live Training","Migración a B2B y On-demand AI"],
+   ["CAC alto","Comunidad vertical + B2B2C + referidos"],
+   ["Baja retención","Rutas, prácticas, AI Coach, progreso visible"],
+   ["Competidores horizontales","Especialización AEC y casos reales"],
+   ["Métricas recurrentes inmaduras","Separar ventas, run-rate y ARR real"],
+  ], hi=[0])}
+""")
+
+# 45 EVALUACIÓN JURADO
+S("light","VII · Inversión","cards",f"""
+  {kicker("Evaluación · jurado de aceleradora")}
+  {title('Seis criterios, <span class="grad">10/10</span>')}
+  {grid([
+   card("Problema y solución","Claro y alineado: adopción tecnológica con rutas, IA y evidencia.", num="10", tone="green"),
+   card("Valor e innovación","Plataforma vertical con IA, comunidad y B2B2C — no solo cursos.", num="10"),
+   card("Validación / tracción","Ventas, ×4, clientes activos, comunidad, expertos, alianzas.", num="10", tone="blue"),
+   card("Modelo y escalabilidad","Live valida · B2B ancla · On-demand AI escala margen.", num="10", tone="green"),
+   card("Equipo y ejecución","Multidisciplinario y con resultados probados.", num="10"),
+   card("Presentación","Narrativa que conecta IA, productividad, mercado e inversión.", num="10", tone="blue"),
+  ], 3, "cards-sm")}
+""")
+
+# 46 EVALUACIÓN INVERSIONISTA
+S("light","VII · Inversión","split",f"""
+  {kicker("Evaluación · inversionista")}
+  {title('Atractivo hoy, <span class="grad">más invertible</span> mañana')}
+  <div class="split">
+   <div class="split-l">
+     {card("Lo que atrae", bullets(["Ya hay ventas y crecimiento probado","Comunidad vertical y mercado especializado","El mix mejora margen con el tiempo","Uso de capital claro y equipo que ejecutó"]), tag="Fortalezas", tone="green")}
+   </div>
+   <div class="split-r">
+     {card("Lo que debe madurar", bullets(["MRR / ARR reales","CAC por canal · LTV por línea","Retención por cohortes · NRR","Dashboard financiero mensual"]), tag="A construir", tone="blue")}
+   </div>
+  </div>
+  {quote('Hoy no inflamos métricas recurrentes. Reportamos ventas, run-rate y contribución por línea. La inversión construye la capa de plataforma, IA y suscripción para subir ARR real, retención y escalabilidad.')}
+""")
+
+# 47 RESUMEN EJECUTIVO
+S("light","VII · Inversión","chart",f"""
+  {kicker("Resumen ejecutivo · una mirada")}
+  {title('Por qué AECODE es <span class="grad">atractiva para semilla</span>')}
+  <div class="statrow">
+    {stat("4","Crecimiento 2024 → 2025","US$30K → US$120K", prefix="×", tone="green")}
+    {stat("220","Revenue proyectado 2026E","US$ miles", prefix="US$", suffix="K", tone="violet")}
+    {stat("62","Revenue escalable 2027 Target","B2B + On-demand AI", suffix="%", tone="blue")}
+    {stat("125","Ask · SAFE / semilla","60% IA · 30% growth · 10% contenido", prefix="US$", suffix="K", tone="green")}
+  </div>
+  {lead('Demanda validada con ventas · comunidad regional · equipo completo · modelo híbrido que mejora margen · ruta clara a mayor escalabilidad. <b>La inversión convierte una operación validada en plataforma vertical.</b>')}
+""")
+
+# 48 CIERRE
 S("dark","VIII · Cierre","close",f"""
   <div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>
-  {quote('No buscamos que más profesionales vean más clases.<br>Buscamos que la construcción pueda <span class="grad">saber quién sabe hacer qué</span>, con qué evidencia y con qué nivel de confianza.')}
+  {quote('AECODE está migrando de una operación educativa validada hacia una <span class="grad">plataforma vertical de adopción tecnológica</span> para la construcción en LATAM.')}
   <div class="close-cols reveal">
-    <div class="close-c"><div class="close-h">Data room</div>{bullets(["Pitch deck · one-pager · demo F3","Métricas con fuente + conciliación","Evidencias de aprendizaje + casos","Cap table · contratos · roadmap"])}</div>
-    <div class="close-c"><div class="close-h">Q&amp;A rápidas</div>{bullets(["NSM 0.17 → meta 0.40","Tracción: US$130K+, ×3, 300 clientes, 14 países","Ask: US$125K SAFE → producto","Moat: vertical + evidencia + comunidad + IA"])}</div>
+    <div class="close-c"><div class="close-h">Esta migración mejora</div>{bullets(["Crecimiento","Margen de contribución","Escalabilidad"])}</div>
+    <div class="close-c"><div class="close-h">El ask</div>{bullets(["US$125K SAFE / semilla","60% IA + plataforma","Tracción: ×4, 300 clientes, 14 países"])}</div>
   </div>
-  <div class="close-cta reveal">apalpan@genplusdesign.com · AECODE × GEN+ · La capa de capacidad para AEC</div>
+  <div class="close-cta reveal">AECODE: aprende, aplica, construye mejor · apalpan@genplusdesign.com</div>
 """)
 
 # ---------- render ----------
@@ -1038,7 +911,7 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .stat-sub{font-size:13px;color:var(--muted);line-height:1.3}
 /* cards */
 .grid{display:grid;gap:14px}
-.grid-3{grid-template-columns:repeat(3,1fr)} .grid-4{grid-template-columns:repeat(4,1fr)}
+.grid-2{grid-template-columns:repeat(2,1fr)} .grid-3{grid-template-columns:repeat(3,1fr)} .grid-4{grid-template-columns:repeat(4,1fr)}
 .card{position:relative;padding:18px 18px 16px;border-radius:15px;background:var(--card);border:1px solid var(--card-line);
   display:flex;flex-direction:column;gap:8px;overflow:hidden}
 .card::before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:var(--accent)}
@@ -1083,6 +956,19 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .bar-green .bar-top b{color:var(--accent3)} .bar-green .bar-track i{background:linear-gradient(100deg,var(--green),#43d98f)}
 .bar-blue .bar-top b{color:var(--accent2)} .bar-blue .bar-track i{background:linear-gradient(100deg,var(--blue),#6f8cff)}
 .bar-ink .bar-top b{color:var(--muted)} .bar-ink .bar-track i{background:var(--muted);opacity:.7}
+/* stackbar */
+.stackbar{display:flex;flex-direction:column;gap:16px;width:100%}
+.sb-cols{display:flex;align-items:flex-end;justify-content:space-around;gap:18px;height:226px;padding:0 6px;border-bottom:2px solid var(--card-line)}
+.sb-col{flex:1;max-width:120px;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
+.sb-bar{width:60px;border-radius:8px 8px 0 0;overflow:hidden;display:flex;flex-direction:column-reverse;
+  transform:scaleY(0);transform-origin:bottom;transition:transform .85s var(--ease-out)}
+.slide.active .sb-bar{transform:scaleY(1)}
+.sb-seg{width:100%;display:block}
+.sb-tot{font-weight:800;font-size:15px;color:var(--fg);font-variant-numeric:tabular-nums}
+.sb-lab{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.03em}
+.sb-legend{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.sb-leg{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);font-weight:600}
+.sb-leg i{width:13px;height:13px;border-radius:4px}
 /* tss concentric */
 .tss{display:flex;gap:26px;align-items:center}
 .tss-rings{position:relative;width:230px;height:230px;flex:none}
@@ -1098,47 +984,12 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .tss-leg .dot{width:14px;height:14px;border-radius:4px;margin-top:3px;flex:none}
 .tss-leg .d0{background:var(--violet)} .tss-leg .d1{background:var(--blue)} .tss-leg .d2{background:var(--green)}
 .tss-leg b{color:var(--fg);font-weight:800} .tss-leg small{display:block;color:var(--muted);font-size:12.5px}
-/* pyramid */
-.pyramid{display:flex;flex-direction:column;gap:9px;align-items:center;width:100%}
-.pyr-row{width:var(--w);transition:width .7s var(--ease-out)}
-.pyr-band{padding:15px 20px;border-radius:12px;color:#fff;text-align:center}
-.pyr-band b{display:block;font-weight:800;font-size:18px;letter-spacing:.02em}
-.pyr-band span{font-size:13px;opacity:.92;line-height:1.3}
-.band-violet{background:linear-gradient(100deg,#5a4ad0,#4a3ac1)}
-.band-blue{background:linear-gradient(100deg,#4465ee,#3f7be0)}
-.band-green{background:linear-gradient(100deg,#26b96f,#1fa9a0)}
 /* flow */
 .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .flow-step{font-weight:700;font-size:15px;padding:11px 16px;border-radius:11px;background:var(--card);border:1px solid var(--card-line);color:var(--fg)}
 .flow-step.hot{border-color:var(--accent2);color:var(--accent2);box-shadow:0 0 22px rgba(68,101,238,.18)}
 .flow-step.win{background:var(--grad3);color:#fff;border:none}
 .flow-arr{color:var(--accent);font-weight:800;font-size:18px;font-style:normal}
-/* funnel */
-.funnel{display:flex;flex-direction:column;gap:6px;align-items:center;width:100%}
-.fn{width:var(--w);min-width:170px;display:flex;justify-content:space-between;align-items:center;gap:10px;
-  padding:10px 18px;border-radius:9px;background:var(--card);border:1px solid var(--card-line);transition:width .7s var(--ease-out)}
-.fn span{font-weight:700;font-size:14px;color:var(--fg)} .fn b{font-size:12px;color:var(--muted)}
-.fn.hot{border-color:var(--accent2);background:rgba(68,101,238,.12)} .fn.hot span{color:var(--accent2)}
-.fn.win{background:var(--grad3);border:none} .fn.win span,.fn.win b{color:#fff}
-.fn-cap{font-weight:800;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);text-align:center;margin-top:6px}
-/* nsm */
-.nsm{display:flex;justify-content:center;margin:6px 0}
-.nsm-gauge{display:flex;align-items:center;gap:20px;width:100%;max-width:760px}
-.nsm-now,.nsm-goal{text-align:center}
-.nsm-val{font-weight:800;font-size:40px;color:var(--accent);font-variant-numeric:tabular-nums;display:block}
-.nsm-goal .nsm-val{color:var(--accent3)}
-.nsm-now small,.nsm-goal small{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.nsm-track{flex:1;height:15px;border-radius:100px;background:var(--bg2);position:relative;overflow:hidden;border:1px solid var(--card-line)}
-.nsm-fill{position:absolute;left:0;top:0;height:100%;width:0;background:var(--grad);border-radius:100px;transition:width 1.1s var(--ease-out)}
-.slide.active .nsm-fill{width:42.5%}
-.nsm-target{position:absolute;right:0;top:50%;transform:translateY(-50%);width:3px;height:24px;background:var(--accent3)}
-/* tree */
-.tree{display:flex;flex-direction:column;align-items:center;gap:0;width:100%}
-.tree-root{font-weight:800;font-size:17px;color:#fff;background:var(--grad);padding:9px 26px;border-radius:10px}
-.tree-line{width:2px;height:16px;background:var(--card-line)}
-.tree-branches{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;border-top:2px solid var(--card-line);padding-top:14px}
-.tree-node{font-size:13px;font-weight:600;color:var(--fg);background:var(--card);border:1px solid var(--card-line);padding:8px 13px;border-radius:9px;position:relative}
-.tree-node::before{content:"";position:absolute;top:-14px;left:50%;width:2px;height:12px;background:var(--card-line)}
 /* donut */
 .donut-wrap{display:flex;align-items:center;gap:24px}
 .donut{width:180px;height:180px;border-radius:50%;position:relative;flex:none}
@@ -1159,14 +1010,19 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 .mp-dot span{position:absolute;left:50%;top:130%;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:700;color:var(--fg)}
 .mp-green{background:var(--green);box-shadow:0 0 0 6px rgba(38,185,111,.2)}
 .mp-big{width:20px;height:20px} .mp-big span{font-size:13px;color:var(--accent3);font-weight:800;top:120%}
-/* timeline */
-.tl{display:grid;grid-template-columns:repeat(4,1fr);position:relative;margin:10px 0}
-.tl::before{content:"";position:absolute;left:6%;right:6%;top:9px;height:2px;background:var(--line)}
-.tl-item{position:relative;padding:0 13px;display:flex;flex-direction:column;gap:7px}
-.tl-dot{width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px var(--bg),0 0 18px rgba(74,58,193,.4);z-index:2}
-.tl-item.win .tl-dot{background:var(--accent3);box-shadow:0 0 0 5px var(--bg),0 0 18px rgba(38,185,111,.45)}
-.tl-when{font-weight:800;font-size:16px;color:var(--accent)} .tl-item.win .tl-when{color:var(--accent3)}
-.tl-what{font-size:13.5px;line-height:1.4;color:var(--muted)} .tl-what b{color:var(--fg)}
+/* flywheel */
+.fly{display:flex;justify-content:center;margin:4px 0}
+.fly-ring{position:relative;width:560px;height:286px}
+.fly-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:128px;height:128px;border-radius:50%;
+  display:grid;place-items:center;text-align:center;font-weight:800;font-size:17px;color:#fff;
+  background:radial-gradient(circle,#6D70F9,#4A3AC1);box-shadow:0 0 50px rgba(74,58,193,.45)}
+.fly-core small{font-weight:600;font-size:11px;opacity:.85}
+.fly-node{position:absolute;font-size:12.5px;font-weight:600;line-height:1.25;width:170px;padding:9px 13px;border-radius:10px;
+  background:var(--card);border:1px solid var(--card-line);color:var(--fg)}
+.fly-node.n1{left:0;top:-4px}.fly-node.n2{right:0;top:-4px;text-align:right}
+.fly-node.n3{right:-16px;top:46%;transform:translateY(-50%);text-align:right}
+.fly-node.n4{right:0;bottom:-4px;text-align:right}.fly-node.n5{left:0;bottom:-4px}
+.fly-node.n6{left:-16px;top:46%;transform:translateY(-50%)}
 /* ask */
 .layout-ask{gap:16px}
 .ask-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:34px;align-items:center;margin-top:4px}
@@ -1201,10 +1057,8 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jak
 /* ---- interactividad ---- */
 .card,.stat{transition:transform .2s var(--ease),box-shadow .25s,border-color .25s}
 .slide.active .card:hover,.slide.active .stat:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 16px 34px rgba(8,10,30,.22)}
-.flow-step,.loop-step,.tree-node{transition:transform .18s var(--ease),border-color .2s}
-.slide.active .flow-step:hover,.slide.active .loop-step:hover,.slide.active .tree-node:hover{transform:translateY(-2px);border-color:var(--accent2)}
-.fn{transition:width .7s var(--ease-out),filter .2s}
-.slide.active .fn:hover{filter:brightness(1.08)}
+.flow-step,.tree-node{transition:transform .18s var(--ease),border-color .2s}
+.slide.active .flow-step:hover{transform:translateY(-2px);border-color:var(--accent2)}
 /* barra segmentada por capítulo */
 .segbar{position:absolute;top:0;left:0;right:0;height:6px;display:flex;gap:2px;pointer-events:auto}
 .seg{flex:var(--c) 1 0;height:5px;align-self:flex-start;background:rgba(140,151,220,.24);position:relative;cursor:pointer;
@@ -1224,9 +1078,8 @@ body.mobile .slide-inner{position:static;height:auto;min-height:100%;justify-con
   padding:56px clamp(18px,5.5vw,30px) 82px;gap:clamp(13px,3.4vw,20px)}
 body.mobile .slide-foot{left:clamp(18px,5.5vw,30px);right:clamp(18px,5.5vw,30px);bottom:18px}
 body.mobile .slide-mark{top:18px;right:18px;height:24px}
-body.mobile .split,body.mobile .ask-grid,body.mobile .grid-3,body.mobile .grid-4,
+body.mobile .split,body.mobile .ask-grid,body.mobile .grid-2,body.mobile .grid-3,body.mobile .grid-4,
 body.mobile .tss,body.mobile .donut-wrap{display:flex;flex-direction:column;gap:13px}
-body.mobile .nsm-gauge{flex-wrap:wrap;gap:12px}
 body.mobile .statrow{grid-template-columns:1fr 1fr}
 body.mobile .s-title{font-size:clamp(24px,6.6vw,34px);max-width:none}
 body.mobile .cover-title{font-size:clamp(29px,8.4vw,44px)}
@@ -1239,7 +1092,8 @@ body.mobile .table-wrap{overflow-x:auto} body.mobile .dt{min-width:480px}
 body.mobile .tss-rings{margin:0 auto} body.mobile .fly{overflow:hidden}
 body.mobile .fly-ring{transform:scale(.6);margin:-60px auto}
 body.mobile .map2x2{height:230px}
-body.mobile .loop,body.mobile .flow{justify-content:center}
+body.mobile .flow{justify-content:center}
+body.mobile .stackbar{overflow-x:auto} body.mobile .sb-cols{gap:10px;height:194px} body.mobile .sb-bar{width:44px}
 body.mobile .ctrl{bottom:14px;right:11px;gap:7px} body.mobile .ctrl button{width:42px;height:42px}
 body.mobile .counter{bottom:18px;left:11px} body.mobile .arrow-zone{display:none}
 body.mobile .donut{width:150px;height:150px} body.mobile .donut-hole{inset:26px}
@@ -1247,8 +1101,8 @@ body.mobile .toc{padding:48px 22px} body.mobile .toc-grid{grid-template-columns:
 @media (prefers-reduced-motion:reduce){
   .reveal{transition:none!important;opacity:1!important;transform:none!important}
   .slide{transition:opacity .2s!important}
-  .bar-track i,.nsm-fill,.fn,.pyr-row,.seg i{transition:none!important}
-  .slide.active .bar-track i{transform:scaleX(1)} .slide.active .nsm-fill{width:42.5%}
+  .bar-track i,.nsm-fill,.fn,.sb-bar,.seg i{transition:none!important}
+  .slide.active .bar-track i{transform:scaleX(1)} .slide.active .sb-bar{transform:scaleY(1)}
 }
 """
 
