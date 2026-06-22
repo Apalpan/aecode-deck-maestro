@@ -139,7 +139,8 @@ def S(theme, chapter, layout, content):
 
 # 01 PORTADA
 S("dark","AECODE","cover",f"""
-  <div class="cover-mark reveal"><span class="logo-iso"></span><span class="logo-word">AECODE</span></div>
+  <div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>
+  <img class="aecodito reveal" src="brand/assets/reference/aecodito-home.png" alt="">
   <h1 class="cover-title reveal">La <span class="grad">capa de capacidad</span><br>para la transformación<br>digital de la construcción</h1>
   <p class="cover-sub reveal">Convierte conocimiento técnico AEC en capacidad real de ejecución, validada con evidencia. <b>Aprende · Aplica · Demuestra.</b></p>
   <div class="cover-meta reveal"><span>Deck maestro de startup</span><span class="dot">·</span><span>file de entendimiento avanzado</span><span class="dot">·</span><span>{datetime.date.today().strftime('%b %Y')}</span></div>
@@ -915,7 +916,7 @@ S("dark","VIII · Cierre","ask",f"""
 
 # 50 CIERRE
 S("dark","VIII · Cierre","close",f"""
-  <div class="cover-mark reveal"><span class="logo-iso"></span><span class="logo-word">AECODE</span></div>
+  <div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>
   {quote('No buscamos que más profesionales vean más clases.<br>Buscamos que la construcción pueda <span class="grad">saber quién sabe hacer qué</span>, con qué evidencia y con qué nivel de confianza.')}
   <div class="close-cols reveal">
     <div class="close-c"><div class="close-h">Data room</div>{bullets(["Pitch deck · one-pager · demo F3","Métricas con fuente + conciliación","Evidencias de aprendizaje + casos","Cap table · contratos · roadmap"])}</div>
@@ -928,6 +929,7 @@ S("dark","VIII · Cierre","close",f"""
 def render_slide(i,s):
     return (f'<section class="slide" data-base="{s["theme"]}" data-idx="{i}">'
             f'<div class="slide-inner layout-{s["layout"]}">{s["content"]}</div>'
+            f'<img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt="">'
             f'<div class="slide-foot"><span class="foot-ch">{esc(s["chapter"])}</span>'
             f'<span class="foot-n">{i+1:02d}<i>/</i>{len(SLIDES):02d}</span></div></section>')
 slides_html="\n".join(render_slide(i,s) for i,s in enumerate(SLIDES))
@@ -938,31 +940,30 @@ toc_items="".join(
 
 CSS = r"""
 :root{
-  --violet:#4a3ac1; --blue:#4465ee; --green:#26b96f; --mint:#e7f8ef; --lav:#eceefe;
-  --navy:#0c0f29;
+  --violet:#4A3AC1; --blue:#4465EE; --violet2:#6D70F9; --green:#17B14E; --lavender:#A6A7FF;
   --ease:cubic-bezier(.22,.61,.36,1); --ease-out:cubic-bezier(.16,1,.3,1);
 }
 .is-light{
-  --bg:#f7f8fe; --bg2:#eceefe; --surface:#ffffff; --fg:#202433; --muted:#6a7288;
-  --line:#d8ddef; --card:#ffffff; --card-line:#e1e5f6;
-  --accent:#4a3ac1; --accent2:#4465ee; --accent3:#26b96f; --ink-soft:#3a4054;
-  --grad:linear-gradient(100deg,#4a3ac1,#4465ee);
-  --grad3:linear-gradient(100deg,#4a3ac1,#26b96f);
-  --mesh-a:rgba(74,58,193,.10); --mesh-b:rgba(38,185,111,.10);
-  --chip-bg:#eceefe;
+  --bg:#F5F5F6; --bg2:#EDEBF9; --surface:#FFFFFF; --fg:#202231; --muted:#3A4065;
+  --line:#C7C2EC; --card:#FFFFFF; --card-line:#E3E0F5;
+  --accent:#4A3AC1; --accent2:#4465EE; --accent3:#17B14E; --ink-soft:#4A3AC1;
+  --grad:linear-gradient(100deg,#4465EE,#6D12E3);
+  --grad3:linear-gradient(100deg,#17B14E,#4A3AC1);
+  --mesh-a:rgba(74,58,193,.10); --mesh-b:rgba(23,177,78,.10);
+  --chip-bg:#EDEBF9;
 }
 .is-dark{
-  --bg:#0c0f29; --bg2:#141a3d; --surface:#161c40; --fg:#eef1ff; --muted:#a9b2da;
-  --line:rgba(255,255,255,.10); --card:rgba(30,37,78,.55); --card-line:rgba(124,134,224,.28);
-  --accent:#8b7df0; --accent2:#6f8cff; --accent3:#43d98f; --ink-soft:#c9d0f5;
-  --grad:linear-gradient(100deg,#8b7df0,#6f8cff);
-  --grad3:linear-gradient(100deg,#8b7df0,#43d98f);
-  --mesh-a:rgba(74,58,193,.40); --mesh-b:rgba(38,185,111,.22);
-  --chip-bg:rgba(124,134,224,.16);
+  --bg:#0E1121; --bg2:#1B1E3C; --surface:#13172F; --fg:#EEF3F8; --muted:#A2B4CB;
+  --line:rgba(124,126,223,.24); --card:rgba(27,30,60,.72); --card-line:rgba(124,126,223,.32);
+  --accent:#A6A7FF; --accent2:#7E97FF; --accent3:#2FD06E; --ink-soft:#C9D0F5;
+  --grad:linear-gradient(100deg,#7E97FF,#9A5CFF);
+  --grad3:linear-gradient(100deg,#2FD06E,#8C97DC);
+  --mesh-a:rgba(74,58,193,.46); --mesh-b:rgba(23,177,78,.20);
+  --chip-bg:rgba(124,126,223,.16);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-body{background:#05060f;color:#fff;overflow:hidden;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .deck{position:fixed;inset:0;display:grid;place-items:center}
 .stage{width:1280px;height:720px;position:relative;transform-origin:center}
 .slide{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);color:var(--fg);
@@ -997,10 +998,17 @@ body{background:#05060f;color:#fff;overflow:hidden;font-family:Inter,system-ui,s
 .vnote b{color:var(--accent)}
 /* cover */
 .layout-cover,.layout-close{align-items:flex-start;justify-content:center;gap:20px}
-.cover-mark{display:flex;align-items:center;gap:13px}
-.logo-iso{width:30px;height:30px;border-radius:9px;background:conic-gradient(from 210deg,var(--violet),var(--blue),var(--green),var(--violet));position:relative;box-shadow:0 0 30px rgba(74,58,193,.5)}
-.logo-iso::after{content:"";position:absolute;inset:8px;border-radius:4px;background:var(--bg)}
-.logo-word{font-weight:800;font-size:23px;letter-spacing:.22em}
+.cover-logo img{height:52px;width:auto;display:block}
+.logo-light{display:none}
+.slide.is-light .logo-light{display:block} .slide.is-light .logo-dark{display:none}
+.layout-close .cover-logo img{height:44px}
+.slide-mark{position:absolute;top:30px;right:34px;height:30px;width:auto;z-index:3;opacity:.92;pointer-events:none}
+.layout-cover .slide-mark,.layout-close .slide-mark,.layout-divider .slide-mark{display:none}
+.layout-cover{padding-right:336px}
+.aecodito{position:absolute;right:52px;bottom:60px;width:248px;height:auto;z-index:1;
+  filter:drop-shadow(0 22px 44px rgba(74,58,193,.42));animation:float 6s var(--ease) infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
+@media (prefers-reduced-motion:reduce){.aecodito{animation:none}}
 .cover-title{font-weight:800;font-size:clamp(38px,5.4vw,70px);line-height:1.0;letter-spacing:-.03em;text-wrap:balance}
 .cover-sub{font-size:clamp(16px,1.55vw,21px);color:var(--muted);max-width:60ch;line-height:1.45}
 .cover-sub b{color:var(--fg)}
@@ -1244,7 +1252,7 @@ HTML=f"""<!DOCTYPE html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AECODE · Deck Maestro Startup</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>{CSS}</style></head><body>
 <div class="deck"><div class="stage">{slides_html}</div></div>
 <div class="chrome"><div class="progress"></div><div class="counter">01 / {total:02d}</div>
