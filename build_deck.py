@@ -365,7 +365,7 @@ S("dark","Negocio","b2c2b",f"""
     <div class="b2step"><span class="b2n">1</span><b>B2C</b><small>El profesional adopta</small></div><i class="b2arr">→</i>
     <div class="b2step"><span class="b2n">2</span><b>Equipos</b><small>Aplican juntos</small></div><i class="b2arr">→</i>
     <div class="b2step"><span class="b2n">3</span><b>B2B</b><small>La empresa escala</small></div><i class="b2arr">→</i>
-    <div class="b2step b2win"><b>B2C2B</b><small>Proyecto mejora · todo el enfoque</small></div>
+    <div class="b2step b2win"><b>B2B2C</b><small>Proyecto mejora · todo el enfoque</small></div>
   </div>
   {lead('La comunidad orgánica baja el CAC; la empresa sube el ticket y la recurrencia. Patrón <b>BuildWitt</b> aplicado a LATAM.')}
 ""","")
@@ -536,8 +536,8 @@ S("dark","Inversión","team",f"""
 S("dark","Inversión","ask",f"""
   {title('US$125K para <span class="grad">escalar lo validado</span>')}
   <div class="ask-grid reveal">
-    <div class="ask-left">{donut([("IA + plataforma",60,"#6D70F9"),("Growth B2C2B / LATAM",30,"#17B14E"),("Microlearning on-demand",10,"#4465EE")])}</div>
-    <div class="ask-right">{bullets(["<b>60%</b> — IA + plataforma","<b>30%</b> — growth B2C2B + expansión LATAM","<b>10%</b> — microlearning on-demand"])}<div class="ask-note reveal">El capital no financia una idea: financia convertir una operación validada en una <b>plataforma escalable</b>.</div></div>
+    <div class="ask-left">{donut([("IA + plataforma",60,"#6D70F9"),("Growth B2B2C / LATAM",30,"#17B14E"),("Microlearning on-demand",10,"#4465EE")])}</div>
+    <div class="ask-right">{bullets(["<b>60%</b> — IA + plataforma","<b>30%</b> — growth B2B2C + expansión LATAM","<b>10%</b> — microlearning on-demand"])}<div class="ask-note reveal">El capital no financia una idea: financia convertir una operación validada en una <b>plataforma escalable</b>.</div></div>
   </div>
 ""","")
 
