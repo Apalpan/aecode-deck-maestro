@@ -1,29 +1,29 @@
 # -*- coding: utf-8 -*-
 """
-Generador del Deck Maestro AECODE Startup — v4 "Enfoque Final 10/10"
-Posicionamiento: plataforma de adopción tecnológica para construcción ("aprende, aplica, construye mejor").
-Design system OFICIAL AECODE (DESIGN.md): Manrope · navy #0E1121 · violeta #4A3AC1 · verde #17B14E · azul #4465EE.
-Light+dark combinado, logos reales, esquemas/gráficas (barras, apiladas, TAM/SAM/SOM, donut, mapa 2x2, flywheel,
-timeline), responsive con reflow móvil e interactividad (barra de capítulos, transiciones, rueda, auto-play).
+AECODE — Deck Maestro Startup (file de entendimiento avanzado)
+Explica AECODE de cero a experto. Motor premium interactivo (mapa LATAM, motor IA, 2x2, donut SVG,
+barras/apiladas con tooltips, pirámide, driver tree, pricing, equipo, QR). Sin rótulos de sección.
+Design system OFICIAL AECODE (Manrope · navy #0E1121 · violeta · verde · azul · rojo dolor).
+Light+dark combinado · logos reales · responsive · MODO GUION (tecla N).
 Ejecutar:  python build_deck.py
 """
-import html, datetime, pathlib
+import html, math, datetime, pathlib
+
+QR_URL="https://apalpan.github.io/aecode-deck-maestro/"
 
 def esc(s): return html.escape(str(s))
+def _a(s): return html.escape(str(s), quote=True)
 
-# ---------- helpers de contenido ----------
-def chip(t):
-    return f'<span class="chip reveal">{t}</span>'
-def kicker(t):
-    return f'<div class="kicker reveal">{esc(t)}</div>'
-def title(t):
-    return f'<h2 class="s-title reveal">{t}</h2>'
-def lead(t):
-    return f'<p class="lead reveal">{t}</p>'
-def src(t):
-    return f'<div class="source reveal">Fuente vault: {esc(t)}</div>'
-def note(t):
-    return f'<div class="vnote reveal">{t}</div>'
+# ---------- helpers ----------
+def chip(t): return f'<span class="chip reveal">{t}</span>'
+def chiprow(items):
+    return '<div class="chiprow reveal">'+''.join(f'<span class="chip2">{esc(i)}</span>' for i in items)+'</div>'
+def title(t, cls=""): return f'<h2 class="s-title reveal {cls}">{t}</h2>'
+def lead(t): return f'<p class="lead reveal">{t}</p>'
+def quote(t): return f'<blockquote class="bigquote reveal">{t}</blockquote>'
+def src(t): return f'<div class="source reveal">Fuente: {esc(t)}</div>'
+def divider(num, title_html, sub):
+    return f'<div class="div-index reveal">{num}</div><h2 class="div-title reveal">{title_html}</h2><p class="div-sub reveal">{esc(sub)}</p>'
 
 def _isnum(v):
     s=str(v).replace(",","").replace(".","").replace("-","")
@@ -36,13 +36,11 @@ def stat(value, label, sub="", suffix="", prefix="", tone="violet"):
             f'<span class="stat-val" {cnt}>{esc(value)}</span>'
             f'<span class="stat-suf">{esc(suffix)}</span></div>'
             f'<div class="stat-label">{esc(label)}</div>{sub_h}</div>')
-
 def card(head, body, num="", tag="", tone="violet"):
     num_h=f'<div class="card-num">{esc(num)}</div>' if num else ""
     tag_h=f'<div class="card-tag">{esc(tag)}</div>' if tag else ""
     return (f'<div class="card reveal card-{tone}">{num_h}{tag_h}'
             f'<div class="card-head">{head}</div><div class="card-body">{body}</div></div>')
-
 def bullets(items):
     return '<ul class="bullets">'+"".join(f'<li class="reveal">{b}</li>' for b in items)+'</ul>'
 def grid(items, cols=3, extra=""):
@@ -55,756 +53,519 @@ def table(headers, rows, hi=None):
         tds="".join(f'<td class="{("cell-hi" if j in hi else "")}">{c}</td>' for j,c in enumerate(r))
         body+=f'<tr class="reveal">{tds}</tr>'
     return f'<div class="table-wrap reveal"><table class="dt"><thead><tr>{th}</tr></thead><tbody>{body}</tbody></table></div>'
-def quote(t):
-    return f'<blockquote class="bigquote reveal">{t}</blockquote>'
-
-# ---------- gráficas ----------
-def barchart(rows):
-    out='<div class="barchart reveal">'
-    for r in rows:
-        label,pct,disp=r[0],r[1],r[2]; tone=r[3] if len(r)>3 else "violet"
-        out+=(f'<div class="bar bar-{tone}"><div class="bar-top"><span>{label}</span>'
-              f'<b>{disp}</b></div><div class="bar-track"><i style="--w:{pct:.1f}%"></i></div></div>')
+def eqs(rows):
+    out='<div class="eqs reveal">'
+    for l,op,r,tone in rows:
+        out+=f'<div class="eq eq-{tone}"><span>{l}</span><i>{op}</i><span>{r}</span></div>'
     return out+'</div>'
-
-def stackbar(years, segdefs, maxtotal):
-    # years: [(label, [vals], total_disp)] · segdefs: [(name,color)]
-    cols=""
-    for label,vals,tot in years:
-        total=sum(vals); h=total/maxtotal*100
-        segs=""
-        for i,v in enumerate(vals):
-            ph=(v/total*100) if total else 0
-            segs+=f'<span class="sb-seg" style="height:{ph:.2f}%;background:{segdefs[i][1]}"></span>'
-        cols+=(f'<div class="sb-col"><div class="sb-bar" style="height:{h:.1f}%">{segs}</div>'
-               f'<div class="sb-tot">{tot}</div><div class="sb-lab">{label}</div></div>')
-    legend="".join(f'<span class="sb-leg"><i style="background:{c}"></i>{n}</span>' for n,c in segdefs)
-    return f'<div class="stackbar reveal"><div class="sb-cols">{cols}</div><div class="sb-legend">{legend}</div></div>'
-
-def tamsamsom(items):
-    legend="".join(
-        f'<div class="tss-leg reveal"><span class="dot d{i}"></span><div><b>{l}</b> · {v}<small>{d}</small></div></div>'
-        for i,(l,v,d) in enumerate(items))
-    return f'''<div class="tss reveal">
-      <div class="tss-rings">
-        <div class="ring r0"><span>TAM</span></div>
-        <div class="ring r1"><span>SAM</span></div>
-        <div class="ring r2"><span>SOM</span></div>
-      </div>
-      <div class="tss-legend">{legend}</div>
-    </div>'''
-
 def flow(steps):
     out='<div class="flow reveal">'
     for i,(t,k) in enumerate(steps):
         out+=f'<div class="flow-step {k}">{t}</div>'
         if i<len(steps)-1: out+='<i class="flow-arr">→</i>'
     return out+'</div>'
+def pyramid(layers):
+    widths=["58%","78%","100%"]
+    rows="".join(f'<div class="pyr-row reveal" style="--w:{widths[i]}"><div class="pyr-band band-{t}"><b>{n}</b><span>{d}</span></div></div>' for i,(n,d,t) in enumerate(layers))
+    return f'<div class="pyramid">{rows}</div>'
+def tree(root, drivers):
+    items="".join(f'<div class="tree-node reveal" data-tip="{_a(d)}">{d}</div>' for d in drivers)
+    return f'<div class="tree reveal"><div class="tree-root">{root}</div><div class="tree-line"></div><div class="tree-branches">{items}</div></div>'
 
-def donut(segs):
-    stops=[]; acc=0
-    for l,p,c in segs:
-        stops.append(f"{c} {acc}% {acc+p}%"); acc+=p
-    grad=",".join(stops)
+def barchart(rows):
+    out='<div class="barchart reveal">'
+    for r in rows:
+        label,pct,disp=r[0],r[1],r[2]; tone=r[3] if len(r)>3 else "violet"
+        out+=(f'<div class="bar bar-{tone}" data-tip="{_a(label+" · "+disp)}"><div class="bar-top"><span>{label}</span>'
+              f'<b>{disp}</b></div><div class="bar-track"><i style="--w:{pct:.1f}%"></i></div></div>')
+    return out+'</div>'
+def stackbar(years, segdefs, maxtotal):
+    cols=""
+    for label,vals,tot in years:
+        total=sum(vals); h=total/maxtotal*100
+        segs=""
+        for i,v in enumerate(vals):
+            ph=(v/total*100) if total else 0
+            tip=f"{segdefs[i][0]} · US${v}K · {ph:.0f}%"
+            segs+=f'<span class="sb-seg" data-tip="{_a(tip)}" style="height:{ph:.2f}%;background:{segdefs[i][1]}"></span>'
+        cols+=(f'<div class="sb-col"><div class="sb-bar" style="height:{h:.1f}%">{segs}</div>'
+               f'<div class="sb-tot">{tot}</div><div class="sb-lab">{label}</div></div>')
+    legend="".join(f'<span class="sb-leg"><i style="background:{c}"></i>{n}</span>' for n,c in segdefs)
+    return f'<div class="stackbar reveal"><div class="sb-cols">{cols}</div><div class="sb-legend">{legend}</div></div>'
+def tamsamsom(items):
+    t=[f"{l} · {v}" for l,v,d in items]
     legend="".join(
-        f'<div class="dn-leg reveal"><span style="background:{c}"></span><b>{p}%</b> {l}</div>'
-        for l,p,c in segs)
+        f'<div class="tss-leg reveal" data-tip="{_a(t[i])}"><span class="dot d{i}"></span><div><b>{l}</b> · {v}<small>{d}</small></div></div>'
+        for i,(l,v,d) in enumerate(items))
+    return f'''<div class="tss reveal"><div class="tss-rings">
+        <div class="ring r0" data-tip="{_a(t[0])}"><span>TAM</span></div>
+        <div class="ring r1" data-tip="{_a(t[1])}"><span>SAM</span></div>
+        <div class="ring r2" data-tip="{_a(t[2])}"><span>SOM</span></div></div>
+      <div class="tss-legend">{legend}</div></div>'''
+def donut(segs):
+    r=52; C=2*math.pi*r; off=0; arcs=""
+    for l,p,col in segs:
+        dash=C*p/100
+        arcs+=(f'<circle class="dn-arc" r="{r}" cx="60" cy="60" fill="none" stroke="{col}" stroke-width="15" '
+               f'stroke-dasharray="{dash:.2f} {C-dash:.2f}" stroke-dashoffset="{-off:.2f}" '
+               f'data-tip="{_a(l+" · "+str(p)+"%")}" data-lab="{_a(l)}" data-pct="{p}"></circle>')
+        off+=dash
+    legend="".join(f'<div class="dn-leg reveal" data-tip="{_a(l+" · "+str(p)+"%")}"><span style="background:{c}"></span><b>{p}%</b> {l}</div>' for l,p,c in segs)
     return f'''<div class="donut-wrap reveal">
-      <div class="donut" style="background:conic-gradient({grad})"><div class="donut-hole"></div></div>
+      <div class="donut-svg"><svg viewBox="0 0 120 120"><g transform="rotate(-90 60 60)">{arcs}</g></svg>
+        <div class="dn-center"><b class="dn-c-pct">{segs[0][1]}%</b><span class="dn-c-lab">{esc(segs[0][0])}</span></div></div>
       <div class="donut-legend">{legend}</div></div>'''
-
+def latam(countries):
+    pins="".join(f'<div class="lt-pin reveal" data-tip="{_a(c+" · "+t)}"><span class="lt-dot"></span><div class="lt-txt"><b>{c}</b><small>{t}</small></div></div>' for c,t in countries)
+    return f'<div class="latam reveal"><div class="lt-grid-bg"></div>{pins}</div>'
 def map2x2(points, xlab, ylab):
     dots=""
     for x,y,l,t,big in points:
-        dots+=(f'<div class="mp-dot {"mp-big" if big else ""} mp-{t} reveal" '
+        dots+=(f'<div class="mp-dot {"mp-big" if big else ""} mp-{t} reveal" data-tip="{_a(l)}" '
                f'style="left:{x}%;top:{y}%"><span>{l}</span></div>')
     return f'''<div class="map2x2 reveal">
       <div class="mp-axis-y">{ylab[0]}<i></i>{ylab[1]}</div>
-      <div class="mp-plane">{dots}
-        <div class="mp-grid"></div></div>
-      <div class="mp-axis-x">{xlab[0]}<i></i>{xlab[1]}</div>
-    </div>'''
+      <div class="mp-plane">{dots}</div>
+      <div class="mp-axis-x">{xlab[0]}<i></i>{xlab[1]}</div></div>'''
+def pblock(tag, role, icon, price_html, tone):
+    return (f'<div class="pblock reveal pblock-{tone}" data-tip="{_a(tag+" — "+role)}">'
+            f'<div class="pb-head"><span class="pb-tag">{tag}</span><span class="pb-role">{role}</span></div>'
+            f'<div class="pb-icon">{icon}</div><div class="pb-price">{price_html}</div></div>')
+def member(name, role, tone="violet"):
+    parts=name.split(); ini=(parts[0][0]+(parts[1][0] if len(parts)>1 else "")).upper()
+    return (f'<div class="mem reveal mem-{tone}"><div class="mem-av">{ini}</div>'
+            f'<div class="mem-n">{esc(name)}</div><div class="mem-r">{esc(role)}</div></div>')
 
-def flywheel(core):
-    return f'''<div class="fly reveal"><div class="fly-ring">
-      <div class="fly-node n1">Comunidad atrae profesionales AEC</div>
-      <div class="fly-node n2">Eventos y contenido activan demanda</div>
-      <div class="fly-node n3">Live Training vende y valida temas</div>
-      <div class="fly-node n4">Se vuelve cápsulas, rutas y prácticas</div>
-      <div class="fly-node n5">Data de adopción mejora el producto</div>
-      <div class="fly-node n6">Empresas compran B2B + expertos</div>
-      <div class="fly-core">{core}</div></div></div>'''
-
-# ---------- definición de slides ----------
+# ---------- slides ----------
 SLIDES=[]
-def S(theme, chapter, layout, content):
-    SLIDES.append(dict(theme=theme, chapter=chapter, layout=layout, content=content))
+def S(theme, chapter, layout, content, notes=""):
+    SLIDES.append(dict(theme=theme, chapter=chapter, layout=layout, content=content, notes=notes))
 
-# 01 PORTADA
+LOGO_BIG='<div class="cover-logo reveal big"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>'
+LOGO='<div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>'
+
+# ============ APERTURA ============
 S("dark","AECODE","cover",f"""
-  <div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>
-  <img class="aecodito reveal" src="brand/assets/reference/aecodito-home.png" alt="">
-  <h1 class="cover-title reveal">La plataforma de<br><span class="grad">adopción tecnológica</span><br>para la construcción</h1>
-  <p class="cover-sub reveal">Ayuda a profesionales y empresas AEC a aprender, aplicar y medir el uso de Digitalización BIM, automatización, IA y herramientas digitales en el trabajo real. <b>Aprende · Aplica · Construye mejor.</b></p>
-  <div class="cover-meta reveal"><span>Enfoque final de startup · 10/10</span><span class="dot">·</span><span>file de entendimiento avanzado</span><span class="dot">·</span><span>{datetime.date.today().strftime('%b %Y')}</span></div>
-  <div class="cover-hint reveal">← → o swipe · <b>T</b> tema · <b>F</b> full · <b>O</b> índice · <b>P</b> auto · rueda del mouse</div>
-""")
+  {LOGO_BIG}
+  <h1 class="cover-title reveal">La plataforma de <span class="grad">adopción tecnológica</span> para la construcción</h1>
+  <p class="cover-sub reveal">Todo sobre AECODE como startup: problema, producto, mercado, modelo, finanzas, tracción, moat e inversión. <b>Aprende · Aplica · Construye mejor.</b></p>
+  <div class="cover-meta reveal"><span>Deck maestro · file de entendimiento avanzado</span><span class="dot">·</span><span>{datetime.date.today().strftime('%b %Y')}</span></div>
+  <div class="cover-hint reveal">← → o swipe · <b>N</b> guion · <b>O</b> índice · <b>T</b> tema · <b>F</b> full · rueda del mouse</div>
+""","")
 
-# 02 HOOK
-S("dark","Apertura","split",f"""
-  {kicker("El hook")}
-  {title('No faltan cursos.<br>Falta <span class="grad">adoptar tecnología</span> en el trabajo real.')}
-  <div class="split">
-   <div class="split-l">
-     {lead('La construcción está incorporando Digitalización BIM, automatización, IA y datos. Pero la adopción <b>no avanza al ritmo que el sector necesita</b>.')}
-     {bullets(["No faltan cursos.","No faltan tutoriales.","No falta información.","No falta IA."])}
-   </div>
-   <div class="split-r">
-     {card("El problema real", 'El conocimiento está <b>disperso</b>, no estructurado por rol y desconectado de las tareas reales. Eso abre una brecha entre lo que el profesional aprende, lo que la empresa necesita y lo que el proyecto exige.', tag="La grieta", tone="green")}
-     {chip("El conocimiento es commodity · adoptarlo y aplicarlo es lo escaso")}
-   </div>
-  </div>
-""")
-
-# 03 TESIS
 S("dark","Apertura","statement",f"""
-  {kicker("La tesis en una frase")}
-  {quote('AECODE acelera la <span class="grad">adopción tecnológica</span> en construcción: forma talento capaz de usar Digitalización BIM, automatización e IA para trabajar mejor, ahorrar tiempo y aumentar productividad.')}
-  {flow([("Aprende",""),("Aplica","hot"),("Construye mejor","win")])}
-  {lead('AECODE <b>no existe para vender cursos</b>. Existe para que profesionales y empresas adopten tecnología más rápido y la conviertan en mejor empleabilidad, menos retrabajo y más productividad.')}
-""")
+  {title('La tecnología avanza <span class="grad">más rápido</span> que nuestra capacidad de adoptarla.')}
+  {eqs([("Herramientas","≠","adopción","neq"),("Aprender","≠","aplicar","neq"),("Adopción","=","productividad","eq")])}
+  {chip("En construcción, esa brecha se paga en productividad")}
+""","La transformación digital no falla por falta de herramientas, sino porque los equipos no logran adoptarlas. AECODE nace para cerrar esa brecha en construcción.")
 
-# 04 DIVIDER I
-S("dark","I · Problema","divider",f"""
-  <div class="div-index reveal">01</div>
-  <h2 class="div-title reveal">El problema<br>que <span class="grad">sí duele</span></h2>
-  <p class="div-sub reveal">La construcción necesita adoptar tecnología más rápido, pero aprende de forma dispersa, lenta y desconectada del trabajo real.</p>
-""")
+S("dark","Apertura","statement",f"""
+  {quote('AECODE acelera la <span class="grad">adopción tecnológica</span> en construcción: forma talento capaz de usar BIM, IA y automatización para trabajar mejor y aumentar productividad.')}
+  {lead('No vendemos solo cursos. Convertimos aprendizaje técnico en <b>adopción, evidencia y resultados</b> para profesionales, empresas y proyectos.')}
+""","La tesis en una frase: convertir conocimiento técnico AEC en capacidad real de ejecución y productividad.")
 
-# 05 PROBLEMA
-S("dark","I · Problema","split",f"""
-  {kicker("Problema central")}
-  {title('El conocimiento está <span class="grad">disperso</span>, no conectado al trabajo')}
+# ============ CAP I · OPORTUNIDAD ============
+S("light","Oportunidad","divider",divider("01","La oportunidad<br>y el <span class='grad'>mercado</span>","Un sector gigante y subdigitalizado entra a su mayor disrupción justo cuando le falta el talento."),"")
+
+S("light","Oportunidad","statement",f"""
+  {title('El sector que <span class="grad">mueve el mundo</span> — y necesita reaprender')}
+  <div class="statrow statrow-3 bare">
+    {stat("280","Personas en construcción","", suffix="M+")}
+    {stat("92","Proyectos con sobrecostos o retrasos","", suffix="%", tone="danger")}
+    {stat("44","Habilidades cambian en 5 años","", suffix="%", tone="blue")}
+  </div>
+""","Más de 280M personas trabajan en construcción; el sector sufre retrasos y sobrecostos, y el 44% de las habilidades cambiará en 5 años. La oportunidad: formar talento que adopte tecnología a la velocidad que el sector exige.")
+
+S("light","Oportunidad","split-latam",f"""
+  <div class="split-latam">
+   <div class="sl-left">
+     {quote('Adoptar tecnología <span class="grad">ya no es opcional</span>.')}
+     <div class="std-banner reveal"><span class="std-k">BIM ya es estándar mundial</span> — exigido en obra pública en <b>+30 países</b> bajo la norma <b>ISO 19650</b>. Latinoamérica ya se mueve.</div>
+   </div>
+   <div class="sl-right">{latam([("México","Programas BIM · IA"),("Colombia","Programas BIM · IA"),("Costa Rica","Transformación digital"),("Perú","Programas BIM · IA"),("Brasil","Transformación digital"),("Chile","BIM obligatorio"),("Uruguay","Programas BIM"),("Argentina","Programas BIM · IA")])}</div>
+  </div>
+""","El mundo ya puso el estándar: más de 30 países exigen BIM bajo ISO 19650, y LATAM ya impulsa BIM e IA. Adoptar tecnología es condición para competir.")
+
+S("light","Oportunidad","split",f"""
+  {title('Inflexión de IA: el capital <span class="grad">ya votó</span>')}
   <div class="split">
    <div class="split-l">
-     {lead('El conocimiento no siempre está estructurado por rol, ni conectado con tareas reales, ni orientado a mejorar productividad. Eso genera una brecha entre tres mundos:')}
-     {bullets(["Lo que el <b>profesional</b> aprende.","Lo que la <b>empresa</b> necesita.","Lo que el <b>proyecto</b> exige."])}
+     {stat("77","Del capital contech fue a IA en 2025","vs. 35% en 2024 — Cemex Ventures", suffix="%")}
+     {stat("46","Early adopters ahorró 500–1,000 h/año","68% ahorró &gt;US$50K/año", suffix="%", tone="green")}
    </div>
-   <div class="split-r">
-     {card("Cómo se mide el problema", 'Baja adopción, baja finalización, poca aplicación práctica, horas perdidas, tareas repetitivas, errores, retrabajo y falta de visibilidad del avance del equipo.', tag="Medible", tone="blue")}
-   </div>
+   <div class="split-r">{bullets(["La IA pasó de <b>asistente</b> a <b>agente</b>: cambia qué skills se necesitan.","Madurez de datos (década de BIM/ERP/sensores) + presión por productividad.","Cuanto más rápido avanza la IA, <b>más urgente reconvertir</b> al profesional AEC."])}{chip("AECODE es la capa de reconversión de ese talento")}</div>
   </div>
-""")
+""","")
 
-# 06 PROBLEMA SMART
-S("dark","I · Problema","table",f"""
-  {kicker("Formulación SMART")}
-  {title('Un problema <span class="grad">específico y temporal</span>')}
-  {table(["Dimensión","Formulación"],[
-   ["<b>Específico</b>","Profesionales y empresas AEC deben aplicar Digitalización BIM, automatización e IA en diseño, coordinación, planificación, costos y gestión."],
-   ["<b>Medible</b>","Baja adopción, baja finalización, horas perdidas, tareas repetitivas, errores, retrabajo y nula visibilidad del avance."],
-   ["<b>Alcanzable</b>","AECODE ya validó demanda con programas en vivo, ventas, comunidad, expertos y primeras líneas B2B y On-demand."],
-   ["<b>Relevante</b>","La productividad del sector depende de que las personas adopten tecnología, no solo de que las empresas compren software."],
-   ["<b>Temporal</b>","2025–2030: Digitalización BIM, automatización e IA hacen urgente la formación práctica de talento tecnológico."],
+S("light","Oportunidad","split",f"""
+  {title('La brecha de talento es <span class="grad">estructural</span>')}
+  <div class="split">
+   <div class="split-l">{barchart([
+     ("Empresas con dificultad para cubrir vacantes",92,"92%","violet"),
+     ("Proyectos con retrasos reportados",80,"80%","blue"),
+     ("Empresas sin candidatos con skills",62,"62%","violet"),
+     ("Fuerza laboral sin formación formal",50,">50%","green"),
+   ])}</div>
+   <div class="split-r">{stat("499","Trabajadores AEC faltantes (EE.UU. 2026)","Deloitte", suffix="K")}{lead('Coordinador VDC, modelador BIM, especialista en automatización: <b>roles que hace una década no existían</b> y hoy nadie forma a escala.')}</div>
+  </div>
+""","")
+
+S("light","Oportunidad","tss",f"""
+  {title('Mercado: formación digital <span class="grad">AEC en LATAM</span>')}
+  <div class="split">
+   <div class="split-l">{tamsamsom([("TAM","US$360 M","Formación digital AEC LATAM"),("SAM","US$87.5 M","Mercado servible"),("SOM 3 años","US$2.5 M","Meta a capturar")])}</div>
+   <div class="split-r">{lead('Apuntamos a <b>US$2.5M en 3 años</b> — menos del <b>3%</b> del SAM. No necesitamos dominar el mercado: basta capturar una porción de una vertical con alto dolor.')}{src("AECODE-Tesis-de-Mercado-v1 · marco bottom-up")}</div>
+  </div>
+""","")
+
+S("light","Oportunidad","cards",f"""
+  {title('La demanda no es hipótesis: está <span class="grad">documentada</span>')}
+  {grid([
+   card('<span class="card-big">39%</span> de skills se transforman hacia 2030.',"", tag="WEF 2025"),
+   card('<span class="card-big">46%</span> pone skills de IA como prioridad de contratación.',"", tag="Autodesk 2025"),
+   card('<span class="card-big">96%</span> de empleadores valoran las microcredenciales.',"", tag="Coursera 2025", tone="green"),
+   card('<span class="card-big">56%</span> de premium salarial para quien tiene skills de IA.',"", tag="PwC 2025"),
+   card('<span class="card-big">78%</span> de organizaciones ya usó IA en 2024.',"", tag="Stanford HAI", tone="blue"),
+   card('<span class="card-big">56%</span> de inversionistas asignará más fondos a IA en construcción.',"", tag="RICS 2025"),
+  ], 3, "cards-sm")}
+""","")
+
+# ============ CAP II · PROBLEMA ============
+S("dark","Problema","divider",divider("02","El problema<br>que <span class='grad'>sí duele</span>","No es falta de cursos. Es falta de un sistema que conecte aprendizaje, evidencia y ejecución real."),"")
+
+S("light","Problema","statement",f"""
+  {title('No falta contenido.<br>Falta una <span class="red">ruta clara</span> para aplicar.')}
+  {chiprow(["Cursos infinitos","Poca claridad","Poca práctica","Baja adopción tecnológica"])}
+  {lead('El profesional no sabe qué aprender primero ni cómo aplicarlo. La empresa capacita, pero <b>no logra adoptar</b> lo necesario para mejorar productividad y rentabilidad.')}
+""","")
+
+S("light","Problema","cards",f"""
+  {title('Cuando el aprendizaje no se aplica, <span class="red">todos pagan</span> el costo.')}
+  {grid([
+    card("Profesional","Aprende, pero no mejora ni demuestra.", num="01", tone="danger"),
+    card("Empresa","Capacita, pero no logra adopción.", num="02", tone="danger"),
+    card("Proyecto","Errores, retrabajo y baja productividad.", num="03", tone="danger"),
+  ],3)}
+  {chip("No es un problema educativo: es un problema de productividad")}
+""","")
+
+S("dark","Problema","table",f"""
+  {title('A quién <span class="grad">resolvemos</span> y quién paga')}
+  {table(["Segmento","Dolor","Oferta AECODE"],[
+   ["<b>Junior</b> (0–3 años)","Diferenciación, CV, portafolio","Beca AI Talent, rutas starter, certificados"],
+   ["<b>Intermedio</b> (3–8)","Subir de rol, automatizar","Rutas premium, IA aplicada, BIM/VDC"],
+   ["<b>Coordinador BIM/VDC</b>","Estandarizar y demostrar impacto","Rutas avanzadas, BEP/ISO, automatización"],
+   ["<b>Empresa AEC</b> (B2B)","Upskilling rápido, adopción","Licencias, in-house, dashboard de brechas"],
+   ["<b>Experto / instructor</b>","Monetizar conocimiento","Marketplace, revenue share, CMS"],
   ], hi=[0])}
-""")
+""","")
 
-# 07 DOLOR POR CLIENTE
-S("dark","I · Problema","cards",f"""
-  {kicker("Dolor por cliente")}
-  {title('Tres clientes, <span class="grad">un mismo síntoma</span>')}
-  {grid([
-   card("Profesional · B2C", 'Quiere ahorrar tiempo, automatizar, usar IA sin perderse y diferenciarse para mejores proyectos y salario.<br><br><b>Dolor:</b> aprende disperso y no traduce lo aprendido en valor profesional concreto.', num="01"),
-   card("Empresa · B2B", 'Quiere equipos productivos, adopción real de herramientas y visibilidad del avance.<br><br><b>Dolor:</b> invierte en capacitación o tecnología, pero el equipo no cambia su forma de trabajar.', num="02", tone="green"),
-   card("Proyecto", 'Necesita menos errores, menos retrabajo, mejor coordinación y procesos más automatizados.<br><br><b>Dolor:</b> la baja adopción termina afectando tiempos, costos, calidad y productividad.', num="03", tone="blue"),
-  ], 3)}
-""")
+# ============ CAP III · SOLUCIÓN & PRODUCTO ============
+S("light","Solución","divider",divider("03","La solución<br>y el <span class='grad'>producto</span>","Un Learning OS que cierra el loop que nadie cierra: práctica aplicada, evidencia y progreso."),"")
 
-# 08 DIVIDER II
-S("light","II · Solución","divider",f"""
-  <div class="div-index reveal">02</div>
-  <h2 class="div-title reveal">La solución<br>y el <span class="grad">producto</span></h2>
-  <p class="div-sub reveal">No entras a ver videos. Entras a aprender herramientas, aplicar casos reales, automatizar tareas y medir tu avance.</p>
-""")
+S("dark","Solución","brand",f"""
+  {LOGO_BIG}
+  {title('Acelera la <span class="grad">adopción tecnológica</span> en construcción.')}
+  {flow([("Aprende tecnología",""),("Aplícala en proyectos reales","hot"),("Construye mejor","win")])}
+  {lead('Plataforma de aprendizaje para arquitectura, ingeniería y construcción: aprende y aplica <b>digitalización BIM, automatización, IA y herramientas digitales</b> en el trabajo real.')}
+""","")
 
-# 09 SOLUCIÓN + FLUJO
-S("light","II · Solución","flow",f"""
-  {kicker("La solución")}
-  {title('Acelera la adopción con <span class="grad">rutas prácticas + IA</span>')}
+S("light","Solución","flow",f"""
+  {title('El loop que <span class="grad">nadie más cierra</span>')}
   {flow([("Diagnóstico",""),("Ruta por rol",""),("Microlearning",""),("Práctica","hot"),("Evidencia","hot"),("Progreso","win")])}
-  {lead('AECODE estructura el conocimiento técnico AEC en <b>rutas por rol</b>. El profesional aprende herramientas, aplica casos reales, automatiza tareas y genera evidencia de avance. La empresa no compra capacitación: compra una forma de <b>acelerar la adopción tecnológica</b> de su equipo.')}
+  {lead('La diferencia está en <b>práctica aplicada → evidencia → progreso</b>. Eso no lo hacen Udemy, YouTube ni cursos grabados: requiere ruta, casos reales y verificación.')}
   {grid([
-   card("Diagnóstico","Nivel actual, objetivo y brechas.", num="◆"),
+   card("Diagnóstico","Nivel, objetivo y brechas.", num="◆"),
    card("Práctica aplicada","Casos reales sobre tareas concretas.", num="◆", tone="blue"),
    card("Progreso medible","Evidencia y dashboard de adopción.", num="◆", tone="green"),
-  ], 3, "cards-sm")}
-""")
+  ],3,"cards-sm")}
+""","")
 
-# 10 LEARNING OS
-S("light","II · Solución","split",f"""
-  {kicker("Cómo se combina")}
-  {title('Un <span class="grad">Learning OS</span> para construcción')}
-  <div class="split">
-   <div class="split-l">
-     {bullets(["<b>Diagnóstico</b> de nivel, objetivo y brechas.","<b>Rutas por rol</b> conectadas a tareas reales.","<b>Microlearning</b> de conceptos y herramientas.","<b>Práctica aplicada</b> con casos reales."])}
+S("light","Producto","prodslide",f"""
+  <div class="prod">
+   <div class="prod-l">
+     {title('La plataforma que te guía desde tu <span class="grad">nivel actual</span> hasta el rol que buscas.')}
+     <div class="prod-steps reveal"><div class="ps"><span>1</span> Aprende</div><div class="ps"><span>2</span> Aplica</div><div class="ps"><span>3</span> Demuestra</div></div>
    </div>
-   <div class="split-r">
-     {bullets(["<b>Evidencia</b> de avance: reportes, dashboards, modelos, scripts.","<b>AI Coach</b> que diagnostica, recomienda y guía.","<b>Dashboard</b> de rutas, prácticas y adopción del equipo.","<b>Comunidad de expertos</b> del sector."])}
-   </div>
+   <div class="prod-r"><div class="demo-frame reveal"><div class="demo-bar"><span></span><span></span><span></span><span class="demo-url">app.aecode.io / mi-ruta</span></div>
+     <div class="demo-body"><div class="mock"><div class="mock-orb"></div><div class="mock-play">▶</div><div class="mock-h">Tu ruta está lista</div><div class="mock-s">IA aplicada al sector AEC</div><div class="mock-meta">3 módulos · 24 skills · evidencia real</div></div></div></div></div>
   </div>
-  {chip("El usuario no consume teoría: ejecuta, aplica y demuestra avance")}
-""")
+""","El usuario elige rol o especialidad y avanza por una ruta práctica: BIM, planificación, costos, coordinación, gestión de obra, automatización o IA aplicada.")
 
-# 11 CATEGORÍA
-S("light","II · Solución","cards",f"""
-  {kicker("Categoría correcta")}
-  {title('No es solo EdTech: es <span class="grad">adopción tecnológica</span>')}
-  {grid([
-   card("Plataforma de adopción tecnológica","La categoría más fuerte y defendible para construcción.", num="◆", tone="green"),
-   card("Learning OS para construcción","Sistema operativo de aprendizaje aplicado por rol.", num="◆"),
-   card("Workforce transformation","Plataforma de transformación de talento AEC en LATAM.", num="◆", tone="blue"),
-  ], 3, "cards-sm")}
-  {quote('Para un jurado no técnico: <span class="grad">AECODE ayuda a que profesionales y empresas de construcción adopten tecnología más rápido.</span>')}
-""")
-
-# 12 PROPUESTA DE VALOR
-S("light","II · Solución","cards",f"""
-  {kicker("Propuesta de valor")}
-  {title('Valor claro para <span class="grad">cada actor</span>')}
-  {grid([
-   card("Para profesionales","Aprende Digitalización BIM, automatización e IA para ahorrar tiempo, mejorar tu perfil y aplicar tecnología en proyectos reales.", num="01"),
-   card("Para empresas","Capacita a tu equipo en herramientas digitales y mide su avance para acelerar adopción y productividad.", num="02", tone="green"),
-   card("Para proyectos","Forma equipos capaces de reducir errores, automatizar procesos y ejecutar con más eficiencia.", num="03", tone="blue"),
-   card("Para el sector","Construye talento digital para una industria más productiva, competitiva y preparada.", num="04"),
-  ], 4, "cards-sm")}
-""")
-
-# 13 PRODUCTO 7 MÓDULOS
-S("light","II · Solución","table",f"""
-  {kicker("Producto")}
+S("light","Producto","table",f"""
   {title('Siete módulos, <span class="grad">un sistema</span>')}
   {table(["Módulo","Función"],[
-   ["<b>1 · Diagnóstico</b>","Identifica nivel actual, objetivo profesional y brechas."],
-   ["<b>2 · Rutas por rol</b>","BIM, planificación, costos, coordinación, gestión, automatización, IA."],
-   ["<b>3 · Microlearning</b>","Cápsulas cortas de conceptos, herramientas y procedimientos."],
-   ["<b>4 · Práctica aplicada</b>","Casos reales para aplicar lo aprendido en tareas concretas."],
-   ["<b>5 · Evidencia</b>","Entregables, reportes, dashboards, modelos o scripts que demuestran avance."],
-   ["<b>6 · AI Coach</b>","Diagnostica, recomienda, guía, resuelve dudas y mide progreso."],
-   ["<b>7 · Dashboard</b>","Rutas, avance, prácticas, evidencias y adopción del equipo."],
+   ["<b>1 · Diagnóstico</b>","Nivel actual, objetivo y brechas."],
+   ["<b>2 · Rutas por rol</b>","BIM, planificación, costos, coordinación, automatización, IA."],
+   ["<b>3 · Microlearning</b>","Cápsulas cortas de concepto y procedimiento."],
+   ["<b>4 · Práctica aplicada</b>","Casos reales sobre tareas concretas."],
+   ["<b>5 · Evidencia</b>","Entregables que demuestran avance."],
+   ["<b>6 · AI Coach</b>","Diagnostica, recomienda, guía y mide."],
+   ["<b>7 · Dashboard</b>","Rutas, prácticas y adopción del equipo."],
   ], hi=[0])}
-""")
+""","")
 
-# 14 INNOVACIÓN IA
-S("light","II · Solución","cards",f"""
-  {kicker("Innovación · IA aplicada")}
-  {title('La IA es el <span class="grad">motor</span>, no un curso más')}
-  {grid([
-   card("Diagnostica","Detecta nivel, rol, objetivo y brecha de cada usuario.", num="01"),
-   card("Recomienda y guía","Arma la ruta, sugiere cápsulas y acompaña la práctica.", num="02", tone="blue"),
-   card("Mide y da feedback","Revisa evidencias, da feedback preliminar y mide progreso real.", num="03", tone="green"),
-  ], 3)}
-  {lead('Ventaja compuesta: <b>más usuarios → más datos de adopción → mejores rutas y recomendaciones</b>. La IA escala personalización y acompañamiento sin escalar horas humanas, lo que protege el margen.')}
-""")
+S("light","Producto","pyramid",f"""
+  {title('Modelo de 3 capas: <span class="grad">Wedge → Engine → Moat</span>')}
+  <div class="split">
+   <div class="split-l">{pyramid([("Wedge","El profesional entra por productividad","violet"),("Engine","La empresa paga por capacidad de equipo","blue"),("Moat","Ecosistema de talento, evidencia y datos AEC","green")])}</div>
+   <div class="split-r">{lead('El profesional es la <b>cuña</b> (CAC bajo vía comunidad); la empresa es el <b>motor</b> de revenue; los datos de evidencia son el <b>foso</b> que se acumula con cada vuelta.')}</div>
+  </div>
+""","")
 
-# 15 ARQUITECTURA
-S("dark","II · Solución","cards",f"""
-  {kicker("Arquitectura del producto")}
-  {title('Frontstage · Backstage · <span class="grad">IA</span>')}
+S("dark","Producto","engine",f"""
+  {title('Motor de <span class="grad">IA adaptativa</span> para construcción', "eng-title")}
+  {lead('Alimentado por contenido validado y el criterio de <b>+200 expertos AEC</b>.')}
+  <div class="engine reveal">
+    <div class="eng-col"><div class="eng-h">ENTRA</div><div class="eng-item">◍ +200 expertos AEC</div><div class="eng-item">▣ Contenido validado</div><div class="eng-item">⬡ Comunidad · datos</div></div>
+    <div class="eng-core"><div class="eng-ring"><div class="eng-core-in"><b>IA</b><span>adaptativa</span></div></div><div class="eng-cap">Entiende tu contexto y decide qué aprender ahora</div></div>
+    <div class="eng-col eng-out"><div class="eng-h">SALE</div><div class="eng-item">✓ Ruta personalizada por rol</div><div class="eng-item">✓ Skill verificada con evidencia</div><div class="eng-item">✓ Progreso demostrable</div></div>
+  </div>
+  <div class="eng-methods reveal">
+    <div class="em" data-tip="Ubica tu nivel real y tu objetivo"><b>Diagnóstico adaptativo</b><small>ubica tu nivel y meta</small></div>
+    <div class="em" data-tip="Tu ruta se ajusta a tu rol y avance"><b>Rutas personalizadas</b><small>se ajustan a ti</small></div>
+    <div class="em" data-tip="Agentes que estructuran el conocimiento técnico AEC"><b>Sistema multiagente</b><small>estructura el saber AEC</small></div>
+  </div>
+""","")
+
+S("dark","Producto","cards",f"""
+  {title('Arquitectura: Frontstage · Backstage · <span class="grad">IA</span>')}
   {grid([
-   card("Frontstage", bullets(["Diagnóstico → ruta por rol","Dashboard personal","Skill / práctica + evidencia","Progreso y badges"]), num="◐"),
+   card("Frontstage", bullets(["Diagnóstico → ruta por rol","Dashboard personal","Práctica + evidencia","Progreso y badges"]), num="◐"),
    card("Backstage", bullets(["CMS de rutas y cápsulas","Rúbricas y revisión humana","Admin analytics","Dashboard B2B por equipo"]), num="◑", tone="blue"),
-   card("Capa de IA", bullets(["Diagnóstico + recomendación","AI Coach (RAG sectorial)","Feedback preliminar de evidencia","Nudges de abandono"]), num="◓", tone="green"),
-  ], 3)}
-  {lead('Regla de oro: <b>medir adopción y práctica aplicada</b>, no solo consumo de contenido. El control humano valida lo crítico.')}
-""")
+   card("Capa de IA", bullets(["Diagnóstico + recomendación","AI Coach (RAG sectorial)","Feedback de evidencia","Nudges de abandono"]), num="◓", tone="green"),
+  ],3)}
+  {chip("Regla de oro: medir adopción y práctica aplicada, no consumo de contenido")}
+""","")
 
-# 16 STACK
-S("dark","II · Solución","table",f"""
-  {kicker("Stack tecnológico")}
-  {title('Infraestructura para <span class="grad">escalar sin colapsar</span>')}
+S("dark","Producto","table",f"""
+  {title('Stack para <span class="grad">escalar sin colapsar</span>')}
   <div class="split">
-   <div class="split-l">{table(["Capa","Recomendación"],[
-     ["Frontend","Next.js · React · TypeScript"],
-     ["UI","Tailwind · componentes reutilizables"],
-     ["Auth / Data","Supabase (V1) o mock para demo"],
-     ["Evidencias","Supabase Storage / S3"],
-     ["AI Coach","RAG sobre base AECODE + eval. preliminar"],
-     ["Analytics","Eventos del funnel desde día 1"],
-   ], hi=[0])}</div>
-   <div class="split-r">
-     {card("Eventos mínimos del funnel", '<code>landing_view · signup_completed · onboarding_completed · route_accepted · skill_started · practice_completed · evidence_uploaded · payment_completed</code>', tag="Analytics", tone="blue")}
-     {note('Mock data al inicio · analítica de eventos desde el día 1 para medir adopción y práctica.')}
-   </div>
+   <div class="split-l">{table(["Capa","Recomendación"],[["Frontend","Next.js · React · TypeScript"],["UI","Tailwind · componentes"],["Auth / Data","Supabase (V1)"],["Evidencias","Supabase Storage / S3"],["AI Coach","RAG sobre base AECODE"],["Analytics","Eventos del funnel día 1"]], hi=[0])}</div>
+   <div class="split-r">{card("Eventos mínimos", '<code>landing_view · signup · onboarding · route_accepted · skill_started · practice_completed · evidence_uploaded · payment</code>', tag="Analytics", tone="blue")}{chip("Infra: AgentFlow (n8n+Redis+Cloudflare) · VisionPro (CV de obra)")}</div>
   </div>
-""")
+""","")
 
-# 17 DIFERENCIACIÓN
-S("dark","II · Solución","table",f"""
-  {kicker("Diferenciación")}
-  {title('AECODE <span class="grad">vs. todo lo demás</span>')}
-  {table(["Comparación","Ellos","AECODE"],[
-   ["<b>vs. Academia</b>","Vende cursos, mide asistencia, entrega contenido","Acelera adopción, mide práctica y aplicación"],
-   ["<b>vs. Plataformas horizontales</b>","Enseñan de todo para todos","Se especializa en construcción"],
-   ["<b>vs. ChatGPT</b>","Entrega respuestas","Entrega ruta, contexto, práctica, acompañamiento y medición"],
-   ["<b>vs. Consultora</b>","Capacita proyecto por proyecto","Convierte conocimiento validado en producto escalable"],
-  ], hi=[2])}
-""")
+# ============ CAP IV · NEGOCIO ============
+S("dark","Negocio","divider",divider("04","El modelo<br>de <span class='grad'>negocio</span>","Live valida · B2B ancla · On-demand AI escala. De servicios a plataforma recurrente."),"")
 
-# 18 DIVIDER III
-S("light","III · Mercado","divider",f"""
-  <div class="div-index reveal">03</div>
-  <h2 class="div-title reveal">Mercado<br>y <span class="grad">por qué ahora</span></h2>
-  <p class="div-sub reveal">Una vertical con alto dolor, necesidad creciente y un comprador estructural emergente.</p>
-""")
-
-# 19 POR QUÉ AHORA
-S("light","III · Mercado","chart",f"""
-  {kicker("Por qué ahora")}
-  {title('El sector <span class="grad">dice usar IA</span>, pero casi nadie la ejecuta')}
-  <div class="split">
-   <div class="split-l">{barchart([
-     ("Firmas AEC que “usan IA”",75,"75%","violet"),
-     ("La usa de forma regular",12,"12%","blue"),
-     ("Confía en su propia data",29,"29%","green"),
-     ("Planea aumentar inversión en IA",94,"94%","violet"),
-   ])}</div>
-   <div class="split-r">
-     {lead('La brecha no es de <i>tecnología</i> — es de <b>adopción y capacidad operativa</b>. Entre 2025 y 2030, la presión por Digitalización BIM, automatización e IA hace urgente formar talento práctico.')}
-     {chip("El contenido se comoditiza · la adopción y la evidencia se vuelven el activo escaso")}
-   </div>
+S("dark","Negocio","blocks",f"""
+  {title('Tres líneas clave', "blk-title")}
+  {lead('<b>Live valida · B2B ancla · On-demand AI escala.</b>')}
+  <div class="pblocks reveal">
+    {pblock("1 · LIVE","valida","🎓",'<b>USD 200</b><small>ticket promedio</small><small class="pb-tag2">caja + comunidad + validación</small>',"violet")}
+    {pblock("2 · B2B","ancla","🏢",'<b>A medida</b><small>planes corporativos</small><small class="pb-tag2">ticket alto + expansión empresarial</small>',"blue")}
+    {pblock("3 · ON-DEMAND AI","escala","📚",'<b>USD 40</b><small>microlearning / curso</small><b class="pb-2">USD 250</b><small>suscripción anual</small>',"green")}
   </div>
-  {note('Datos del vault 2025–2026 · refrescar contra fuente oficial antes de un pitch público.')}
-""")
+""","")
 
-# 20 5 VECTORES / BRECHA
-S("light","III · Mercado","split",f"""
-  {kicker("La presión estructural")}
-  {title('Tecnología que entra, <span class="grad">talento que falta</span>')}
-  <div class="split">
-   <div class="split-l">
-     {stat("499","Trabajadores AEC faltantes (EE.UU. 2026)","Deloitte", suffix="K")}
-     {stat("77","Del capital contech fue a IA en 2025","vs. 35% en 2024", suffix="%", tone="green")}
-   </div>
-   <div class="split-r">
-     {bullets([
-       'Mercado AEC <b>gigante y subdigitalizado</b> (productividad plana 20 años).',
-       'Inflexión de IA 2025–2026: de asistente a agente.',
-       'El mercado contrata por <b>capacidad</b>, pero no sabe verificarla.',
-       'Perú: <b>Plan BIM</b> = mandato estatal de digitalización (demanda estructural).',
-     ])}
-   </div>
+S("dark","Negocio","b2c2b",f"""
+  {title('Profesional adopta. Empresa escala. <span class="grad">Proyecto mejora.</span>')}
+  <div class="b2flow reveal">
+    <div class="b2step"><span class="b2n">1</span><b>B2C</b><small>El profesional adopta</small></div><i class="b2arr">→</i>
+    <div class="b2step"><span class="b2n">2</span><b>Equipos</b><small>Aplican juntos</small></div><i class="b2arr">→</i>
+    <div class="b2step"><span class="b2n">3</span><b>B2B</b><small>La empresa escala</small></div><i class="b2arr">→</i>
+    <div class="b2step b2win"><b>B2C2B</b><small>Proyecto mejora · todo el enfoque</small></div>
   </div>
-""")
+  {lead('La comunidad orgánica baja el CAC; la empresa sube el ticket y la recurrencia. Patrón <b>BuildWitt</b> aplicado a LATAM.')}
+""","")
 
-# 21 VALIDACIÓN DE MERCADO
-S("light","III · Mercado","cards",f"""
-  {kicker("Validación clara de mercado")}
-  {title('La demanda <span class="grad">ya paga</span>')}
-  {grid([
-   card('<span class="card-big">×4</span> ventas 2024 → 2025 (US$30K → US$120K).',"", tag="Crecimiento"),
-   card('<span class="card-big">300</span> clientes activos en los últimos 90 días.',"", tag="Tracción", tone="green"),
-   card('<span class="card-big">95K</span> de alcance de comunidad en 14 países.',"", tag="Distribución", tone="blue"),
-   card('<span class="card-big">+200</span> expertos / aliados del sector.',"", tag="Red"),
-   card('<span class="card-big">+100</span> alianzas activas.',"", tag="Partners", tone="green"),
-   card('<span class="card-big">3</span> motores ya en marcha: Live, B2B y On-demand.',"", tag="Modelo", tone="blue"),
-  ], 3, "cards-sm")}
-""")
-
-# 22 TAM/SAM/SOM
-S("light","III · Mercado","tss",f"""
-  {kicker("Mercado · dimensionamiento bottom-up")}
-  {title('TAM / SAM / <span class="grad">SOM</span>')}
-  <div class="split">
-    <div class="split-l">{tamsamsom([
-      ("TAM","US$360 M","1.2M usuarios × US$300/año"),
-      ("SAM","US$87.5 M","350K usuarios × US$250/año"),
-      ("SOM 3 años","US$2.5 M","10K clientes × US$250/año"),
-    ])}</div>
-    <div class="split-r">
-      {lead('La meta de 3 años es ambiciosa pero defendible: <b>capturar US$2.5M es &lt;3% del SAM</b>.')}
-      {chip("AECODE no necesita dominar el mercado: captura una porción de una vertical con alto dolor")}
-    </div>
-  </div>
-""")
-
-# 23 COMPETENCIA
-S("dark","III · Mercado","map",f"""
-  {kicker("Panorama competitivo")}
-  {title('Ser <span class="grad">profundo</span> donde todos son <span class="grad">anchos</span>')}
-  <div class="split">
-   <div class="split-l">{map2x2([
-     (78,18,"AECODE","green",True),
-     (16,70,"Coursera / Udemy / Platzi","ink",False),
-     (62,40,"Academias BIM","ink",False),
-     (40,30,"Consultoras","ink",False),
-     (14,86,"YouTube","ink",False),
-     (34,84,"ChatGPT","ink",False),
-   ], ("Horizontal","Vertical AEC"), ("Adopción + práctica","Solo contenido"))}</div>
-   <div class="split-r">{table(["Competidor","Limitación"],[
-     ["Coursera / Udemy / Platzi","Poca especialización AEC"],
-     ["Academias BIM","Menor escalabilidad e IA"],
-     ["Consultoras","Intensivo en horas humanas"],
-     ["YouTube","Sin ruta ni medición"],
-     ["ChatGPT","Sin estructura sectorial ni práctica"],
-   ])}</div>
-  </div>
-  {chip("AECODE no compite por cantidad de contenido: por especialización, aplicación y adopción")}
-""")
-
-# 24 DIVIDER IV
-S("dark","IV · Modelo & Finanzas","divider",f"""
-  <div class="div-index reveal">04</div>
-  <h2 class="div-title reveal">Modelo de negocio<br>y <span class="grad">finanzas</span></h2>
-  <p class="div-sub reveal">Live valida. B2B ancla. On-demand AI escala. La historia no es solo crecimiento: es transición de mix.</p>
-""")
-
-# 25 MODELO 3 MOTORES
-S("dark","IV · Modelo & Finanzas","cards",f"""
-  {kicker("Modelo de negocio")}
-  {title('<span class="grad">Live valida. B2B ancla. On-demand AI escala.</span>')}
-  {grid([
-   card("Motor 1 · B2C Live","Programas en vivo, cohortes y workshops. Genera caja, valida demanda, construye comunidad y produce contenido fuente.", num="◆"),
-   card("Motor 2 · B2B","Venta a empresas, constructoras, consultoras e instituciones. Sube ticket, mejora recurrencia y conecta capacitación con productividad.", num="◆", tone="green"),
-   card("Motor 3 · On-demand AI","Microlearning, suscripción, certificaciones y AI Coach. Escala con menor costo marginal, mejora margen y crea activos reutilizables.", num="◆", tone="blue"),
-  ], 3)}
-""")
-
-# 26 B2B2C
-S("dark","IV · Modelo & Finanzas","flow",f"""
-  {kicker("Modelo B2B2C")}
-  {title('<span class="grad">Empresa paga. Profesional aprende. Industria valida.</span>')}
-  {flow([("Empresa impulsa y paga","hot"),("Profesional aprende y aplica",""),("Industria valida la adopción","win")])}
-  {lead('La empresa gana productividad. El profesional gana empleabilidad. AECODE gana <b>mayor LTV y menor CAC relativo</b>. El producto, además, genera datos de avance, práctica y adopción que mejoran todo el sistema.')}
-  {grid([
-   card("Empresa","Gana productividad y adopción real.", num="◆", tone="green"),
-   card("Profesional","Gana empleabilidad y mejor perfil.", num="◆"),
-   card("AECODE","Gana LTV, datos y menor CAC.", num="◆", tone="blue"),
-  ], 3, "cards-sm")}
-""")
-
-# 27 VENTAS POR AÑO
-S("dark","IV · Modelo & Finanzas","chart",f"""
-  {kicker("Tracción financiera")}
-  {title('De US$30K a una meta de <span class="grad">US$420K</span>')}
-  <div class="split">
-   <div class="split-l">{barchart([
-     ("2024 · validación inicial",7.1,"US$30K","ink"),
-     ("2025 · ×4",28.6,"US$120K","violet"),
-     ("2026E · diversificado",52.4,"US$220K","blue"),
-     ("2027 Target con inversión",100,"US$420K","green"),
-   ])}</div>
-   <div class="split-r">
-     {lead('AECODE ya validó que el mercado paga: pasó de US$30K (2024) a <b>US$120K (2025), ×4</b>. Proyecta US$220K en 2026 con una estructura más diversificada.')}
-     {chip("El objetivo con capital: acelerar 2027 a US$420K mejorando la calidad del revenue")}
-   </div>
-  </div>
-  {note('2027 base sin inversión ≈ US$370K. Cifras de trabajo · conciliar con contabilidad antes de due diligence.')}
-""")
-
-# 28 MIX DE INGRESOS
-S("dark","IV · Modelo & Finanzas","chart",f"""
-  {kicker("Mix de ingresos por modelo")}
-  {title('La historia no es crecimiento: es <span class="grad">transición</span>')}
-  {stackbar([
-    ("2024",[30,0,0],"US$30K"),
-    ("2025",[107,8,5],"US$120K"),
-    ("2026E",[132,55,33],"US$220K"),
-    ("2027 Target",[160,140,120],"US$420K"),
-  ], [("B2C Live","#4465EE"),("B2B","#17B14E"),("On-demand AI","#6D70F9")], 420)}
-  {lead('En 2024 AECODE era <b>100% B2C Live</b>. En 2026, B2B + On-demand AI representan <b>40%</b>. En 2027 Target, <b>62%</b>. Es una migración hacia líneas más escalables, rentables y defendibles.')}
-""")
-
-# 29 MÁRGENES DE CONTRIBUCIÓN
-S("dark","IV · Modelo & Finanzas","chart",f"""
-  {kicker("Márgenes de contribución")}
-  {title('No solo más ventas: <span class="grad">mejor economía</span>')}
-  <div class="split">
-   <div class="split-l">{barchart([
-     ("2024",35,"35.0%","ink"),
-     ("2025",37,"37.0%","violet"),
-     ("2026E",42.5,"42.5%","blue"),
-     ("2027 Target",47.1,"47.1%","green"),
-   ])}</div>
-   <div class="split-r">{table(["Línea","Margen contrib.","Contrib. 2027T"],[
-     ["B2C Live","35%","US$56K"],
-     ["B2B","50%","US$70K"],
-     ["On-demand AI","60%","US$72K"],
-     ["<b>Total</b>","<b>47.1% pond.</b>","<b>US$198K</b>"],
-   ], hi=[0])}</div>
-  </div>
-  {lead('El margen ponderado sube de <b>35% a 47.1%</b> porque el negocio migra a B2B y On-demand AI. Esa mejora de mix es lo que hace a la startup más invertible. (Margen de contribución por línea, no neto consolidado.)')}
-""")
-
-# 30 B2C LIVE 2026
-S("dark","IV · Modelo & Finanzas","chart",f"""
-  {kicker("Realidad reciente · B2C Live 2026")}
-  {title('Caja mensual <span class="grad">probada y prudente</span>')}
-  <div class="split">
-   <div class="split-l">{barchart([
-     ("Marzo 2026",87,"US$13K","violet"),
-     ("Abril 2026",80,"US$12K","blue"),
-     ("Mayo 2026",100,"US$15K","green"),
-   ])}</div>
-   <div class="split-r">
-     {lead('El B2C Live ya genera <b>US$12K–15K mensuales</b> en meses recientes.')}
-     {chip("Forecast anual B2C Live 2026 = US$132K (~US$11K/mes): prudente y defendible")}
-   </div>
-  </div>
-""")
-
-# 31 PRICING
-S("dark","IV · Modelo & Finanzas","table",f"""
-  {kicker("Pricing")}
-  {title('Una escalera del <span class="grad">workshop al enterprise</span>')}
+S("dark","Negocio","table",f"""
+  {title('Pricing: del <span class="grad">free al enterprise</span>')}
   {table(["Oferta","Rango","Objetivo"],[
-   ["<b>Workshop live B2C</b>","US$40–60","Adquisición + caja"],
-   ["<b>Programa / cohorte</b>","US$120–250","Ticket medio B2C"],
-   ["<b>On-demand individual</b>","US$19/mes · US$180/año","Recurrencia escalable"],
-   ["<b>Teams B2B2C</b>","US$12–15 usuario/mes","Recurrencia por equipo"],
-   ["<b>B2B Starter (≤15)</b>","~US$3,000","Entrada empresa"],
-   ["<b>B2B Growth (≤40)</b>","~US$8,000","Cuenta empresa"],
+   ["<b>Free</b>","S/ 0","Adquisición"],
+   ["<b>Starter créditos</b>","S/ 49–99","Primer pago"],
+   ["<b>Premium individual</b>","S/ 59–129/mes","Recurrencia B2C"],
+   ["<b>Ruta certificada</b>","S/ 199–699","Ticket medio"],
+   ["<b>B2B Team</b>","S/ 80–180 usuario/mes","Recurrencia B2B"],
+   ["<b>Training in-house</b>","S/ 8,000–60,000","Ticket alto"],
   ], hi=[0,1])}
-  {note('Rangos de trabajo · validar contra histórico real de tickets antes de fundraising externo.')}
-""")
+""","")
 
-# 32 DIVIDER V
-S("light","V · Métricas & Growth","divider",f"""
-  <div class="div-index reveal">05</div>
-  <h2 class="div-title reveal">Métricas norte<br>y <span class="grad">growth</span></h2>
-  <p class="div-sub reveal">No basta crecer en ventas: AECODE crece con mejor calidad de ingresos y práctica aplicada real.</p>
-""")
-
-# 33 NORTH STAR DUAL
-S("light","V · Métricas & Growth","cards",f"""
-  {kicker("North Star Metric")}
-  {title('Dos estrellas: <span class="grad">producto y negocio</span>')}
-  {grid([
-   card("NSM de producto", '<b>Prácticas aplicadas completadas por mes.</b><br><br>No mide consumo pasivo: mide aplicación real. Sirve para B2C, B2B y On-demand, y conecta aprendizaje con productividad.', tag="Producto", tone="green"),
-   card("NSM de negocio", '<b>% de revenue escalable (B2B + On-demand AI).</b><br><br>Mide la transformación del negocio. La meta: pasar de <b>40% (2026)</b> a <b>62% (2027 Target)</b>.', tag="Negocio", tone="blue"),
-  ], 2)}
-  {chip("Crecer en ventas no basta · AECODE debe crecer con mejor calidad de ingresos")}
-""")
-
-# 34 NSM POR MODELO
-S("light","V · Métricas & Growth","table",f"""
-  {kicker("NSM por modelo")}
-  {title('Cada motor con su <span class="grad">métrica norte</span>')}
-  {table(["Modelo","NSM","Métricas clave"],[
-   ["<b>B2C Live</b>","Alumnos que completan una práctica final aplicable por cohorte","Seats, finalización, recompra, margen por cohorte, NPS"],
-   ["<b>B2B</b>","Colaboradores activos por empresa que completan prácticas/mes","ACV, usuarios/cuenta, renovación, NRR, CAC B2B, payback"],
-   ["<b>On-demand AI</b>","Usuarios que completan una práctica asistida por IA/mes","MAU, rutas, uso del AI Coach, free→pago, W4/M3, MRR/ARR"],
-  ], hi=[0])}
-""")
-
-# 35 RETENCIÓN & NPS
-S("light","V · Métricas & Growth","split",f"""
-  {kicker("Retención & calidad")}
-  {title('Objetivos de <span class="grad">retención y recurrencia</span>')}
-  <div class="split">
-   <div class="split-l">{table(["Métrica","Objetivo"],[
-     ["Retención W4","30%–45%"],
-     ["Retención M3","20%–35%"],
-     ["LTV / CAC",">3"],
-     ["Renovación B2B",">70%"],
-     ["NRR B2B",">100%"],
-   ], hi=[0])}</div>
-   <div class="split-r">
-     {lead('El loop de <b>práctica + evidencia + progreso visible</b> es el antídoto a la deserción: el avance se siente real.')}
-     {note('Métricas recurrentes (MRR/ARR, CAC por canal, cohortes) aún inmaduras. La inversión las consolida. Hoy se reporta ventas, run-rate y contribución por línea — no se infla recurrencia.')}
-   </div>
-  </div>
-""")
-
-# 36 GROWTH METRICS
-S("light","V · Métricas & Growth","chart",f"""
-  {kicker("Métricas de growth")}
-  {title('No empezamos desde <span class="grad">tráfico frío</span>')}
+S("dark","Negocio","chart",f"""
+  {title('La unidad económica <span class="grad">ya cierra</span>')}
   <div class="statrow">
-    {stat("95","Alcance de comunidad","8k WhatsApp activo", suffix="K+", tone="blue")}
-    {stat("14","Países con presencia","alcance regional", tone="violet")}
-    {stat("300","Clientes activos (90 días)","tracción reciente", tone="green")}
-    {stat("200","Expertos / aliados","+100 alianzas", suffix="+", tone="violet")}
+    {stat("35","CAC blended","8× mejor que benchmark", prefix="$", tone="green")}
+    {stat("3.1","LTV : CAC","gate &gt;3× ✓", suffix="×", tone="green")}
+    {stat("74","Gross margin","cercano a SaaS", suffix="%", tone="green")}
+    {stat("7","Payback","meses", suffix=" m")}
   </div>
-  {lead('La ventaja de AECODE es que parte de <b>comunidad, autoridad sectorial y contenido validado</b>. La inversión debe mejorar el sistema de conversión, retención y monetización — no crear demanda desde cero.')}
-""")
+  {lead('El crecimiento no está bloqueado por adquisición cara — está bloqueado por producto que entregue evidencia a escala. <b>Arregla el balde antes de echar agua.</b> Churn ~8% (a vigilar).')}
+""","")
 
-# 37 GTM
-S("light","V · Métricas & Growth","flow",f"""
-  {kicker("Go-to-Market")}
-  {title('Un canal <span class="grad">natural y barato</span>')}
-  {flow([("Comunidad","hot"),("Live Training",""),("Microlearning",""),("B2B","hot"),("Expansión LATAM","win")])}
+S("dark","Negocio","funnel",f"""
+  {title('El funnel, con <span class="grad">gates de validación</span>')}
+  <div class="funnel reveal">
+    <div class="fn" style="--w:100%"><span>Captación · comunidad</span><b>CAC $35</b></div>
+    <div class="fn" style="--w:82%"><span>Registro</span><b>gate &gt;75%</b></div>
+    <div class="fn" style="--w:66%"><span>Onboarding · diagnóstico</span><b>gate &gt;65%</b></div>
+    <div class="fn" style="--w:50%"><span>Práctica iniciada</span><b>gate &gt;40%</b></div>
+    <div class="fn hot" style="--w:38%"><span>Evidencia / skill verificada</span><b>NSM</b></div>
+    <div class="fn win" style="--w:26%"><span>Pago / recurrencia</span><b>presell: 10 = go</b></div>
+  </div>
+  {lead('Cada etapa tiene un <b>gate</b>: si no se alcanza, no se invierte en la siguiente. Disciplina de capital aplicada al producto.')}
+""","")
+
+# ============ CAP V · TRACCIÓN & MÉTRICAS ============
+S("light","Tracción","divider",divider("05","Tracción<br>y <span class='grad'>métricas</span>","Demanda validada con ventas, comunidad y B2B — antes de terminar el producto."),"")
+
+S("light","Tracción","chart",f"""
+  {title('El mercado <span class="grad">ya paga</span> por esta necesidad')}
+  <div class="trac">
+   <div class="trac-l">{barchart([("2024 · validación",13.6,"US$30K","ink"),("2025 · ×4",54.5,"US$120K","violet"),("2026E",100,"US$220K","green")])}</div>
+   <div class="trac-r"><div class="statrow bare st-mini">{stat("10","Estudiantes a la fecha","", suffix="K+", tone="green")}{stat("95","Comunidad","", suffix="K+", tone="blue")}</div></div>
+  </div>
+""","En 2024 vendimos US$30K, en 2025 US$120K (×4), y proyectamos US$220K en 2026. +10K estudiantes y +95K comunidad.")
+
+S("light","Tracción","chart",f"""
+  {title('De vender programas en vivo a <span class="grad">escalar conocimiento validado</span>.')}
+  {stackbar([("2024 · 0%",[30,0,0],"US$30K"),("2025 · 11%",[107,8,5],"US$120K"),("2026E · 40%",[132,55,33],"US$220K"),("2027 Target · 62%",[160,140,120],"US$420K")],
+            [("B2C Live","#4465EE"),("B2B","#F2B33D"),("On-demand AI","#17B14E")], 420)}
+  <div class="scale-foot reveal">
+    <div class="margin-pill"><span>Margen ponderado</span><b>35%<i>→</i>47.1%</b></div>
+    <div class="scale-note">El cambio de mix —menos B2C Live, más B2B + On-demand AI— mejora <b>margen, recurrencia y escalabilidad</b>.</div>
+  </div>
+""","En 2024 éramos 100% B2C Live. En 2026, B2B + On-demand AI representan 40%; en 2027 Target, 62%. El margen ponderado sube de 35% a 47.1%.")
+
+S("light","Métricas","nsm",f"""
+  {title('Métrica norte: medimos <span class="grad">adopción real</span>')}
+  <div class="nsm-grid reveal">
+    <div class="nsm-card nsm-prod" data-tip="No medimos videos vistos, medimos quién aplica"><div class="nsm-icon">◎</div><div class="nsm-tag">Producto</div><div class="nsm-v">Prácticas aplicadas<br>completadas <span>/ mes</span></div><div class="nsm-sub">Usuarios que completan entregables y evidencias.</div></div>
+    <div class="nsm-card nsm-neg" data-tip="Mientras más alto, más escalable y recurrente"><div class="nsm-icon">◷</div><div class="nsm-tag">Negocio</div><div class="nsm-v">% de revenue de<br>B2B + On-demand AI</div><div class="nsm-sub">Ahí está la escalabilidad y la recurrencia.</div></div>
+  </div>
+""","")
+
+S("light","Métricas","nsm2",f"""
+  {title('Una palanca que <span class="grad">mueve todo</span>')}
+  {tree("NSM · skills verificadas / MAU", ["usuarios activos","onboarding","ruta aceptada","skill start","práctica","evidencia subida","evidencia aprobada","2ª skill"])}
+  {lead('Hoy <b>0.17</b> → meta <b>0.40</b>. Una sola palanca mueve 4 streams: empleabilidad → recomienda (baja CAC) → empresas pagan por el Skill Graph → las credenciales valen.')}
+""","")
+
+S("light","Métricas","chart",f"""
+  {title('Retiene <span class="grad">mejor que la media</span> — aún sin terminar')}
   <div class="split">
-   <div class="split-l">{bullets([
-     '<b>Comunidad vertical</b> (+95K, 14 países) = adquisición, validación y distribución.',
-     '<b>Contenido y eventos</b>: webinars, talleres y charlas activan demanda.',
-     '<b>Live Training</b> convierte demanda y valida qué temas pagan.',
-   ])}</div>
-   <div class="split-r">{bullets([
-     '<b>Microlearning</b> convierte cursos exitosos en rutas reutilizables.',
-     '<b>B2B2C</b> entra a empresas, sube ticket y retención.',
-     '<b>Expansión LATAM</b> vía comunidad, expertos, alianzas e instituciones.',
-   ])}</div>
+   <div class="split-l">{barchart([("NPS de cohortes",78,"66–78","green"),("Completion de cohortes",85,"71–85%","blue"),("Retención W4 / M1",38,"38%","violet"),("Evidence upload rate",42,"42%","green")])}</div>
+   <div class="split-r">{lead('El loop de <b>evidencia + progreso</b> es el antídoto a la deserción de EdTech. La retención W4 (38%) ya supera el benchmark B2C (25–35%).')}{chip("Gaps a instrumentar: M3 retention · TTFSV · re-compra")}</div>
   </div>
-  {chip("Comunidad baja CAC · Live valida · B2B sube ticket · On-demand AI escala margen")}
-""")
+""","")
 
-# 38 COMUNIDAD & FLYWHEEL
-S("light","V · Métricas & Growth","flywheel",f"""
-  {kicker("Comunidad & flywheel")}
-  {title('La comunidad es <span class="grad">canal, producto y moat</span>')}
-  {flywheel('AECODE<br><small>95k · 14 países</small>')}
-  {lead('Cada evento produce grabación, cápsula, resumen, post, base de Q&A para el AI Hub y un CTA a diagnóstico. La comunidad reduce CAC, valida temas y alimenta el producto con datos de adopción.')}
-""")
+S("light","Métricas","flywheel",f"""
+  {title('Comunidad: <span class="grad">canal, producto y moat</span>')}
+  <div class="statrow st-mini">
+    {stat("95","Comunidad", suffix="K+", tone="blue")}
+    {stat("10","Estudiantes", suffix="K+", tone="green")}
+    {stat("14","Países", tone="violet")}
+    {stat("100","Alianzas", suffix="+", tone="blue")}
+    {stat("200","Expertos", suffix="+", tone="green")}
+    {stat("50","Convenios", suffix="+", tone="violet")}
+  </div>
+  {lead('Cada evento produce grabación, cápsula, resumen, base de Q&A para el AI Hub y un CTA a diagnóstico. La comunidad reduce CAC, valida temas y alimenta el producto con datos de adopción. <b>15% de ventas internacionales · +12 clientes B2B.</b>')}
+""","")
 
-# 39 MOAT
-S("dark","VI · Defensibilidad","cards",f"""
-  {kicker("Moat compuesto")}
-  {title('El contenido se copia. <span class="grad">El moat, no.</span>')}
+S("light","Métricas","split",f"""
+  {title('Honestidad métrica: lo que un analista <span class="grad">atacaría</span>')}
+  <div class="split">
+   <div class="split-l">{card("El problema", 'Gran parte del revenue es <b>one-time</b> (programas live). El “MRR” es <i>Monthly Revenue</i>, no <i>Recurring</i>. Churn ~8%.', tag="Revenue quality", tone="danger")}{card("Por qué importa", 'MRR real vale 5–10× ese MRR; servicios one-time, mucho menos.', tag="Valuación")}</div>
+   <div class="split-r">{card("El plan", bullets(["Separar y medir MRR real vs. one-time","Proyectar el bridge a suscripción","Comunicar en 2 fases: live (caja) → plataforma (escala)","No reportar caja de cohortes como MRR"]), tag="Acción", tone="green")}</div>
+  </div>
+""","")
+
+# ============ CAP VI · DEFENSIBILIDAD ============
+S("dark","Defensa","divider",divider("06","La <span class='grad'>defensibilidad</span>","El contenido se copia. El moat —datos, comunidad, evidencia, IA— no."),"")
+
+S("dark","Defensa","cards",f"""
+  {title('Moat compuesto: <span class="grad">cuatro fosos</span> + ecosistema')}
   {grid([
-   card("Comunidad vertical AEC","+95K en 14 países → CAC bajo.", num="01"),
-   card("Red de expertos","+200 especialistas del sector.", num="02", tone="blue"),
-   card("Programas validados","Vendidos y probados con demanda real.", num="03", tone="green"),
-   card("Rutas por rol + casos reales","Conocimiento estructurado y aplicado.", num="04"),
-   card("Data de habilidades AEC","Avance, práctica y adopción propietarios.", num="05", tone="blue"),
-   card("IA especializada + B2B2C","Contexto sectorial y modelo de distribución.", num="06", tone="green"),
-  ], 3, "cards-sm")}
-  {lead('Más: <b>marca sectorial</b> y la <b>conversión de cursos en activos digitales</b> reutilizables. El moat está en la combinación de comunidad, data, expertos, producto, distribución y especialización.')}
-""")
+   card("Comunidad vertical AEC","95k de alcance → CAC $35 vs. $100–300.", num="01"),
+   card("Skill Graph + datos","Grafo propietario de habilidades reales de la región.", num="02", tone="blue"),
+   card("IA contextualizada","+200 expertos, evaluación calibrada para AEC.", num="03", tone="green"),
+   card("Ecosistema GEN+/THESIA","Casos reales y datos que alimentan el producto.", num="04"),
+  ],4,"cards-sm")}
+  {lead('Más: <b>marca sectorial</b>, <b>alianzas institucionales</b> y la <b>conversión de cursos en activos digitales</b>. El moat está en la combinación, no en un curso.')}
+""","")
 
-# 40 DIVIDER VII
-S("dark","VII · Inversión","divider",f"""
-  <div class="div-index reveal">06</div>
-  <h2 class="div-title reveal">La inversión<br>y el <span class="grad">impacto</span></h2>
-  <p class="div-sub reveal">El capital no financia una idea: financia convertir una operación validada en plataforma escalable.</p>
-""")
+S("dark","Defensa","map",f"""
+  {title('Profundidad <span class="grad">vertical AEC</span> + IA')}
+  {map2x2([
+    (74,16,"AECODE · ×3/año","green",True),(40,22,"Udemy","ink",False),(16,64,"Platzi","ink",False),(34,60,"Udacity","ink",False),
+    (20,78,"Crehana","ink",False),(15,90,"Coursera","ink",False),(62,66,"KonstruEdu","ink",False),(80,62,"ARCUX","ink",False),(70,82,"TEDI","ink",False),(88,82,"+academias","ink",False),
+  ], ("Contenido genérico","AEC (Arq · Ing · Cons)"), ("e-Learning + IA","Cursos e-Learning"))}
+""","")
 
-# 41 USO DE CAPITAL
-S("dark","VII · Inversión","ask",f"""
-  {kicker("Uso de capital")}
-  {title('US$125K para escalar la <span class="grad">plataforma</span>')}
-  <div class="ask-grid reveal">
-    <div class="ask-left">{donut([("IA + plataforma",60,"#6D70F9"),("Growth LATAM / B2B2C",30,"#17B14E"),("Microlearning",10,"#4465EE")])}</div>
-    <div class="ask-right">
-      {bullets([
-        '<b>60% · US$75K</b> — AI Coach, rutas, dashboard, evidencia y analytics.',
-        '<b>30% · US$37.5K</b> — adquisición, alianzas y ventas B2B (LATAM).',
-        '<b>10% · US$12.5K</b> — cápsulas, prácticas y rutas reutilizables.',
-      ])}
-      {note('Instrumento tipo SAFE o capital semilla estratégico. Alternativas por audiencia: ProInnóvate, angels, clientes B2B.')}
-    </div>
+# ============ CAP VII · CRECIMIENTO & INVERSIÓN ============
+S("light","Crecimiento","divider",divider("07","Crecimiento<br>e <span class='grad'>inversión</span>","De operación validada a plataforma vertical de adopción tecnológica para LATAM."),"")
+
+S("light","Crecimiento","statement",f"""
+  {title('El B2C da entrada. El <span class="grad">B2B da expansión</span>.')}
+  {flow([("Comunidad","hot"),("Diagnóstico",""),("Live",""),("On-demand",""),("B2B","win")])}
+  {chiprow(["Contenido especializado","Programas en vivo","Microlearning","Expansión empresarial · CAC bajo"])}
+""","")
+
+S("light","Crecimiento","timeline",f"""
+  {title('De operación validada a <span class="grad">plataforma regional</span>')}
+  <div class="tl reveal">
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-when">2024</div><div class="tl-what">Comunidad + <b>programas en vivo</b>.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-when">2025</div><div class="tl-what">Primer <b>B2B</b> + ×4 crecimiento.</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-when">2026</div><div class="tl-what"><b>Microlearning + IA</b> aplicada.</div></div>
+    <div class="tl-item win"><div class="tl-dot"></div><div class="tl-when">2027</div><div class="tl-what"><b>Expansión regional</b> + AI Talent.</div></div>
   </div>
-""")
+""","")
 
-# 42 IMPACTO DEL CAPITAL
-S("dark","VII · Inversión","table",f"""
-  {kicker("Impacto esperado del capital")}
-  {title('Cinco variables que <span class="grad">se mueven juntas</span>')}
+S("light","Crecimiento","table",f"""
+  {title('Riesgos <span class="grad">nombrados y cubiertos</span>')}
+  {table(["Riesgo","Mitigación"],[
+   ["Ser percibidos como academia","Posicionamiento como plataforma de adopción tecnológica"],
+   ["Dependencia de Live Training","Migración a B2B y On-demand AI"],
+   ["CAC alto al escalar","Comunidad vertical + B2B2C + referidos"],
+   ["Baja retención","Rutas, prácticas, AI Coach, progreso visible"],
+   ["IA sin data propia","Capturar perfiles, evidencias y outcomes"],
+   ["Métricas recurrentes inmaduras","Separar ventas, run-rate y ARR real"],
+  ], hi=[0])}
+""","")
+
+S("dark","Inversión","team",f"""
+  {title('Equipo técnico con <span class="grad">ejecución validada</span> y visión sectorial')}
+  <div class="team reveal">
+    {member("Yudely Palpan","CTO & Founder","violet")}{member("Alejandro Palpan","CEO & Estrategia","blue")}{member("Julie Palero","Finanzas & Mercados Int.","green")}
+    {member("Daniella Galvez","Head of Academic & Skills","violet")}{member("Anggie Palpan","Marketing & Growth","blue")}{member("Erika Delgado","Community & BizDev","green")}
+    {member("Fabrizio Inga","Head of Data & AI","violet")}{member("Fernando Valdivia","Product Engineering","blue")}{member("Marlon Tafur","Automatización","green")}
+    {member("Anderson","Full Stack","violet")}{member("Yary","UX / UI","blue")}
+  </div>
+""","Equipo multidisciplinario de +12 personas con ejecución validada: ya construyó comunidad, vendió y creció ×4.")
+
+S("dark","Inversión","ask",f"""
+  {title('US$125K para <span class="grad">escalar lo validado</span>')}
+  <div class="ask-grid reveal">
+    <div class="ask-left">{donut([("IA + plataforma",60,"#6D70F9"),("Growth B2C2B / LATAM",30,"#17B14E"),("Microlearning on-demand",10,"#4465EE")])}</div>
+    <div class="ask-right">{bullets(["<b>60%</b> — IA + plataforma","<b>30%</b> — growth B2C2B + expansión LATAM","<b>10%</b> — microlearning on-demand"])}<div class="ask-note reveal">El capital no financia una idea: financia convertir una operación validada en una <b>plataforma escalable</b>.</div></div>
+  </div>
+""","")
+
+S("dark","Inversión","table",f"""
+  {title('El impacto del capital: <span class="grad">cinco variables</span>')}
   {table(["Métrica","2026E","2027 Target"],[
    ["Revenue total","US$220K","<b>US$420K</b>"],
    ["B2B + On-demand","40%","<b>62%</b>"],
    ["Margen de contribución ponderado","42.5%","<b>47.1%</b>"],
    ["Contribución estimada","US$93.5K","<b>US$198K</b>"],
    ["Dependencia de Live","60%","<b>38%</b>"],
-   ["On-demand AI","15%","<b>29%</b>"],
   ], hi=[2])}
   {chip("Más revenue · más B2B · más On-demand · más margen · menos dependencia de Live")}
-""")
+""","")
 
-# 43 EQUIPO
-S("dark","VII · Inversión","split",f"""
-  {kicker("Equipo")}
-  {title('+12 personas que <span class="grad">ya ejecutaron</span>')}
-  <div class="split">
-   <div class="split-l">
-     {bullets([
-       'Producto · desarrollo full stack · sistemas · data.',
-       'Automatización e inteligencia artificial.',
-       'Estrategia comercial · business development.',
-       'Marketing · growth · coordinación académica.',
-       'Administración · finanzas · soporte operativo.',
-     ])}
-   </div>
-   <div class="split-r">
-     {quote('No es un equipo con intención: ya construyó comunidad, vendió programas y <span class="grad">creció ×4</span> de 2024 a 2025.')}
-     {lead('La pregunta no es si pueden vender. Ya vendieron. Es si pueden convertir esa tracción en <b>plataforma escalable</b> — y la inversión está diseñada para eso.')}
-   </div>
-  </div>
-""")
-
-# 44 RIESGOS
-S("dark","VII · Inversión","table",f"""
-  {kicker("Riesgos & mitigación")}
-  {title('Riesgos <span class="grad">nombrados y cubiertos</span>')}
-  {table(["Riesgo","Mitigación"],[
-   ["Ser percibidos como academia","Posicionamiento como plataforma de adopción tecnológica"],
-   ["Dependencia de Live Training","Migración a B2B y On-demand AI"],
-   ["CAC alto","Comunidad vertical + B2B2C + referidos"],
-   ["Baja retención","Rutas, prácticas, AI Coach, progreso visible"],
-   ["Competidores horizontales","Especialización AEC y casos reales"],
-   ["Métricas recurrentes inmaduras","Separar ventas, run-rate y ARR real"],
-  ], hi=[0])}
-""")
-
-# 45 EVALUACIÓN JURADO
-S("light","VII · Inversión","cards",f"""
-  {kicker("Evaluación · jurado de aceleradora")}
-  {title('Seis criterios, <span class="grad">10/10</span>')}
-  {grid([
-   card("Problema y solución","Claro y alineado: adopción tecnológica con rutas, IA y evidencia.", num="10", tone="green"),
-   card("Valor e innovación","Plataforma vertical con IA, comunidad y B2B2C — no solo cursos.", num="10"),
-   card("Validación / tracción","Ventas, ×4, clientes activos, comunidad, expertos, alianzas.", num="10", tone="blue"),
-   card("Modelo y escalabilidad","Live valida · B2B ancla · On-demand AI escala margen.", num="10", tone="green"),
-   card("Equipo y ejecución","Multidisciplinario y con resultados probados.", num="10"),
-   card("Presentación","Narrativa que conecta IA, productividad, mercado e inversión.", num="10", tone="blue"),
-  ], 3, "cards-sm")}
-""")
-
-# 46 EVALUACIÓN INVERSIONISTA
-S("light","VII · Inversión","split",f"""
-  {kicker("Evaluación · inversionista")}
-  {title('Atractivo hoy, <span class="grad">más invertible</span> mañana')}
-  <div class="split">
-   <div class="split-l">
-     {card("Lo que atrae", bullets(["Ya hay ventas y crecimiento probado","Comunidad vertical y mercado especializado","El mix mejora margen con el tiempo","Uso de capital claro y equipo que ejecutó"]), tag="Fortalezas", tone="green")}
-   </div>
-   <div class="split-r">
-     {card("Lo que debe madurar", bullets(["MRR / ARR reales","CAC por canal · LTV por línea","Retención por cohortes · NRR","Dashboard financiero mensual"]), tag="A construir", tone="blue")}
-   </div>
-  </div>
-  {quote('Hoy no inflamos métricas recurrentes. Reportamos ventas, run-rate y contribución por línea. La inversión construye la capa de plataforma, IA y suscripción para subir ARR real, retención y escalabilidad.')}
-""")
-
-# 47 RESUMEN EJECUTIVO
-S("light","VII · Inversión","chart",f"""
-  {kicker("Resumen ejecutivo · una mirada")}
-  {title('Por qué AECODE es <span class="grad">atractiva para semilla</span>')}
-  <div class="statrow">
-    {stat("4","Crecimiento 2024 → 2025","US$30K → US$120K", prefix="×", tone="green")}
-    {stat("220","Revenue proyectado 2026E","US$ miles", prefix="US$", suffix="K", tone="violet")}
-    {stat("62","Revenue escalable 2027 Target","B2B + On-demand AI", suffix="%", tone="blue")}
-    {stat("125","Ask · SAFE / semilla","60% IA · 30% growth · 10% contenido", prefix="US$", suffix="K", tone="green")}
-  </div>
-  {lead('Demanda validada con ventas · comunidad regional · equipo completo · modelo híbrido que mejora margen · ruta clara a mayor escalabilidad. <b>La inversión convierte una operación validada en plataforma vertical.</b>')}
-""")
-
-# 48 CIERRE
-S("dark","VIII · Cierre","close",f"""
-  <div class="cover-logo reveal"><img class="logo-dark" src="brand/assets/logos/aecode-logo-principal-fondo-oscuro.png" alt="AECODE"><img class="logo-light" src="brand/assets/logos/aecode-logo-principal-fondo-blanco.png" alt="AECODE"></div>
+S("dark","Cierre","close",f"""
+  {LOGO}
   {quote('AECODE está migrando de una operación educativa validada hacia una <span class="grad">plataforma vertical de adopción tecnológica</span> para la construcción en LATAM.')}
-  <div class="close-cols reveal">
-    <div class="close-c"><div class="close-h">Esta migración mejora</div>{bullets(["Crecimiento","Margen de contribución","Escalabilidad"])}</div>
-    <div class="close-c"><div class="close-h">El ask</div>{bullets(["US$125K SAFE / semilla","60% IA + plataforma","Tracción: ×4, 300 clientes, 14 países"])}</div>
-  </div>
-  <div class="close-cta reveal">AECODE: aprende, aplica, construye mejor · apalpan@genplusdesign.com</div>
-""")
+  <div class="close-cta reveal">Aprende · Aplica · <span class="grad">Construye mejor</span></div>
+  <div class="close-qr reveal"><img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=2&qzone=1&color=4A3AC1&data={_a(QR_URL)}" alt="QR AECODE" loading="lazy"><span>Escanéame · AECODE × GEN+</span></div>
+""","")
 
 # ---------- render ----------
 def render_slide(i,s):
-    return (f'<section class="slide" data-base="{s["theme"]}" data-ch="{esc(s["chapter"])}" data-idx="{i}">'
+    return (f'<section class="slide" data-base="{s["theme"]}" data-ch="{esc(s["chapter"])}" data-notes="{_a(s["notes"])}" data-idx="{i}">'
             f'<div class="slide-inner layout-{s["layout"]}">{s["content"]}</div>'
             f'<img class="slide-mark" src="brand/assets/logos/aecode_isotipo_principal.png" alt="">'
-            f'<div class="slide-foot"><span class="foot-ch">{esc(s["chapter"])}</span>'
-            f'<span class="foot-n">{i+1:02d}<i>/</i>{len(SLIDES):02d}</span></div></section>')
+            f'<div class="slide-foot"><span class="foot-n">{i+1:02d}<i>/</i>{len(SLIDES):02d}</span></div></section>')
 slides_html="\n".join(render_slide(i,s) for i,s in enumerate(SLIDES))
 total=len(SLIDES)
 toc_items="".join(
@@ -812,313 +573,356 @@ toc_items="".join(
    f'<span class="toc-t">{esc(s["chapter"])}</span></button>' for i,s in enumerate(SLIDES))
 
 CSS = r"""
-:root{
-  --violet:#4A3AC1; --blue:#4465EE; --violet2:#6D70F9; --green:#17B14E; --lavender:#A6A7FF;
-  --ease:cubic-bezier(.22,.61,.36,1); --ease-out:cubic-bezier(.16,1,.3,1);
-}
-.is-light{
-  --bg:#F5F5F6; --bg2:#EDEBF9; --surface:#FFFFFF; --fg:#202231; --muted:#3A4065;
-  --line:#C7C2EC; --card:#FFFFFF; --card-line:#E3E0F5;
-  --accent:#4A3AC1; --accent2:#4465EE; --accent3:#17B14E; --ink-soft:#4A3AC1;
-  --grad:linear-gradient(100deg,#4465EE,#6D12E3);
-  --grad3:linear-gradient(100deg,#17B14E,#4A3AC1);
-  --mesh-a:rgba(74,58,193,.10); --mesh-b:rgba(23,177,78,.10);
-  --chip-bg:#EDEBF9;
-}
-.is-dark{
-  --bg:#0E1121; --bg2:#1B1E3C; --surface:#13172F; --fg:#EEF3F8; --muted:#A2B4CB;
-  --line:rgba(124,126,223,.24); --card:rgba(27,30,60,.72); --card-line:rgba(124,126,223,.32);
-  --accent:#A6A7FF; --accent2:#7E97FF; --accent3:#2FD06E; --ink-soft:#C9D0F5;
-  --grad:linear-gradient(100deg,#7E97FF,#9A5CFF);
-  --grad3:linear-gradient(100deg,#2FD06E,#8C97DC);
-  --mesh-a:rgba(74,58,193,.46); --mesh-b:rgba(23,177,78,.20);
-  --chip-bg:rgba(124,126,223,.16);
-}
+:root{--violet:#4A3AC1;--blue:#4465EE;--violet2:#6D70F9;--green:#17B14E;--lavender:#A6A7FF;--ease:cubic-bezier(.22,.61,.36,1);--ease-out:cubic-bezier(.16,1,.3,1);}
+.is-light{--bg:#F5F5F6;--bg2:#EDEBF9;--surface:#FFFFFF;--fg:#202231;--muted:#3A4065;--line:#C7C2EC;--card:#FFFFFF;--card-line:#E6E3F4;--danger:#E5484D;--accent:#4A3AC1;--accent2:#4465EE;--accent3:#17B14E;--ink-soft:#4A3AC1;--grad:linear-gradient(100deg,#4465EE,#6D12E3);--grad3:linear-gradient(100deg,#17B14E,#4A3AC1);--mesh-a:rgba(74,58,193,.08);--mesh-b:rgba(23,177,78,.08);--chip-bg:#EDEBF9;}
+.is-dark{--bg:#0E1121;--bg2:#1B1E3C;--surface:#13172F;--fg:#EEF3F8;--muted:#A2B4CB;--line:rgba(124,126,223,.20);--card:rgba(27,30,60,.55);--card-line:rgba(124,126,223,.26);--danger:#FF6B6B;--accent:#A6A7FF;--accent2:#7E97FF;--accent3:#2FD06E;--ink-soft:#C9D0F5;--grad:linear-gradient(100deg,#7E97FF,#9A5CFF);--grad3:linear-gradient(100deg,#2FD06E,#8C97DC);--mesh-a:rgba(74,58,193,.40);--mesh-b:rgba(23,177,78,.16);--chip-bg:rgba(124,126,223,.14);}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:#05060f;color:#fff;overflow:hidden;font-family:Manrope,"Plus Jakarta Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .deck{position:fixed;inset:0;display:grid;place-items:center}
 .stage{width:1280px;height:720px;position:relative;transform-origin:center}
-.slide{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);color:var(--fg);
-  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s var(--ease),transform .55s var(--ease-out);overflow:hidden}
-.slide::before{content:"";position:absolute;inset:-12%;z-index:0;
-  background:radial-gradient(38% 50% at 14% 12%,var(--mesh-a),transparent 70%),
-             radial-gradient(44% 52% at 88% 90%,var(--mesh-b),transparent 72%)}
+.slide{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);color:var(--fg);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .5s var(--ease),transform .55s var(--ease-out);overflow:hidden}
+.slide::before{content:"";position:absolute;inset:-12%;z-index:0;background:radial-gradient(40% 52% at 12% 10%,var(--mesh-a),transparent 72%),radial-gradient(46% 54% at 90% 92%,var(--mesh-b),transparent 74%)}
 .slide.active{opacity:1;visibility:visible;pointer-events:auto}
-.slide-inner{position:relative;z-index:2;width:100%;height:100%;padding:58px 72px 66px;
-  display:flex;flex-direction:column;justify-content:center;gap:16px}
-.slide-foot{position:absolute;z-index:3;left:72px;right:72px;bottom:24px;display:flex;
-  justify-content:space-between;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.foot-ch{font-weight:700} .foot-n{font-variant-numeric:tabular-nums;font-weight:700}
-.foot-n i{opacity:.4;font-style:normal;margin:0 3px}
-.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s var(--ease-out),transform .55s var(--ease-out)}
+.slide-inner{position:relative;z-index:2;width:100%;height:100%;padding:60px 84px 70px;display:flex;flex-direction:column;justify-content:center;gap:22px}
+.slide-foot{position:absolute;z-index:3;right:84px;bottom:30px;font-size:12px;letter-spacing:.18em;color:var(--muted);opacity:.6}
+.foot-n{font-variant-numeric:tabular-nums;font-weight:700} .foot-n i{opacity:.4;font-style:normal;margin:0 4px}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
 .slide.active .reveal{opacity:1;transform:none}
-/* typo */
-.kicker{font-weight:800;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);
-  display:flex;align-items:center;gap:11px}
-.kicker::before{content:"";width:30px;height:3px;border-radius:3px;background:var(--grad)}
-.s-title{font-weight:800;font-size:clamp(30px,3.9vw,48px);line-height:1.03;letter-spacing:-.02em;
-  text-wrap:balance;max-width:21ch}
-.lead{font-size:clamp(16px,1.45vw,20px);line-height:1.5;color:var(--muted);max-width:64ch}
-.lead b{color:var(--fg);font-weight:700} .lead i{font-style:italic;color:var(--accent)}
+.s-title{font-weight:800;font-size:clamp(30px,4.2vw,52px);line-height:1.02;letter-spacing:-.03em;text-wrap:balance;max-width:21ch}
+.lead{font-size:clamp(15px,1.45vw,20px);line-height:1.5;color:var(--muted);max-width:64ch} .lead b{color:var(--fg);font-weight:700} .lead i{font-style:italic;color:var(--accent)}
 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
-.chip{display:inline-flex;align-items:center;gap:9px;align-self:flex-start;font-size:14px;font-weight:700;
-  padding:9px 17px;border-radius:100px;border:1px solid var(--card-line);background:var(--chip-bg);color:var(--fg)}
+.red{color:var(--danger)}
+.source{font-size:12.5px;color:var(--muted);font-style:italic}
+.chip{display:inline-flex;align-items:center;gap:9px;align-self:flex-start;font-size:14px;font-weight:700;padding:9px 17px;border-radius:100px;border:1px solid var(--card-line);background:var(--chip-bg);color:var(--fg)}
 .chip::before{content:"◆";color:var(--accent3);font-size:10px}
-.source{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:2px}
-.vnote{font-size:13.5px;line-height:1.45;color:var(--muted);padding:12px 16px;border-radius:12px;
-  background:var(--bg2);border:1px dashed var(--card-line)}
-.vnote b{color:var(--accent)}
-/* cover */
-.layout-cover,.layout-close{align-items:flex-start;justify-content:center;gap:20px}
-.cover-logo img{height:52px;width:auto;display:block}
-.logo-light{display:none}
-.slide.is-light .logo-light{display:block} .slide.is-light .logo-dark{display:none}
-.layout-close .cover-logo img{height:44px}
-.slide-mark{position:absolute;top:30px;right:34px;height:30px;width:auto;z-index:3;opacity:.92;pointer-events:none}
-.layout-cover .slide-mark,.layout-close .slide-mark,.layout-divider .slide-mark{display:none}
-.layout-cover{padding-right:336px}
-.aecodito{position:absolute;right:52px;bottom:60px;width:248px;height:auto;z-index:1;
-  filter:drop-shadow(0 22px 44px rgba(74,58,193,.42));animation:float 6s var(--ease) infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
-@media (prefers-reduced-motion:reduce){.aecodito{animation:none}}
-.cover-title{font-weight:800;font-size:clamp(38px,5.4vw,70px);line-height:1.0;letter-spacing:-.03em;text-wrap:balance}
-.cover-sub{font-size:clamp(16px,1.55vw,21px);color:var(--muted);max-width:60ch;line-height:1.45}
-.cover-sub b{color:var(--fg)}
-.cover-meta{display:flex;gap:13px;align-items:center;flex-wrap:wrap;font-size:14.5px;color:var(--fg);margin-top:4px}
-.cover-meta .dot{color:var(--accent3)}
-.cover-hint{font-size:13px;color:var(--muted);margin-top:8px} .cover-hint b{color:var(--accent)}
-/* statement */
-.layout-statement,.layout-divider{gap:24px}
-.bigquote{font-weight:800;line-height:1.16;letter-spacing:-.02em;font-size:clamp(25px,3.1vw,40px);
-  text-wrap:balance;max-width:26ch;border-left:4px solid var(--accent3);padding-left:28px}
-.div-index{font-weight:800;font-size:clamp(58px,9vw,118px);line-height:1;color:transparent;-webkit-text-stroke:2px var(--accent);opacity:.5}
-.div-title{font-weight:800;font-size:clamp(38px,5.2vw,64px);line-height:1.02;letter-spacing:-.025em}
-.div-sub{font-size:clamp(16px,1.55vw,20px);color:var(--muted);max-width:56ch;line-height:1.45}
+.chiprow{display:flex;gap:11px;flex-wrap:wrap}
+.chip2{font-weight:700;font-size:14.5px;padding:10px 17px;border-radius:100px;background:var(--chip-bg);border:1px solid var(--card-line);color:var(--fg);transition:transform .18s var(--ease),border-color .2s}
+.slide.active .chip2:hover{transform:translateY(-2px);border-color:var(--accent)}
+/* cover/close/brand */
+.layout-cover,.layout-close,.layout-brand{align-items:flex-start;justify-content:center;gap:22px}
+.cover-logo img{height:54px;width:auto;display:block} .cover-logo.big img{height:72px}
+.logo-light{display:none}.slide.is-light .logo-light{display:block} .slide.is-light .logo-dark{display:none}
+.slide-mark{position:absolute;top:34px;right:38px;height:26px;width:auto;z-index:3;opacity:.82;pointer-events:none}
+.layout-close .slide-mark,.layout-brand .slide-mark,.layout-cover .slide-mark{display:none}
+.cover-title{font-weight:800;font-size:clamp(36px,5.2vw,66px);line-height:1.0;letter-spacing:-.03em;text-wrap:balance;max-width:18ch}
+.cover-sub{font-size:clamp(16px,1.55vw,21px);color:var(--muted);max-width:60ch;line-height:1.45} .cover-sub b{color:var(--fg)}
+.cover-meta{display:flex;gap:13px;align-items:center;flex-wrap:wrap;font-size:14.5px;color:var(--fg);margin-top:4px} .cover-meta .dot{color:var(--accent3)}
+.cover-hint{font-size:13px;color:var(--muted);margin-top:6px} .cover-hint b{color:var(--accent)}
+.close-cta{font-weight:800;font-size:clamp(22px,2.7vw,34px);color:var(--fg);letter-spacing:-.01em}
+.close-cta::before{content:"";display:inline-block;width:32px;height:3px;background:var(--grad);border-radius:3px;vertical-align:middle;margin-right:15px}
+.close-qr{display:flex;align-items:center;gap:14px;align-self:flex-start;margin-top:4px}
+.close-qr img{width:120px;height:120px;border-radius:13px;background:#fff;padding:9px;box-shadow:0 14px 34px rgba(0,0,0,.3)}
+.close-qr span{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+/* statement/divider */
+.layout-statement,.layout-brand{gap:28px}
+.layout-divider{gap:20px;justify-content:center}
+.bigquote{font-weight:800;line-height:1.1;letter-spacing:-.03em;font-size:clamp(30px,4.4vw,54px);text-wrap:balance;max-width:24ch;border-left:3px solid var(--accent3);padding-left:28px}
+.div-index{font-weight:800;font-size:clamp(56px,9vw,118px);line-height:1;color:transparent;-webkit-text-stroke:2px var(--accent);opacity:.5}
+.div-title{font-weight:800;font-size:clamp(38px,5.2vw,66px);line-height:1.02;letter-spacing:-.03em}
+.div-sub{font-size:clamp(16px,1.6vw,20px);color:var(--muted);max-width:54ch;line-height:1.45}
+/* eqs */
+.eqs{display:flex;flex-direction:column;gap:14px}
+.eq{display:flex;align-items:center;gap:16px;font-weight:800;font-size:clamp(20px,2.6vw,32px)}
+.eq span{color:var(--fg)} .eq i{font-style:normal;font-weight:800;font-size:1.05em}
+.eq-neq i{color:var(--muted)} .eq-eq i{color:var(--accent3)} .eq-eq span:last-child{color:var(--accent3)}
 /* split */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start;margin-top:2px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
 .split-l,.split-r{display:flex;flex-direction:column;gap:14px}
 /* stat */
-.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
-.layout-chart .statrow{margin-bottom:4px}
-.stat{display:flex;flex-direction:column;gap:3px;padding:16px 18px;border-radius:15px;background:var(--card);
-  border:1px solid var(--card-line)}
-.stat-num{font-weight:800;line-height:1;font-size:clamp(28px,3.4vw,44px);letter-spacing:-.02em;
-  font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:1px;color:var(--accent)}
-.stat-green .stat-num{color:var(--accent3)} .stat-blue .stat-num{color:var(--accent2)}
-.stat-pre,.stat-suf{font-size:.5em;font-weight:700}
-.stat-label{font-size:14.5px;font-weight:700;color:var(--fg);line-height:1.25}
-.stat-sub{font-size:13px;color:var(--muted);line-height:1.3}
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.statrow-2{grid-template-columns:1fr 1fr} .statrow-3{grid-template-columns:repeat(3,1fr)}
+.stat{display:flex;flex-direction:column;gap:4px;padding:17px 19px;border-radius:16px;background:var(--card);border:1px solid var(--card-line);transition:transform .2s var(--ease),box-shadow .25s,border-color .25s}
+.slide.active .stat:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 16px 34px rgba(8,10,30,.2)}
+.statrow.bare .stat{background:none;border:none;padding:4px 0} .statrow.bare .stat:hover{transform:none;box-shadow:none}
+.stat-num{font-weight:800;line-height:1;font-size:clamp(34px,4.4vw,56px);letter-spacing:-.03em;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:1px;color:var(--accent)}
+.statrow.bare .stat-num{font-size:clamp(46px,6.2vw,80px)} .statrow.st-mini .stat-num{font-size:clamp(30px,3.6vw,46px)}
+.stat-green .stat-num{color:var(--accent3)} .stat-blue .stat-num{color:var(--accent2)} .stat-danger .stat-num{color:var(--danger)}
+.stat-pre,.stat-suf{font-size:.48em;font-weight:700}
+.stat-label{font-size:14.5px;font-weight:700;color:var(--fg);line-height:1.25} .statrow.bare .stat-label{color:var(--muted);font-weight:600}
+.stat-sub{font-size:12.5px;color:var(--muted);line-height:1.3} .stat-danger .stat-sub{color:var(--danger);opacity:.85;font-weight:600}
 /* cards */
-.grid{display:grid;gap:14px}
-.grid-2{grid-template-columns:repeat(2,1fr)} .grid-3{grid-template-columns:repeat(3,1fr)} .grid-4{grid-template-columns:repeat(4,1fr)}
-.card{position:relative;padding:18px 18px 16px;border-radius:15px;background:var(--card);border:1px solid var(--card-line);
-  display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.grid{display:grid;gap:15px}.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
+.card{position:relative;padding:20px 20px 18px;border-radius:17px;background:var(--card);border:1px solid var(--card-line);display:flex;flex-direction:column;gap:8px;overflow:hidden;transition:transform .2s var(--ease),box-shadow .25s,border-color .25s}
+.slide.active .card:hover{transform:translateY(-5px);border-color:var(--accent);box-shadow:0 18px 38px rgba(8,10,30,.22)}
 .card::before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:var(--accent)}
-.card-green::before{background:var(--accent3)} .card-blue::before{background:var(--accent2)}
-.card-num{font-weight:800;font-size:21px;color:var(--accent)}
-.card-tag{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
-.card-green .card-tag,.card-green .card-num{color:var(--accent3)}
-.card-blue .card-tag,.card-blue .card-num{color:var(--accent2)}
+.card-green::before{background:var(--accent3)} .card-blue::before{background:var(--accent2)} .card-danger::before{background:var(--danger)}
+.card-num{font-weight:800;font-size:23px;color:var(--accent)}
+.card-green .card-num{color:var(--accent3)} .card-blue .card-num{color:var(--accent2)} .card-danger .card-num{color:var(--danger)}
+.card-tag{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.card-green .card-tag{color:var(--accent3)} .card-blue .card-tag{color:var(--accent2)} .card-danger .card-tag{color:var(--danger)}
 .card-head{font-weight:800;font-size:18px;line-height:1.2;color:var(--fg)}
-.card-body{font-size:14.5px;line-height:1.45;color:var(--muted)}
-.card-body b{color:var(--fg)} .card-body i{font-style:normal;color:var(--accent)}
-.card-big{font-weight:800;font-size:30px;color:var(--accent);display:block;margin-bottom:1px}
-.card-green .card-big{color:var(--accent3)} .card-blue .card-big{color:var(--accent2)}
-.cards-sm .card-head{font-size:16.5px} .cards-sm .card-body{font-size:13.5px}
-.cards-xs{gap:11px}.cards-xs .card{padding:13px 14px;gap:4px}
-.cards-xs .card-head{font-size:14px}.cards-xs .card-body{font-size:12.5px}.cards-xs .card-num{font-size:16px}
-.card code{font-family:ui-monospace,monospace;font-size:.86em;color:var(--accent2);line-height:1.7}
+.card-body{font-size:14.5px;line-height:1.45;color:var(--muted)} .card-body b{color:var(--fg)} .card-body i{color:var(--accent);font-style:italic}
+.card-big{font-weight:800;font-size:30px;color:var(--accent);display:block;margin-bottom:2px}
+.cards-sm .card-head{font-size:16px}.cards-sm .card-body{font-size:13.5px}
+.card code{font-family:ui-monospace,monospace;font-size:.84em;color:var(--accent2);line-height:1.7}
 /* bullets */
 .bullets{list-style:none;display:flex;flex-direction:column;gap:8px}
-.bullets li{position:relative;padding-left:22px;font-size:15px;line-height:1.4;color:var(--muted)}
-.bullets li b{color:var(--fg);font-weight:700} .bullets li i{font-style:normal;color:var(--accent)}
+.bullets li{position:relative;padding-left:22px;font-size:15px;line-height:1.4;color:var(--muted)} .bullets li b{color:var(--fg);font-weight:700}
 .bullets li::before{content:"";position:absolute;left:2px;top:7px;width:8px;height:8px;border-radius:2px;background:var(--accent3);transform:rotate(45deg)}
 .card .bullets li{font-size:13.5px}
 /* table */
-.table-wrap{width:100%;border-radius:13px;border:1px solid var(--card-line);overflow:hidden}
+.table-wrap{width:100%;border-radius:14px;border:1px solid var(--card-line);overflow:hidden}
 .dt{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--card)}
-.dt th{font-weight:800;text-align:left;padding:11px 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--accent);background:var(--bg2);border-bottom:1px solid var(--card-line)}
-.dt td{padding:10px 16px;border-bottom:1px solid var(--line);color:var(--muted);line-height:1.35;vertical-align:top}
-.dt td b{color:var(--fg)} .dt tr:last-child td{border-bottom:none}
-.dt .cell-hi{color:var(--fg);font-weight:700}
-.card .dt{font-size:13px;background:transparent} .card .table-wrap{border:none}
-.card .dt th{background:transparent;padding:4px 0;border:none}
-.card .dt td{padding:5px 0;border-color:var(--line)}
+.dt th{font-weight:800;text-align:left;padding:11px 16px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:var(--bg2);border-bottom:1px solid var(--card-line)}
+.dt td{padding:10px 16px;border-bottom:1px solid var(--line);color:var(--muted);line-height:1.35;vertical-align:top} .dt td b{color:var(--fg)} .dt tr:last-child td{border-bottom:none}
+.dt .cell-hi{color:var(--fg);font-weight:700} .slide.active .dt tbody tr{transition:background .2s} .slide.active .dt tbody tr:hover{background:var(--bg2)}
+/* flow */
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:9px}
+.flow-step{font-weight:700;font-size:15.5px;padding:12px 17px;border-radius:12px;background:var(--card);border:1px solid var(--card-line);color:var(--fg);transition:transform .18s var(--ease),border-color .2s}
+.slide.active .flow-step:hover{transform:translateY(-3px);border-color:var(--accent2)}
+.flow-step.hot{border-color:var(--accent2);color:var(--accent2);box-shadow:0 0 24px rgba(68,101,238,.16)}
+.flow-step.win{background:var(--grad3);color:#fff;border:none}
+.flow-arr{color:var(--accent);font-weight:800;font-size:18px;font-style:normal}
+/* std banner */
+.std-banner{font-size:16px;line-height:1.45;color:var(--fg);padding:15px 18px;border-radius:14px;background:var(--card);border:1px solid var(--card-line);border-left:4px solid var(--accent3)}
+.std-banner b{color:var(--accent);font-weight:800} .std-k{font-weight:800;color:var(--accent3)}
+/* latam */
+.layout-split-latam .slide-inner{padding-right:64px}
+.split-latam{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:center;width:100%}
+.sl-left{display:flex;flex-direction:column;gap:18px}
+.latam{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:12px 18px;padding:10px}
+.lt-grid-bg{position:absolute;inset:-10px;z-index:0;border-radius:20px;background:linear-gradient(rgba(124,126,223,.12) 1px,transparent 1px) 0 0/100% 28px,linear-gradient(90deg,rgba(124,126,223,.12) 1px,transparent 1px) 0 0/28px 100%;-webkit-mask:radial-gradient(60% 60% at 50% 50%,#000,transparent);mask:radial-gradient(60% 60% at 50% 50%,#000,transparent)}
+.lt-pin{position:relative;z-index:1;display:flex;gap:10px;align-items:flex-start;padding:9px 12px;border-radius:12px;background:var(--card);border:1px solid var(--card-line);transition:transform .18s var(--ease),border-color .2s;cursor:default}
+.slide.active .lt-pin:hover{transform:translateY(-3px);border-color:var(--accent)}
+.lt-dot{width:11px;height:11px;border-radius:50%;background:var(--accent3);margin-top:4px;flex:none;position:relative}
+.lt-dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--accent3);opacity:0;animation:ping 2.4s var(--ease) infinite}
+@keyframes ping{0%{transform:scale(.6);opacity:.7}70%,100%{transform:scale(1.5);opacity:0}}
+.lt-txt b{display:block;font-size:15px;font-weight:800;color:var(--fg)} .lt-txt small{font-size:12px;color:var(--muted)}
+/* product / demo */
+.prod{display:grid;grid-template-columns:1fr 1.05fr;gap:40px;align-items:center;width:100%}
+.prod-l{display:flex;flex-direction:column;gap:24px}
+.prod-steps{display:flex;flex-direction:column;gap:13px}
+.ps{display:flex;align-items:center;gap:14px;font-weight:800;font-size:22px;color:var(--fg)}
+.ps span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:15px;color:#fff;background:var(--grad);flex:none}
+.demo-frame{border-radius:18px;overflow:hidden;border:1px solid var(--card-line);background:var(--bg2);box-shadow:0 28px 64px rgba(0,0,0,.34)}
+.demo-bar{display:flex;align-items:center;gap:7px;padding:12px 17px;background:var(--card);border-bottom:1px solid var(--card-line)}
+.demo-bar>span{width:11px;height:11px;border-radius:50%;background:var(--line)}
+.demo-url{margin-left:14px;font-size:13px;color:var(--muted);background:var(--bg);padding:5px 14px;border-radius:6px;flex:1;max-width:280px}
+.mock{position:relative;padding:44px 28px 38px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:radial-gradient(60% 60% at 50% 35%,rgba(124,126,223,.22),transparent 70%)}
+.mock-orb{width:92px;height:92px;border-radius:50%;background:conic-gradient(from 0deg,#6D70F9,#4465EE,#17B14E,#6D70F9);filter:blur(2px);opacity:.9;box-shadow:0 0 60px rgba(109,112,249,.6);animation:spin 8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mock-play{position:absolute;top:62px;font-size:28px;color:#fff;opacity:.95}
+.mock-h{font-weight:800;font-size:21px;color:var(--fg);margin-top:14px} .mock-s{font-size:14px;color:var(--muted)} .mock-meta{font-size:12.5px;color:var(--accent);font-weight:700;margin-top:4px}
+/* engine */
+.layout-engine{gap:12px}
+.engine{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;align-items:center;margin-top:2px}
+.eng-col{display:flex;flex-direction:column;gap:10px} .eng-out{align-items:flex-end;text-align:right}
+.eng-h{font-weight:800;font-size:12px;letter-spacing:.2em;color:var(--accent2)}
+.eng-item{font-size:14.5px;font-weight:600;color:var(--fg);padding:8px 13px;border-radius:10px;background:var(--card);border:1px solid var(--card-line)} .eng-out .eng-item{color:var(--accent3)}
+.eng-core{display:flex;flex-direction:column;align-items:center;gap:9px}
+.eng-ring{width:164px;height:164px;border-radius:50%;display:grid;place-items:center;text-align:center;position:relative;background:radial-gradient(circle,rgba(124,126,223,.14),transparent 68%)}
+.eng-ring::before{content:"";position:absolute;inset:0;border-radius:50%;padding:3px;background:conic-gradient(from 0deg,#6D70F9,#4465EE,#17B14E,#6D70F9);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 9s linear infinite}
+.eng-core-in{z-index:1} .eng-core-in b{display:block;font-weight:800;font-size:32px;color:var(--fg);line-height:1} .eng-core-in span{font-size:13px;font-weight:700;color:var(--accent)}
+.eng-cap{font-size:12px;font-weight:700;color:var(--accent3);text-align:center;max-width:190px}
+.eng-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:4px}
+.em{font-size:14px;color:var(--muted);padding:11px 15px;border-radius:12px;background:var(--card);border:1px solid var(--card-line);transition:border-color .2s,transform .18s var(--ease);cursor:default}
+.slide.active .em:hover{border-color:var(--accent2);transform:translateY(-2px)} .em b{display:block;color:var(--accent2);font-size:14.5px;margin-bottom:2px} .em small{font-size:12px;color:var(--muted)}
+/* pyramid */
+.pyramid{display:flex;flex-direction:column;gap:9px;align-items:center;width:100%}
+.pyr-row{width:var(--w);transition:width .7s var(--ease-out)}
+.pyr-band{padding:15px 20px;border-radius:13px;color:#fff;text-align:center} .pyr-band b{display:block;font-weight:800;font-size:19px} .pyr-band span{font-size:13px;opacity:.92;line-height:1.3}
+.band-violet{background:linear-gradient(100deg,#5a4ad0,#4a3ac1)} .band-blue{background:linear-gradient(100deg,#4465ee,#3f7be0)} .band-green{background:linear-gradient(100deg,#17B14E,#1fa9a0)}
+/* tree */
+.tree{display:flex;flex-direction:column;align-items:center;gap:0;width:100%}
+.tree-root{font-weight:800;font-size:17px;color:#fff;background:var(--grad);padding:10px 26px;border-radius:11px}
+.tree-line{width:2px;height:16px;background:var(--card-line)}
+.tree-branches{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;border-top:2px solid var(--card-line);padding-top:15px}
+.tree-node{font-size:13.5px;font-weight:600;color:var(--fg);background:var(--card);border:1px solid var(--card-line);padding:9px 14px;border-radius:10px;position:relative;cursor:default;transition:transform .18s var(--ease),border-color .2s}
+.slide.active .tree-node:hover{transform:translateY(-3px);border-color:var(--accent2)}
+.tree-node::before{content:"";position:absolute;top:-15px;left:50%;width:2px;height:13px;background:var(--card-line)}
 /* barchart */
-.barchart{display:flex;flex-direction:column;gap:12px;width:100%}
-.bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;font-size:14px}
+.barchart{display:flex;flex-direction:column;gap:13px;width:100%}
+.bar{cursor:default} .bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;font-size:14.5px}
 .bar-top span{color:var(--fg);font-weight:600} .bar-top b{color:var(--accent);font-weight:800;font-variant-numeric:tabular-nums}
-.bar-track{height:11px;border-radius:100px;background:var(--bg2);overflow:hidden;border:1px solid var(--card-line)}
-.bar-track i{display:block;height:100%;width:var(--w);border-radius:100px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ease-out)}
-.slide.active .bar-track i{transform:scaleX(1)}
+.bar-track{height:12px;border-radius:100px;background:var(--bg2);overflow:hidden;border:1px solid var(--card-line)}
+.bar-track i{display:block;height:100%;width:var(--w);border-radius:100px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .9s var(--ease-out),filter .2s}
+.slide.active .bar-track i{transform:scaleX(1)} .slide.active .bar:hover .bar-track i{filter:brightness(1.14)}
 .bar-green .bar-top b{color:var(--accent3)} .bar-green .bar-track i{background:linear-gradient(100deg,var(--green),#43d98f)}
 .bar-blue .bar-top b{color:var(--accent2)} .bar-blue .bar-track i{background:linear-gradient(100deg,var(--blue),#6f8cff)}
 .bar-ink .bar-top b{color:var(--muted)} .bar-ink .bar-track i{background:var(--muted);opacity:.7}
+.trac{display:grid;grid-template-columns:1.15fr 1fr;gap:40px;align-items:center}
+.st-mini{grid-template-columns:1fr 1fr;gap:14px 22px}
+.statrow.st-mini{grid-template-columns:repeat(3,1fr)}
 /* stackbar */
 .stackbar{display:flex;flex-direction:column;gap:16px;width:100%}
-.sb-cols{display:flex;align-items:flex-end;justify-content:space-around;gap:18px;height:226px;padding:0 6px;border-bottom:2px solid var(--card-line)}
-.sb-col{flex:1;max-width:120px;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
-.sb-bar{width:60px;border-radius:8px 8px 0 0;overflow:hidden;display:flex;flex-direction:column-reverse;
-  transform:scaleY(0);transform-origin:bottom;transition:transform .85s var(--ease-out)}
+.sb-cols{display:flex;align-items:flex-end;justify-content:space-around;gap:28px;height:230px;padding:0 6px;border-bottom:2px solid var(--card-line)}
+.sb-col{flex:1;max-width:130px;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
+.sb-bar{width:66px;border-radius:9px 9px 0 0;overflow:hidden;display:flex;flex-direction:column-reverse;transform:scaleY(0);transform-origin:bottom;transition:transform .85s var(--ease-out)}
 .slide.active .sb-bar{transform:scaleY(1)}
-.sb-seg{width:100%;display:block}
-.sb-tot{font-weight:800;font-size:15px;color:var(--fg);font-variant-numeric:tabular-nums}
-.sb-lab{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.03em}
+.sb-seg{width:100%;display:block;cursor:pointer;transition:filter .2s}
+.slide.active .sb-bar:hover .sb-seg{filter:brightness(.55)} .slide.active .sb-seg:hover{filter:brightness(1.2)}
+.sb-tot{font-weight:800;font-size:15px;color:var(--fg)} .sb-lab{font-size:12.5px;font-weight:700;color:var(--muted)}
 .sb-legend{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
-.sb-leg{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);font-weight:600}
-.sb-leg i{width:13px;height:13px;border-radius:4px}
-/* tss concentric */
-.tss{display:flex;gap:26px;align-items:center}
+.sb-leg{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);font-weight:600} .sb-leg i{width:13px;height:13px;border-radius:4px}
+.scale-foot{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:2px}
+.margin-pill{display:flex;flex-direction:column;gap:1px;padding:11px 20px;border-radius:14px;background:var(--card);border:1px solid var(--card-line);border-left:4px solid var(--accent3)}
+.margin-pill span{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.margin-pill b{font-size:24px;font-weight:800;color:var(--fg);font-variant-numeric:tabular-nums;display:flex;align-items:center} .margin-pill i{color:var(--accent3);font-style:normal;font-weight:800;margin:0 8px}
+.scale-note{font-size:14.5px;color:var(--muted);line-height:1.45;max-width:42ch;flex:1;min-width:230px} .scale-note b{color:var(--fg);font-weight:700}
+/* funnel */
+.funnel{display:flex;flex-direction:column;gap:7px;align-items:center;width:100%}
+.fn{width:var(--w);min-width:200px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 20px;border-radius:10px;background:var(--card);border:1px solid var(--card-line);transition:width .7s var(--ease-out),filter .2s}
+.slide.active .fn:hover{filter:brightness(1.08)}
+.fn span{font-weight:700;font-size:15px;color:var(--fg)} .fn b{font-size:12.5px;color:var(--muted)}
+.fn.hot{border-color:var(--accent2);background:rgba(68,101,238,.12)} .fn.hot span{color:var(--accent2)}
+.fn.win{background:var(--grad3);border:none} .fn.win span,.fn.win b{color:#fff}
+/* tss */
+.tss{display:flex;gap:28px;align-items:center}
 .tss-rings{position:relative;width:230px;height:230px;flex:none}
-.ring{position:absolute;border-radius:50%;display:grid;place-items:start center;padding-top:10px;
-  font-weight:800;font-size:13px;left:50%;top:50%;transform:translate(-50%,-50%)}
-.ring span{color:#fff;letter-spacing:.1em}
+.ring{position:absolute;border-radius:50%;display:grid;place-items:start center;padding-top:11px;font-weight:800;font-size:13px;left:50%;top:50%;transform:translate(-50%,-50%);cursor:pointer;transition:filter .2s}
+.ring span{color:#fff;letter-spacing:.1em} .slide.active .ring:hover{filter:brightness(1.18) saturate(1.2)}
 .ring.r0{width:230px;height:230px;background:rgba(74,58,193,.20);border:1px solid var(--violet)}
-.ring.r1{width:158px;height:158px;background:rgba(68,101,238,.28);border:1px solid var(--blue)}
+.ring.r1{width:158px;height:158px;background:rgba(68,101,238,.30);border:1px solid var(--blue)}
 .ring.r2{width:88px;height:88px;background:var(--green);border:1px solid var(--green);place-items:center;padding:0}
 .is-light .ring.r0 span,.is-light .ring.r1 span{color:#2a2470}
 .tss-legend{display:flex;flex-direction:column;gap:12px}
-.tss-leg{display:flex;gap:11px;align-items:flex-start;font-size:14px}
+.tss-leg{display:flex;gap:11px;align-items:flex-start;font-size:14px;cursor:default;transition:transform .18s var(--ease)} .slide.active .tss-leg:hover{transform:translateX(4px)}
 .tss-leg .dot{width:14px;height:14px;border-radius:4px;margin-top:3px;flex:none}
 .tss-leg .d0{background:var(--violet)} .tss-leg .d1{background:var(--blue)} .tss-leg .d2{background:var(--green)}
-.tss-leg b{color:var(--fg);font-weight:800} .tss-leg small{display:block;color:var(--muted);font-size:12.5px}
-/* flow */
-.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.flow-step{font-weight:700;font-size:15px;padding:11px 16px;border-radius:11px;background:var(--card);border:1px solid var(--card-line);color:var(--fg)}
-.flow-step.hot{border-color:var(--accent2);color:var(--accent2);box-shadow:0 0 22px rgba(68,101,238,.18)}
-.flow-step.win{background:var(--grad3);color:#fff;border:none}
-.flow-arr{color:var(--accent);font-weight:800;font-size:18px;font-style:normal}
+.tss-leg b{color:var(--fg);font-weight:800} .tss-leg small{display:block;color:var(--muted);font-size:12px}
 /* donut */
-.donut-wrap{display:flex;align-items:center;gap:24px}
-.donut{width:180px;height:180px;border-radius:50%;position:relative;flex:none}
-.donut-hole{position:absolute;inset:30px;border-radius:50%;background:var(--bg)}
-.donut-legend{display:flex;flex-direction:column;gap:11px}
-.dn-leg{display:flex;align-items:center;gap:9px;font-size:14.5px;color:var(--muted)}
-.dn-leg span{width:13px;height:13px;border-radius:4px;flex:none} .dn-leg b{color:var(--fg);font-weight:800}
+.donut-wrap{display:flex;align-items:center;gap:26px}
+.donut-svg{position:relative;width:190px;height:190px;flex:none} .donut-svg svg{width:100%;height:100%;overflow:visible}
+.dn-arc{transition:stroke-width .22s var(--ease),opacity .22s;cursor:pointer}
+.slide.active .donut-svg:hover .dn-arc{opacity:.4} .slide.active .donut-svg .dn-arc:hover{opacity:1;stroke-width:21}
+.dn-center{position:absolute;inset:0;display:grid;place-items:center;text-align:center;pointer-events:none;gap:2px}
+.dn-c-pct{font-weight:800;font-size:32px;color:var(--fg);font-variant-numeric:tabular-nums;line-height:1} .dn-c-lab{font-size:12px;color:var(--muted);max-width:94px;line-height:1.2;font-weight:600}
+.donut-legend{display:flex;flex-direction:column;gap:12px}
+.dn-leg{display:flex;align-items:center;gap:10px;font-size:14.5px;color:var(--muted);cursor:default;transition:transform .18s var(--ease)} .slide.active .dn-leg:hover{transform:translateX(4px)}
+.dn-leg span{width:14px;height:14px;border-radius:4px;flex:none} .dn-leg b{color:var(--fg);font-weight:800}
+/* b2c2b */
+.layout-b2c2b{gap:24px}
+.b2flow{display:flex;align-items:stretch;gap:12px;flex-wrap:wrap}
+.b2step{flex:1;min-width:120px;display:flex;flex-direction:column;gap:5px;padding:19px 17px;border-radius:16px;background:var(--card);border:1px solid var(--card-line);position:relative;transition:transform .2s var(--ease),border-color .2s}
+.slide.active .b2step:hover{transform:translateY(-5px);border-color:var(--accent)}
+.b2n{position:absolute;top:12px;right:14px;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;background:var(--grad)}
+.b2step b{font-weight:800;font-size:23px;color:var(--fg)} .b2step small{font-size:13px;color:var(--muted);line-height:1.3}
+.b2win{flex:1.5;background:var(--grad3);border:none;box-shadow:0 16px 40px rgba(38,185,111,.3)} .b2win b{color:#fff;font-size:30px} .b2win small{color:rgba(255,255,255,.92);font-weight:700}
+.b2arr{display:flex;align-items:center;color:var(--accent);font-weight:800;font-size:22px;font-style:normal}
+/* pricing blocks */
+.layout-blocks{gap:18px}
+.pblocks{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:4px}
+.pblock{padding:22px 20px;border-radius:20px;background:var(--card);border:1px solid var(--card-line);display:flex;flex-direction:column;gap:13px;transition:transform .2s var(--ease),box-shadow .25s,border-color .25s;position:relative;overflow:hidden}
+.pblock::before{content:"";position:absolute;left:0;top:0;width:100%;height:4px;background:var(--accent)} .pblock-green::before{background:var(--accent3)} .pblock-blue::before{background:var(--accent2)}
+.slide.active .pblock:hover{transform:translateY(-6px);border-color:var(--accent);box-shadow:0 22px 46px rgba(8,10,30,.26)}
+.pb-head{display:flex;flex-direction:column;gap:4px}
+.pb-tag{font-weight:800;font-size:12.5px;letter-spacing:.06em;color:var(--accent);text-transform:uppercase} .pblock-green .pb-tag{color:var(--accent3)} .pblock-blue .pb-tag{color:var(--accent2)}
+.pb-role{font-weight:700;font-size:17px;color:var(--fg)} .pb-icon{font-size:32px;line-height:1}
+.pb-price b{display:block;font-weight:800;font-size:28px;color:var(--fg);letter-spacing:-.02em} .pb-price b.pb-2{margin-top:9px}
+.pb-price small{display:block;font-size:12.5px;color:var(--muted);font-weight:600} .pb-tag2{margin-top:8px;color:var(--accent)!important;font-weight:700!important}
+.pblock-green .pb-tag2{color:var(--accent3)!important} .pblock-blue .pb-tag2{color:var(--accent2)!important}
 /* map2x2 */
-.map2x2{display:grid;grid-template-columns:18px 1fr;grid-template-rows:1fr 18px;gap:6px;width:100%;height:286px}
-.mp-axis-y{grid-column:1;grid-row:1;writing-mode:vertical-rl;transform:rotate(180deg);display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-.mp-axis-y i{flex:1}
-.mp-axis-x{grid-column:2;grid-row:2;display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-.mp-axis-x i{flex:1}
-.mp-plane{grid-column:2;grid-row:1;position:relative;border-left:2px solid var(--card-line);border-bottom:2px solid var(--card-line);background:
-  linear-gradient(var(--card-line) 1px,transparent 1px) 0 0/100% 25%,
-  linear-gradient(90deg,var(--card-line) 1px,transparent 1px) 0 0/25% 100%;background-color:var(--bg2)}
-.mp-dot{position:absolute;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;background:var(--muted)}
-.mp-dot span{position:absolute;left:50%;top:130%;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:700;color:var(--fg)}
-.mp-green{background:var(--green);box-shadow:0 0 0 6px rgba(38,185,111,.2)}
-.mp-big{width:20px;height:20px} .mp-big span{font-size:13px;color:var(--accent3);font-weight:800;top:120%}
-/* flywheel */
-.fly{display:flex;justify-content:center;margin:4px 0}
-.fly-ring{position:relative;width:560px;height:286px}
-.fly-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:128px;height:128px;border-radius:50%;
-  display:grid;place-items:center;text-align:center;font-weight:800;font-size:17px;color:#fff;
-  background:radial-gradient(circle,#6D70F9,#4A3AC1);box-shadow:0 0 50px rgba(74,58,193,.45)}
-.fly-core small{font-weight:600;font-size:11px;opacity:.85}
-.fly-node{position:absolute;font-size:12.5px;font-weight:600;line-height:1.25;width:170px;padding:9px 13px;border-radius:10px;
-  background:var(--card);border:1px solid var(--card-line);color:var(--fg)}
-.fly-node.n1{left:0;top:-4px}.fly-node.n2{right:0;top:-4px;text-align:right}
-.fly-node.n3{right:-16px;top:46%;transform:translateY(-50%);text-align:right}
-.fly-node.n4{right:0;bottom:-4px;text-align:right}.fly-node.n5{left:0;bottom:-4px}
-.fly-node.n6{left:-16px;top:46%;transform:translateY(-50%)}
+.map2x2{display:grid;grid-template-columns:20px 1fr;grid-template-rows:1fr 20px;gap:6px;width:100%;height:392px}
+.mp-axis-y{grid-column:1;grid-row:1;writing-mode:vertical-rl;transform:rotate(180deg);display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.mp-axis-x{grid-column:2;grid-row:2;display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.mp-plane{grid-column:2;grid-row:1;position:relative;border-left:2px solid var(--card-line);border-bottom:2px solid var(--card-line);background:linear-gradient(var(--card-line) 1px,transparent 1px) 0 50%/100% 50%,linear-gradient(90deg,var(--card-line) 1px,transparent 1px) 50% 0/50% 100%;background-color:rgba(124,126,223,.05)}
+.mp-dot{position:absolute;transform:translate(-50%,-50%);font-size:13px;font-weight:700;color:var(--fg);white-space:nowrap;padding:6px 11px;border-radius:9px;background:var(--card);border:1px solid var(--card-line);cursor:default;transition:transform .18s var(--ease),border-color .2s}
+.slide.active .mp-dot:hover{transform:translate(-50%,-50%) scale(1.08);border-color:var(--accent)}
+.mp-big{color:#fff;background:var(--grad3);border:none;font-weight:800;font-size:14.5px;box-shadow:0 0 26px rgba(38,185,111,.4)}
+/* nsm cards */
+.layout-nsm{gap:26px}
+.nsm-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.nsm-card{position:relative;padding:28px 26px;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;gap:10px;border:1px solid var(--card-line);background:var(--card);transition:transform .22s var(--ease),box-shadow .3s}
+.nsm-card::after{content:"";position:absolute;right:-40px;top:-40px;width:170px;height:170px;border-radius:50%;opacity:.18;filter:blur(6px)}
+.nsm-prod::after{background:radial-gradient(circle,#17B14E,transparent 70%)} .nsm-neg::after{background:radial-gradient(circle,#6D70F9,transparent 70%)}
+.slide.active .nsm-card:hover{transform:translateY(-7px)} .slide.active .nsm-prod:hover{box-shadow:0 22px 50px rgba(23,177,78,.32)} .slide.active .nsm-neg:hover{box-shadow:0 22px 50px rgba(109,112,249,.34)}
+.nsm-icon{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:26px;color:#fff;z-index:1}
+.nsm-prod .nsm-icon{background:linear-gradient(135deg,#17B14E,#1fa9a0)} .nsm-neg .nsm-icon{background:linear-gradient(135deg,#6D70F9,#4465EE)}
+.nsm-tag{font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;z-index:1}
+.nsm-prod .nsm-tag{color:#17B14E} .nsm-neg .nsm-tag{color:var(--violet2)} .is-dark .nsm-prod .nsm-tag{color:#2FD06E} .is-dark .nsm-neg .nsm-tag{color:#A6A7FF}
+.nsm-v{font-weight:800;font-size:clamp(22px,2.5vw,30px);line-height:1.1;color:var(--fg);z-index:1} .nsm-v span{color:var(--muted);font-weight:700}
+.nsm-sub{font-size:14px;color:var(--muted);line-height:1.4;z-index:1}
+.layout-nsm2{gap:24px}
+/* team */
+.layout-team{gap:20px}
+.team{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.mem{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:15px 10px;border-radius:16px;background:var(--card);border:1px solid var(--card-line);transition:transform .2s var(--ease),border-color .2s}
+.slide.active .mem:hover{transform:translateY(-5px);border-color:var(--accent)}
+.mem-av{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:18px;color:#fff;background:var(--grad)}
+.mem-green .mem-av{background:linear-gradient(135deg,#17B14E,#1fa9a0)} .mem-blue .mem-av{background:linear-gradient(135deg,#4465EE,#6f8cff)}
+.mem-n{font-weight:800;font-size:13.5px;color:var(--fg);line-height:1.15} .mem-r{font-size:11px;color:var(--muted);line-height:1.25}
+/* timeline */
+.tl{display:grid;grid-template-columns:repeat(4,1fr);position:relative;margin:14px 0}
+.tl::before{content:"";position:absolute;left:6%;right:6%;top:9px;height:2px;background:var(--line)}
+.tl-item{position:relative;padding:0 14px;display:flex;flex-direction:column;gap:9px}
+.tl-dot{width:18px;height:18px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px var(--bg),0 0 18px rgba(74,58,193,.4);z-index:2;transition:transform .2s var(--ease)}
+.slide.active .tl-item:hover .tl-dot{transform:scale(1.25)}
+.tl-item.win .tl-dot{background:var(--accent3);box-shadow:0 0 0 5px var(--bg),0 0 18px rgba(38,185,111,.45)}
+.tl-when{font-weight:800;font-size:18px;color:var(--accent)} .tl-item.win .tl-when{color:var(--accent3)}
+.tl-what{font-size:14.5px;line-height:1.4;color:var(--muted)} .tl-what b{color:var(--fg)}
 /* ask */
-.layout-ask{gap:16px}
-.ask-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:34px;align-items:center;margin-top:4px}
-.ask-left{display:flex;justify-content:center}
-.ask-right{display:flex;flex-direction:column;gap:14px}
-.layout-ask .s-title{max-width:30ch}
-/* close */
-.layout-close{justify-content:center;gap:18px}
-.close-cols{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:4px}
-.close-h{font-weight:800;font-size:15px;color:var(--accent);letter-spacing:.04em;margin-bottom:9px;text-transform:uppercase}
-.close-cta{font-weight:700;font-size:16px;color:var(--fg);margin-top:6px;padding-top:14px;border-top:1px solid var(--line)}
+.layout-ask{gap:18px}
+.ask-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:38px;align-items:center;margin-top:6px}
+.ask-left{display:flex;justify-content:center}.ask-right{display:flex;flex-direction:column;gap:15px}
+.ask-note{font-size:14.5px;line-height:1.5;color:var(--muted);padding:14px 18px;border-radius:14px;background:var(--card);border:1px solid var(--card-line)} .ask-note b{color:var(--fg)}
+/* tooltip */
+.tip{position:fixed;z-index:75;pointer-events:none;transform:translate(-50%,-100%);background:rgba(14,17,33,.97);color:#eef1ff;border:1px solid rgba(124,126,223,.55);padding:8px 13px;border-radius:10px;font-size:13.5px;font-weight:700;white-space:nowrap;opacity:0;transition:opacity .16s;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.tip.show{opacity:1}
 /* chrome */
 .chrome{position:fixed;inset:0;z-index:50;pointer-events:none}
-.ctrl{position:absolute;bottom:20px;right:24px;display:flex;gap:8px;pointer-events:auto}
-.ctrl button{width:39px;height:39px;border-radius:11px;border:1px solid rgba(255,255,255,.16);background:rgba(20,26,61,.62);
-  color:#fff;backdrop-filter:blur(10px);cursor:pointer;font-size:15px;display:grid;place-items:center;transition:transform .15s,background .2s}
-.ctrl button:hover{background:rgba(74,58,193,.7)} .ctrl button:active{transform:scale(.92)}
-.ctrl button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
-.counter{position:absolute;bottom:28px;left:24px;font-weight:700;font-size:13px;letter-spacing:.1em;color:#fff;opacity:.6;
-  font-variant-numeric:tabular-nums;background:rgba(20,26,61,.5);padding:7px 13px;border-radius:9px;backdrop-filter:blur(8px)}
-.arrow-zone{position:fixed;top:0;bottom:0;width:13%;z-index:40;cursor:pointer}
-.arrow-zone.left{left:0}.arrow-zone.right{right:0}
+.ctrl{position:absolute;bottom:22px;right:26px;display:flex;gap:8px;pointer-events:auto}
+.ctrl button{width:39px;height:39px;border-radius:11px;border:1px solid rgba(255,255,255,.16);background:rgba(20,26,61,.6);color:#fff;backdrop-filter:blur(10px);cursor:pointer;font-size:15px;display:grid;place-items:center;transition:transform .15s,background .2s}
+.ctrl button:hover{background:rgba(74,58,193,.7)} .ctrl button:active{transform:scale(.92)} .ctrl button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.arrow-zone{position:fixed;top:0;bottom:0;width:13%;z-index:40;cursor:pointer}.arrow-zone.left{left:0}.arrow-zone.right{right:0}
+.notes{position:fixed;left:0;right:0;bottom:0;z-index:55;background:rgba(10,12,30,.97);backdrop-filter:blur(14px);border-top:2px solid rgba(124,126,223,.45);padding:18px 30px 24px;transform:translateY(101%);transition:transform .35s var(--ease);pointer-events:auto;max-height:44vh;overflow:auto}
+.notes.open{transform:none}
+.notes-h{font-weight:800;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#A6A7FF;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center} .notes-h span{color:#8C97DC}
+.notes p{font-size:clamp(15px,1.5vw,18px);line-height:1.6;color:#e7eaff;max-width:96ch}
 .toc{position:fixed;inset:0;z-index:60;background:rgba(8,10,28,.96);backdrop-filter:blur(14px);padding:54px 64px;overflow:auto;display:none}
 .toc.open{display:block}
 .toc h3{font-weight:800;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:#8b7df0;margin-bottom:22px}
-.toc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
-.toc-item{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:11px;background:rgba(30,37,78,.7);
-  border:1px solid rgba(255,255,255,.08);color:#fff;cursor:pointer;text-align:left;transition:transform .15s,border-color .2s}
+.toc-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+.toc-item{display:flex;flex-direction:column;gap:4px;padding:11px 13px;border-radius:11px;background:rgba(30,37,78,.7);border:1px solid rgba(255,255,255,.08);color:#fff;cursor:pointer;text-align:left;transition:transform .15s,border-color .2s}
 .toc-item:hover{transform:translateY(-3px);border-color:#43d98f}
-.toc-n{font-weight:800;font-size:16px;color:#43d98f} .toc-t{font-size:12px;color:#a9b2da;line-height:1.25}
+.toc-n{font-weight:800;font-size:15px;color:#43d98f} .toc-t{font-size:11px;color:#a9b2da;line-height:1.2}
 .toc-close{position:absolute;top:26px;right:36px;font-size:22px;background:none;border:none;color:#fff;cursor:pointer}
-/* ---- interactividad ---- */
-.card,.stat{transition:transform .2s var(--ease),box-shadow .25s,border-color .25s}
-.slide.active .card:hover,.slide.active .stat:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 16px 34px rgba(8,10,30,.22)}
-.flow-step,.tree-node{transition:transform .18s var(--ease),border-color .2s}
-.slide.active .flow-step:hover{transform:translateY(-2px);border-color:var(--accent2)}
-/* barra segmentada por capítulo */
-.segbar{position:absolute;top:0;left:0;right:0;height:6px;display:flex;gap:2px;pointer-events:auto}
-.seg{flex:var(--c) 1 0;height:5px;align-self:flex-start;background:rgba(140,151,220,.24);position:relative;cursor:pointer;
-  transition:height .2s,background .25s}
-.seg:hover,.seg.cur{height:8px;background:rgba(140,151,220,.4)}
+.segbar{position:absolute;top:0;left:0;right:0;height:5px;display:flex;gap:2px;pointer-events:auto}
+.seg{flex:var(--c) 1 0;height:4px;align-self:flex-start;background:rgba(140,151,220,.22);position:relative;cursor:pointer;transition:height .2s,background .25s}
+.seg:hover,.seg.cur{height:7px;background:rgba(140,151,220,.38)}
 .seg i{position:absolute;left:0;top:0;height:100%;width:var(--f,0%);background:linear-gradient(90deg,#4465EE,#17B14E);transition:width .45s var(--ease)}
-.seg .lab{position:absolute;top:12px;left:0;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
-  color:#e7eaff;background:rgba(14,17,33,.94);border:1px solid rgba(124,126,223,.4);padding:4px 9px;border-radius:7px;white-space:nowrap;
-  opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:6}
+.seg .lab{position:absolute;top:12px;left:0;font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#e7eaff;background:rgba(14,17,33,.94);border:1px solid rgba(124,126,223,.4);padding:4px 9px;border-radius:7px;white-space:nowrap;opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s;pointer-events:none;z-index:6}
 .seg:hover .lab{opacity:1;transform:none}
-#btn-play.playing{background:rgba(74,58,193,.85);color:#fff;box-shadow:0 0 18px rgba(124,126,223,.6)}
-/* ---- responsive móvil (reflow real) ---- */
+#btn-play.playing,#btn-notes.on{background:rgba(74,58,193,.85);color:#fff;box-shadow:0 0 18px rgba(124,126,223,.6)}
+/* responsive */
 body.mobile .deck{place-items:stretch}
 body.mobile .stage{width:100vw;height:100dvh;transform:none!important}
 body.mobile .slide{display:block;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-body.mobile .slide-inner{position:static;height:auto;min-height:100%;justify-content:flex-start;
-  padding:56px clamp(18px,5.5vw,30px) 82px;gap:clamp(13px,3.4vw,20px)}
-body.mobile .slide-foot{left:clamp(18px,5.5vw,30px);right:clamp(18px,5.5vw,30px);bottom:18px}
-body.mobile .slide-mark{top:18px;right:18px;height:24px}
-body.mobile .split,body.mobile .ask-grid,body.mobile .grid-2,body.mobile .grid-3,body.mobile .grid-4,
-body.mobile .tss,body.mobile .donut-wrap{display:flex;flex-direction:column;gap:13px}
-body.mobile .statrow{grid-template-columns:1fr 1fr}
-body.mobile .s-title{font-size:clamp(24px,6.6vw,34px);max-width:none}
-body.mobile .cover-title{font-size:clamp(29px,8.4vw,44px)}
+body.mobile .slide-inner{position:static;height:auto;min-height:100%;justify-content:flex-start;padding:54px clamp(18px,5.5vw,30px) 82px;gap:clamp(15px,4vw,22px)}
+body.mobile .slide-foot{right:clamp(18px,5.5vw,30px);bottom:18px} body.mobile .slide-mark{top:18px;right:18px;height:24px}
+body.mobile .split,body.mobile .split-latam,body.mobile .prod,body.mobile .trac,body.mobile .ask-grid,body.mobile .grid-2,body.mobile .grid-3,body.mobile .grid-4,body.mobile .nsm-grid,body.mobile .tss,body.mobile .donut-wrap,body.mobile .engine,body.mobile .pblocks,body.mobile .eng-methods,body.mobile .b2flow{display:flex;flex-direction:column;gap:15px}
+body.mobile .statrow,body.mobile .statrow-2,body.mobile .statrow-3,body.mobile .st-mini,body.mobile .latam,body.mobile .team{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+body.mobile .team{grid-template-columns:repeat(3,1fr)}
+body.mobile .eng-out{align-items:flex-start;text-align:left} body.mobile .b2arr{transform:rotate(90deg);align-self:center}
+body.mobile .s-title{font-size:clamp(25px,7vw,36px);max-width:none} body.mobile .bigquote{font-size:clamp(26px,7.4vw,40px);max-width:none}
 body.mobile .div-title{font-size:clamp(32px,8.4vw,52px)}
-body.mobile .bigquote{font-size:clamp(21px,5.6vw,30px);max-width:none}
-body.mobile .lead,body.mobile .div-sub,body.mobile .cover-sub{font-size:clamp(15px,3.9vw,18px);max-width:none}
-body.mobile .layout-cover{padding-right:clamp(18px,5.5vw,30px)}
-body.mobile .aecodito{position:static;width:158px;align-self:center;margin:4px 0 0;animation:none}
+body.mobile .lead{font-size:clamp(15px,4vw,18px);max-width:none} body.mobile .eq{font-size:clamp(18px,5vw,26px)}
+body.mobile .statrow.bare .stat-num{font-size:clamp(38px,11vw,58px)}
+body.mobile .tss-rings,body.mobile .eng-ring{margin:0 auto} body.mobile .donut-svg{width:158px;height:158px} body.mobile .map2x2{height:340px}
 body.mobile .table-wrap{overflow-x:auto} body.mobile .dt{min-width:480px}
-body.mobile .tss-rings{margin:0 auto} body.mobile .fly{overflow:hidden}
-body.mobile .fly-ring{transform:scale(.6);margin:-60px auto}
-body.mobile .map2x2{height:230px}
-body.mobile .flow{justify-content:center}
-body.mobile .stackbar{overflow-x:auto} body.mobile .sb-cols{gap:10px;height:194px} body.mobile .sb-bar{width:44px}
-body.mobile .ctrl{bottom:14px;right:11px;gap:7px} body.mobile .ctrl button{width:42px;height:42px}
-body.mobile .counter{bottom:18px;left:11px} body.mobile .arrow-zone{display:none}
-body.mobile .donut{width:150px;height:150px} body.mobile .donut-hole{inset:26px}
-body.mobile .toc{padding:48px 22px} body.mobile .toc-grid{grid-template-columns:repeat(2,1fr)}
+body.mobile .stackbar{overflow-x:auto} body.mobile .sb-cols{gap:16px;height:200px} body.mobile .sb-bar{width:48px}
+body.mobile .ctrl{bottom:14px;right:11px;gap:7px} body.mobile .ctrl button{width:42px;height:42px} body.mobile .arrow-zone{display:none}
+body.mobile .toc{padding:48px 22px} body.mobile .toc-grid{grid-template-columns:repeat(2,1fr)} body.mobile .notes{max-height:55vh}
 @media (prefers-reduced-motion:reduce){
   .reveal{transition:none!important;opacity:1!important;transform:none!important}
   .slide{transition:opacity .2s!important}
-  .bar-track i,.nsm-fill,.fn,.sb-bar,.seg i{transition:none!important}
+  .bar-track i,.sb-bar,.seg i,.eng-ring::before,.mock-orb,.lt-dot::after{transition:none!important;animation:none!important}
   .slide.active .bar-track i{transform:scaleX(1)} .slide.active .sb-bar{transform:scaleY(1)}
 }
 """
 
 JS = r"""
 const slides=[...document.querySelectorAll('.slide')];const total=slides.length;let cur=0;
-const stage=document.querySelector('.stage'),counter=document.querySelector('.counter'),segbar=document.querySelector('#segbar');
-let mode=localStorage.getItem('aecode-mode2')||'mix';
+const stage=document.querySelector('.stage'),segbar=document.querySelector('#segbar'),tip=document.querySelector('#tip');
+const notes=document.querySelector('#notes'),notesBody=document.querySelector('#notes-body'),notesN=document.querySelector('#notes-n');
+let mode=localStorage.getItem('aecode-deck-mode')||'mix';
 const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
-// capítulos -> barra segmentada
 const chapters=[];
 slides.forEach((s,i)=>{const c=s.dataset.ch,last=chapters[chapters.length-1];
   if(last&&last.name===c){last.count++}else{chapters.push({name:c,start:i,count:1})}});
 chapters.forEach(ch=>{const seg=document.createElement('div');seg.className='seg';seg.style.setProperty('--c',ch.count);
-  seg.innerHTML='<i></i><span class="lab">'+ch.name+'</span>';
-  seg.title=ch.name;seg.onclick=()=>{stopPlay();go(ch.start)};segbar.appendChild(seg);
-  ch.el=seg;ch.fill=seg.querySelector('i');});
+  seg.innerHTML='<i></i><span class="lab">'+ch.name+'</span>';seg.title=ch.name;
+  seg.onclick=()=>{stopPlay();go(ch.start)};segbar.appendChild(seg);ch.el=seg;ch.fill=seg.querySelector('i');});
 function updateSeg(){chapters.forEach(ch=>{const endEx=ch.start+ch.count;let f=0;
   if(cur>=endEx)f=100;else if(cur<ch.start)f=0;else f=((cur-ch.start+1)/ch.count)*100;
   ch.fill.style.width=f+'%';ch.el.classList.toggle('cur',cur>=ch.start&&cur<endEx);});}
@@ -1128,46 +932,48 @@ function isMobile(){return matchMedia('(max-width:820px),(orientation:portrait) 
 function fit(){if(isMobile()){document.body.classList.add('mobile');stage.style.transform='none';}
   else{document.body.classList.remove('mobile');stage.style.transform='scale('+Math.min(innerWidth/1280,innerHeight/720)+')';}}
 function countUp(s){s.querySelectorAll('[data-count]').forEach(el=>{const t=parseFloat(el.dataset.count);
-  if(isNaN(t))return;const dec=(el.dataset.count.split('.')[1]||'').length,d=850,t0=performance.now();
+  if(isNaN(t))return;const dec=(el.dataset.count.split('.')[1]||'').length,d=900,t0=performance.now();
   (function st(n){const p=Math.min((n-t0)/d,1),e=1-Math.pow(1-p,3);el.textContent=(t*e).toFixed(dec);
   p<1?requestAnimationFrame(st):el.textContent=t.toFixed(dec);})(t0);});}
+function updateNotes(){notesBody.textContent=slides[cur].dataset.notes||'(sin guion)';notesN.textContent=(cur+1)+' / '+total;}
 function go(n){n=Math.max(0,Math.min(total-1,n));if(n===cur&&slides[cur].classList.contains('active')){countUp(slides[cur]);return}
   const dir=n>cur?1:-1,mob=document.body.classList.contains('mobile');
   const out=slides[cur];out.classList.remove('active');
-  if(!reduced&&!mob)out.style.transform='translateX('+(-dir*34)+'px)';
+  if(!reduced&&!mob)out.style.transform='translateX('+(-dir*36)+'px)';
   cur=n;const s=slides[cur];
-  if(!reduced&&!mob){s.style.transition='none';s.style.transform='translateX('+(dir*34)+'px)';void s.offsetWidth;s.style.transition='';}
+  if(!reduced&&!mob){s.style.transition='none';s.style.transform='translateX('+(dir*36)+'px)';void s.offsetWidth;s.style.transition='';}
   s.classList.add('active');s.style.transform='';if(mob)s.scrollTop=0;
-  [...s.querySelectorAll('.reveal')].forEach((el,i)=>el.style.transitionDelay=(reduced?0:Math.min(i*48,560))+'ms');
-  counter.textContent=String(cur+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
-  updateSeg();if(!reduced)countUp(s);location.hash=cur+1;}
+  [...s.querySelectorAll('.reveal')].forEach((el,i)=>el.style.transitionDelay=(reduced?0:Math.min(i*48,580))+'ms');
+  updateSeg();updateNotes();if(!reduced)countUp(s);location.hash=cur+1;}
 function next(){go(cur+1)}function prev(){go(cur-1)}
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();
   if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();stopPlay();next()}
   else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();stopPlay();prev()}
   else if(e.key==='Home'){stopPlay();go(0)}else if(e.key==='End'){stopPlay();go(total-1)}
-  else if(k==='t')cycleMode();else if(k==='f')toggleFs();else if(k==='o')toggleToc();else if(k==='p')togglePlay();
-  else if(e.key==='Escape')document.querySelector('.toc').classList.remove('open');});
+  else if(k==='t')cycleMode();else if(k==='f')toggleFs();else if(k==='o')toggleToc();else if(k==='p')togglePlay();else if(k==='n')toggleNotes();
+  else if(e.key==='Escape'){document.querySelector('.toc').classList.remove('open');notes.classList.remove('open');}});
 let wlock=false;
 addEventListener('wheel',e=>{if(document.body.classList.contains('mobile')||wlock)return;
   const d=Math.abs(e.deltaY)>=Math.abs(e.deltaX)?e.deltaY:e.deltaX;if(Math.abs(d)<26)return;
   wlock=true;setTimeout(()=>wlock=false,720);stopPlay();d>0?next():prev();},{passive:true});
-function cycleMode(){mode=mode==='mix'?'dark':mode==='dark'?'light':'mix';localStorage.setItem('aecode-mode2',mode);
+addEventListener('mouseover',e=>{const t=e.target.closest('[data-tip]');if(t){tip.textContent=t.dataset.tip;tip.classList.add('show');}
+  const a=e.target.closest('.dn-arc');if(a){const w=a.closest('.donut-wrap');w.querySelector('.dn-c-pct').textContent=a.dataset.pct+'%';w.querySelector('.dn-c-lab').textContent=a.dataset.lab;}});
+addEventListener('mousemove',e=>{if(tip.classList.contains('show')){tip.style.left=e.clientX+'px';tip.style.top=(e.clientY-16)+'px';}});
+addEventListener('mouseout',e=>{if(e.target.closest('[data-tip]'))tip.classList.remove('show');});
+function cycleMode(){mode=mode==='mix'?'dark':mode==='dark'?'light':'mix';localStorage.setItem('aecode-deck-mode',mode);
   applyTheme();document.querySelector('#mode-ico').textContent=mode==='mix'?'◐':mode==='dark'?'●':'○';}
 function toggleFs(){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
 function toggleToc(){document.querySelector('.toc').classList.toggle('open')}
+function toggleNotes(){const o=notes.classList.toggle('open');document.querySelector('#btn-notes').classList.toggle('on',o);}
 let timer=null;
-function setPlay(p){const b=document.querySelector('#btn-play');b.classList.toggle('playing',p);
-  b.querySelector('#play-ico').textContent=p?'❚❚':'▶';}
-function togglePlay(){timer?stopPlay():(timer=setInterval(()=>{cur>=total-1?stopPlay():next()},7000),setPlay(true));}
+function setPlay(p){const b=document.querySelector('#btn-play');b.classList.toggle('playing',p);b.querySelector('#play-ico').textContent=p?'❚❚':'▶';}
+function togglePlay(){timer?stopPlay():(timer=setInterval(()=>{cur>=total-1?stopPlay():next()},12000),setPlay(true));}
 function stopPlay(){if(timer){clearInterval(timer);timer=null;setPlay(false);}}
-document.querySelector('.left').onclick=()=>{stopPlay();prev()};
-document.querySelector('.right').onclick=()=>{stopPlay();next()};
-document.querySelector('#btn-prev').onclick=()=>{stopPlay();prev()};
-document.querySelector('#btn-next').onclick=()=>{stopPlay();next()};
+document.querySelector('.left').onclick=()=>{stopPlay();prev()};document.querySelector('.right').onclick=()=>{stopPlay();next()};
+document.querySelector('#btn-prev').onclick=()=>{stopPlay();prev()};document.querySelector('#btn-next').onclick=()=>{stopPlay();next()};
 document.querySelector('#btn-mode').onclick=cycleMode;document.querySelector('#btn-fs').onclick=toggleFs;
 document.querySelector('#btn-toc').onclick=toggleToc;document.querySelector('#btn-play').onclick=togglePlay;
-document.querySelector('.toc-close').onclick=toggleToc;
+document.querySelector('#btn-notes').onclick=toggleNotes;document.querySelector('.toc-close').onclick=toggleToc;
 document.querySelectorAll('.toc-item').forEach(b=>b.onclick=()=>{stopPlay();go(+b.dataset.go);toggleToc()});
 let tx=0,ty=0;addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
 addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
@@ -1184,9 +990,10 @@ HTML=f"""<!DOCTYPE html><html lang="es"><head>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>{CSS}</style></head><body>
 <div class="deck"><div class="stage">{slides_html}</div></div>
-<div class="chrome"><div class="segbar" id="segbar"></div><div class="counter">01 / {total:02d}</div>
+<div class="chrome"><div class="segbar" id="segbar"></div>
 <div class="ctrl">
 <button id="btn-toc" title="Índice (O)" aria-label="Índice">☰</button>
+<button id="btn-notes" title="Guion (N)" aria-label="Guion">✎</button>
 <button id="btn-play" title="Auto-play (P)" aria-label="Auto-play"><span id="play-ico">▶</span></button>
 <button id="btn-mode" title="Tema (T)" aria-label="Tema"><span id="mode-ico">◐</span></button>
 <button id="btn-prev" title="Anterior (←)" aria-label="Anterior">‹</button>
@@ -1194,6 +1001,8 @@ HTML=f"""<!DOCTYPE html><html lang="es"><head>
 <button id="btn-fs" title="Pantalla completa (F)" aria-label="Pantalla completa">⛶</button>
 </div></div>
 <div class="arrow-zone left"></div><div class="arrow-zone right"></div>
+<div class="tip" id="tip"></div>
+<div class="notes" id="notes"><div class="notes-h">Guion <span id="notes-n"></span></div><p id="notes-body"></p></div>
 <div class="toc"><button class="toc-close" aria-label="Cerrar">✕</button>
 <h3>Índice · {total} slides</h3><div class="toc-grid">{toc_items}</div></div>
 <script>{JS}</script></body></html>"""
