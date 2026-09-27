@@ -23,7 +23,7 @@ music: calm confident minimal tech underscore, soft synth pads, light pulse, no 
 - voiceover: "¿Todavía usas la inteligencia artificial solo para hacer preguntas? En septiembre, eso cambió."
 - duration: 5.94s
 - transition_in: cut
-- status: outline
+- status: animated
 - src: compositions/frames/01-hook.html
 - type: hook
 - persuasion: Rhetorical question + direct address
@@ -48,7 +48,7 @@ Scene 4 (4.3–5.94s): "Eso cambió." slams in beneath at `display-hero` scale (
 - voiceover: "Claude dejó de ser un chat que responde. Ahora es un colega que investiga, construye y entrega trabajo real."
 - duration: 7.4s
 - transition_in: blur-crossfade
-- status: outline
+- status: animated
 - src: compositions/frames/02-tesis.html
 - type: product_intro
 - persuasion: Before/after + rule of three
@@ -74,7 +74,7 @@ Scene 5 (5.5–7.4s): "trabajo real" appears as a `body-lede` line under the chi
 - voiceover: "Primero: Opus cinco punto cinco. Rinde al nivel de Fable cinco punto uno en la mayoría de tareas, cuesta cuarenta por ciento menos y es treinta por ciento más rápido que Opus cinco."
 - duration: 11.046s
 - transition_in: push-slide LEFT
-- status: outline
+- status: animated
 - src: compositions/frames/03-opus.html
 - type: feature_showcase
 - persuasion: Numbered enumeration + statistical proof
@@ -100,7 +100,7 @@ Scene 5 (9.6–11.05s): source-rail "Fuente: anthropic.com/news/claude-opus-5-5 
 - voiceover: "Segundo: un millón de tokens de contexto. Más de quinientas mil palabras: tu expediente técnico completo, en una sola conversación."
 - duration: 8.123s
 - transition_in: push-slide LEFT
-- status: outline
+- status: animated
 - src: compositions/frames/04-contexto.html
 - type: feature_showcase
 - persuasion: Concretization (abstract → tangible object) + anchoring on a familiar referent
@@ -126,7 +126,7 @@ Scene 5 (6.3–8.12s): on "una sola conversación" the window's border brightens
 - voiceover: "Tercero: un solo Claude. Sigue trabajando aunque cierres la laptop, y te entrega documentos y presentaciones que exportas a PowerPoint o PDF."
 - duration: 9.254s
 - transition_in: push-slide LEFT
-- status: outline
+- status: animated
 - src: compositions/frames/05-un-solo-claude.html
 - type: feature_showcase
 - persuasion: Demonstration (show the mechanism running)
@@ -152,7 +152,7 @@ Scene 5 (8.6–9.25s): left column shows the small note "Beta · llegando a Pro 
 - voiceover: "Cuarto: Claude en Chrome. Navega, hace clic y llena formularios por ti, con un filtro de seguridad que revisa cada acción."
 - duration: 7.739s
 - transition_in: push-slide LEFT
-- status: outline
+- status: animated
 - src: compositions/frames/06-chrome.html
 - type: feature_showcase
 - persuasion: Demonstration + signposting
@@ -178,7 +178,7 @@ Scene 5 (6.8–7.74s): hold still; source-rail "Fuente: claude.com/blog · 26-ag
 - voiceover: "Quinto: más de dos mil conectores y plugins. Claude se conecta a las herramientas que tu equipo ya usa."
 - duration: 6.424s
 - transition_in: push-slide LEFT
-- status: outline
+- status: animated
 - src: compositions/frames/07-conectores.html
 - type: feature_showcase
 - persuasion: Frame-then-fill + statistical proof
@@ -204,7 +204,7 @@ Scene 5 (5.5–6.42s): held hub mark — ring complete and still (at most a subt
 - voiceover: "¿Y qué significa para AEC? Imagina: Claude lee tu expediente, revisa el portal del proveedor y te entrega el informe listo para la reunión."
 - duration: 9.035s
 - transition_in: blur-crossfade
-- status: outline
+- status: animated
 - src: compositions/frames/08-aec.html
 - type: benefit_highlight
 - persuasion: Causal chain (A → B → C) + worked example
@@ -231,7 +231,7 @@ Scene 6 (7.9–9.04s): hold still — the whole chain reads.
 - voiceover: "La pregunta ya no es qué le preguntas a Claude. Es qué trabajo le delegas. Aprende, aplica, construye mejor: esto es AECODE."
 - duration: 9.568s
 - transition_in: blur-crossfade
-- status: outline
+- status: animated
 - src: compositions/frames/09-cierre.html
 - type: branding
 - persuasion: Callback (returns to the hook's question) + distillation

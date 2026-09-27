@@ -64,3 +64,17 @@ ENTREGA: renders/video.mp4 + contact sheet + lista de escenas con sus ids para i
 2. **Cada claim con fuente y fecha**: protege la autoridad de AECODE frente a contenido con hype.
 3. **Termina en una pregunta de decisión** ("qué le delegas"): convierte el video en puerta de
    entrada a formación aplicada, no en una noticia más.
+
+## 5. Notas de producción de esta versión (27-sep-2026)
+
+- **Motor:** HyperFrames 0.8.80 (CLI `hyperframes`, workflow `faceless-explainer`), 9 escenas
+  construidas en paralelo por agentes, ensambladas en `index.html` y validadas con
+  `hyperframes check` (0 errores · contraste WCAG AA 85/85).
+- **Voz:** Kokoro local `em_alex` (español). Es un placeholder: para autoridad de marca,
+  reemplazar por la voz de Alejandro (ver sección 3).
+- **Subtítulos:** tiempos por palabra aproximados (pausas detectadas + peso silábico) porque el
+  entorno de producción no tenía acceso a modelos de transcripción. Grupos por frase, números
+  en cifras ("Opus 5.5", "40 %"). Con la voz real, regenerar con `hyperframes transcribe`.
+- **Música:** colchón sintetizado localmente (libre de licencias), −31 LUFS aprox. bajo la voz.
+  Se puede sustituir por una pista de HeyGen/Lyria con `hyperframes auth login`.
+- **GSAP y fuentes** van en `assets/` (sin CDN) para que el render sea reproducible offline.
