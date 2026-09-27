@@ -1,0 +1,859 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Manrope";
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+      src: url("../../assets/fonts/Manrope-500.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "Manrope";
+      font-weight: 700;
+      font-style: normal;
+      font-display: block;
+      src: url("../../assets/fonts/Manrope-700.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "Manrope";
+      font-weight: 800;
+      font-style: normal;
+      font-display: block;
+      src: url("../../assets/fonts/Manrope-800.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("../../assets/fonts/JetBrainsMono-400.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-weight: 500;
+      font-style: normal;
+      font-display: block;
+      src: url("../../assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+    }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      font-family: "Manrope";
+      color: #eef3f8;
+    }
+    #root,
+    #root * {
+      box-sizing: border-box;
+    }
+
+    /* ---------- ground (static, full-bleed clip) ---------- */
+    .f05-ground {
+      position: absolute;
+      inset: 0;
+      background-color: #0e1121;
+      background-image:
+        linear-gradient(rgba(166, 167, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(166, 167, 255, 0.07) 1px, transparent 1px),
+        radial-gradient(900px 700px at 12% 8%, rgba(74, 58, 193, 0.28), transparent 70%),
+        radial-gradient(900px 700px at 92% 96%, rgba(68, 101, 238, 0.14), transparent 70%);
+      background-size:
+        64px 64px,
+        64px 64px,
+        100% 100%,
+        100% 100%;
+    }
+    .f05-layer {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* ---------- chrome ---------- */
+    .f05-bug {
+      position: absolute;
+      left: 80px;
+      top: 56px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .f05-bug img {
+      display: block;
+      width: 40px;
+      height: 40px;
+    }
+    .f05-bug span {
+      font-weight: 700;
+      font-size: 17px;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #a2b4cb;
+      white-space: nowrap;
+    }
+    .f05-counter {
+      position: absolute;
+      right: 80px;
+      top: 64px;
+      font-family: "JetBrains Mono";
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: #8c97dc;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .f05-rail {
+      position: absolute;
+      left: 80px;
+      top: 862px;
+      height: 22px;
+      line-height: 22px;
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      color: #8c97dc;
+      white-space: nowrap;
+    }
+
+    /* ---------- left text column ---------- */
+    .f05-left {
+      position: absolute;
+      left: 80px;
+      top: 236px;
+      width: 780px;
+    }
+    .f05-kicker {
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.2;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #a6a7ff;
+      white-space: nowrap;
+    }
+    .f05-headline {
+      margin-top: 24px;
+      font-weight: 800;
+      font-size: 104px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #eef3f8;
+      white-space: nowrap;
+    }
+    .f05-wmask {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      padding: 0.08em 0.03em 0.14em;
+      margin: -0.08em -0.03em -0.14em;
+    }
+    .f05-word {
+      display: inline-block;
+    }
+    .f05-date-row {
+      margin-top: 36px;
+      height: 40px;
+    }
+    .f05-date {
+      display: inline-block;
+      border: 1px solid #a6a7ff;
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-family: "JetBrains Mono";
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 22px;
+      letter-spacing: 0.04em;
+      color: #a6a7ff;
+      white-space: nowrap;
+    }
+    .f05-note {
+      margin-top: 28px;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 1.4;
+      color: #8c97dc;
+      white-space: nowrap;
+    }
+
+    /* ---------- right stage (x 940→1840, y 150→840) ---------- */
+    .f05-right {
+      position: absolute;
+      left: 940px;
+      top: 150px;
+      width: 900px;
+      height: 690px;
+      transform-origin: 590px 300px;
+    }
+
+    /* laptop — line-drawn, real 3D hinge */
+    .f05-lap-wrap {
+      position: absolute;
+      left: 0;
+      top: 176px;
+      width: 260px;
+      height: 260px;
+    }
+    .f05-lap-dim {
+      position: absolute;
+      inset: 0;
+    }
+    .f05-lap-shadow {
+      position: absolute;
+      left: -14px;
+      top: 206px;
+      width: 288px;
+      height: 64px;
+      background: radial-gradient(closest-side, rgba(3, 4, 12, 0.55), rgba(3, 4, 12, 0));
+    }
+    .f05-lap-scene {
+      position: absolute;
+      inset: 0;
+      perspective: 900px;
+      perspective-origin: 50% -60%;
+    }
+    .f05-lap-body {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+    }
+    .f05-lap-deck {
+      position: absolute;
+      left: 25px;
+      top: 170px;
+      width: 210px;
+      height: 140px;
+      transform-origin: 50% 0%;
+      transform: rotateX(90deg);
+    }
+    .f05-lap-lip {
+      position: absolute;
+      left: 25px;
+      top: 170px;
+      width: 210px;
+      height: 10px;
+      transform: translateZ(140px);
+    }
+    .f05-lap-hinge {
+      position: absolute;
+      left: 60px;
+      top: 163px;
+      width: 140px;
+      height: 8px;
+    }
+    .f05-lap-lid {
+      position: absolute;
+      left: 25px;
+      top: 24px;
+      width: 210px;
+      height: 140px;
+      transform-origin: 50% 100%;
+      transform-style: preserve-3d;
+    }
+    .f05-lap-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .f05-lap-back {
+      transform: rotateX(180deg);
+    }
+    .f05-lap-face svg,
+    .f05-lap-deck svg,
+    .f05-lap-lip svg,
+    .f05-lap-hinge svg {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+    .f05-lap-bar {
+      position: absolute;
+      left: 28px;
+      top: 94px;
+      width: 154px;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(166, 167, 255, 0.18);
+      overflow: hidden;
+    }
+    .f05-lap-bar-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: 3px;
+      background: #a6a7ff;
+    }
+    .f05-moon {
+      position: absolute;
+      left: 176px;
+      top: 104px;
+      width: 36px;
+      height: 36px;
+    }
+    .f05-moon svg {
+      display: block;
+    }
+
+    /* progress card — the focal subject */
+    .f05-card-glow {
+      position: absolute;
+      left: 250px;
+      top: 70px;
+      width: 700px;
+      height: 360px;
+      background: radial-gradient(closest-side, rgba(84, 80, 217, 0.34), rgba(84, 80, 217, 0));
+    }
+    .f05-card {
+      position: absolute;
+      left: 280px;
+      top: 130px;
+      width: 620px;
+      height: 346px;
+      transform-origin: 50% 83px;
+      filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.32));
+    }
+    .f05-card-head {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 620px;
+      height: 140px;
+      background: linear-gradient(180deg, #13172f, #171a36);
+      border: 1px solid rgba(124, 126, 223, 0.4);
+      border-bottom: none;
+      border-radius: 24px 24px 0 0;
+      z-index: 2;
+    }
+    .f05-card-plate {
+      position: absolute;
+      left: 0;
+      top: 139px;
+      width: 620px;
+      height: 181px;
+      background: linear-gradient(180deg, #171a36, #1a1d3b);
+      border-left: 1px solid rgba(124, 126, 223, 0.4);
+      border-right: 1px solid rgba(124, 126, 223, 0.4);
+      transform-origin: 50% 0%;
+      z-index: 1;
+    }
+    .f05-card-foot {
+      position: absolute;
+      left: 0;
+      top: 318px;
+      width: 620px;
+      height: 28px;
+      background: #1b1e3c;
+      border: 1px solid rgba(124, 126, 223, 0.4);
+      border-top: none;
+      border-radius: 0 0 24px 24px;
+      z-index: 1;
+    }
+    .f05-status-row {
+      position: absolute;
+      left: 30px;
+      top: 28px;
+      width: 560px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+    }
+    .f05-spin-wrap {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex: none;
+    }
+    .f05-spin,
+    .f05-spin-rot,
+    .f05-spin-done {
+      position: absolute;
+      inset: 0;
+    }
+    .f05-spin svg,
+    .f05-spin-rot svg,
+    .f05-spin-done svg,
+    .f05-badge svg,
+    .f05-ficon svg {
+      position: absolute;
+      inset: 0;
+      display: block;
+    }
+    .f05-status-stack {
+      position: relative;
+      margin-left: 18px;
+      width: 460px;
+      height: 48px;
+    }
+    .f05-status {
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-weight: 700;
+      font-size: 34px;
+      line-height: 48px;
+      letter-spacing: -0.01em;
+      color: #a6a7ff;
+      white-space: nowrap;
+    }
+    .f05-status-ok {
+      color: #17b14e;
+    }
+    .f05-bar {
+      position: absolute;
+      left: 30px;
+      top: 100px;
+      width: 560px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(166, 167, 255, 0.14);
+      overflow: hidden;
+    }
+    .f05-bar-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #4465ee, #6d12e3);
+    }
+    .f05-divider {
+      position: absolute;
+      left: 30px;
+      top: 140px;
+      width: 560px;
+      height: 1px;
+      background: rgba(124, 126, 223, 0.2);
+      z-index: 3;
+    }
+    .f05-rows {
+      position: absolute;
+      left: 0;
+      top: 140px;
+      width: 620px;
+      height: 181px;
+      z-index: 3;
+    }
+    .f05-row {
+      position: absolute;
+      left: 24px;
+      width: 572px;
+      height: 76px;
+      padding: 0 16px 0 18px;
+      display: flex;
+      align-items: center;
+      border-radius: 16px;
+      background: rgba(166, 167, 255, 0.04);
+      border: 1px solid rgba(124, 126, 223, 0.2);
+    }
+    .f05-row-1 {
+      top: 14px;
+    }
+    .f05-row-2 {
+      top: 100px;
+    }
+    .f05-row-hl {
+      position: absolute;
+      inset: -1px;
+      border-radius: 16px;
+      border: 1px solid rgba(166, 167, 255, 0.55);
+      background: rgba(166, 167, 255, 0.06);
+    }
+    .f05-badge {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex: none;
+    }
+    .f05-badge-pend,
+    .f05-badge-spin,
+    .f05-badge-done {
+      position: absolute;
+      inset: 0;
+    }
+    .f05-ficon {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      margin-left: 16px;
+      flex: none;
+    }
+    .f05-row-label {
+      position: relative;
+      margin-left: 14px;
+      font-weight: 700;
+      font-size: 26px;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: #eef3f8;
+      white-space: nowrap;
+    }
+    .f05-chips {
+      position: relative;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .f05-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      height: 38px;
+      padding: 0 15px 0 12px;
+      border-radius: 999px;
+      background: rgba(109, 112, 249, 0.3);
+      border: 1px solid rgba(124, 126, 223, 0.4);
+      font-weight: 700;
+      font-size: 15px;
+      line-height: 1;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #eef3f8;
+      white-space: nowrap;
+      transform-origin: 50% 50%;
+    }
+    .f05-chip svg {
+      display: block;
+      flex: none;
+    }
+    .f05-check {
+      stroke-dasharray: 1;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="05-un-solo-claude"
+    data-start="0"
+    data-duration="9.254"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div
+      id="f05-ground"
+      class="clip f05-ground"
+      data-start="0"
+      data-duration="9.254"
+      data-track-index="0"
+    ></div>
+
+    <div
+      id="f05-stage"
+      class="clip f05-layer"
+      data-start="0"
+      data-duration="9.254"
+      data-track-index="1"
+    >
+      <!-- LEFT column -->
+      <div class="f05-left">
+        <div id="f05-kicker" class="f05-kicker">Novedad 03 · Producto</div>
+        <div class="f05-headline">
+          <span class="f05-wmask"><span class="f05-word">Un</span></span>
+          <span class="f05-wmask"><span class="f05-word">solo</span></span>
+          <span class="f05-wmask"><span class="f05-word">Claude</span></span>
+        </div>
+        <div class="f05-date-row"><span id="f05-date" class="f05-date">16-SEP-2026</span></div>
+        <div id="f05-note" class="f05-note">Beta · llegando a Pro y Max</div>
+      </div>
+
+      <!-- RIGHT stage -->
+      <div id="f05-right" class="f05-right">
+        <div id="f05-card-glow" class="f05-card-glow"></div>
+
+        <!-- laptop -->
+        <div id="f05-lap-wrap" class="f05-lap-wrap">
+          <div id="f05-lap-dim" class="f05-lap-dim">
+            <div class="f05-lap-shadow"></div>
+            <div class="f05-lap-scene">
+              <div class="f05-lap-body">
+                <div class="f05-lap-deck">
+                  <svg width="210" height="140" viewBox="0 0 210 140" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="1" width="208" height="138" rx="10" fill="#13172F" stroke="#A2B4CB" stroke-width="2" />
+                    <rect x="18" y="14" width="174" height="64" rx="5" stroke="rgba(162,180,203,0.55)" stroke-width="2" />
+                    <path d="M18 30H192M18 46H192M18 62H192" stroke="rgba(162,180,203,0.32)" stroke-width="2" />
+                    <rect x="72" y="90" width="66" height="38" rx="5" stroke="rgba(162,180,203,0.55)" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="f05-lap-lip">
+                  <svg width="210" height="10" viewBox="0 0 210 10" fill="none">
+                    <rect x="1" y="1" width="208" height="8" rx="4" fill="#13172F" stroke="#A2B4CB" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="f05-lap-hinge">
+                  <svg width="140" height="8" viewBox="0 0 140 8" fill="none">
+                    <rect x="1" y="1" width="138" height="6" rx="3" fill="#13172F" stroke="rgba(162,180,203,0.7)" stroke-width="2" />
+                  </svg>
+                </div>
+                <div id="f05-lap-lid" class="f05-lap-lid">
+                  <div class="f05-lap-face">
+                    <svg width="210" height="140" viewBox="0 0 210 140" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="1" y="1" width="208" height="138" rx="10" fill="#13172F" stroke="#A2B4CB" stroke-width="2" />
+                      <rect x="11" y="11" width="188" height="114" rx="4" fill="rgba(166,167,255,0.07)" stroke="rgba(162,180,203,0.5)" stroke-width="2" />
+                      <circle cx="105" cy="6" r="1.6" fill="#A2B4CB" />
+                      <circle cx="33" cy="36" r="4" stroke="#A6A7FF" stroke-width="2" />
+                      <path d="M46 36H118M28 56H170M28 72H140" stroke="rgba(162,180,203,0.45)" stroke-width="2" />
+                    </svg>
+                    <div class="f05-lap-bar"><div id="f05-lap-bar-fill" class="f05-lap-bar-fill"></div></div>
+                  </div>
+                  <div class="f05-lap-face f05-lap-back">
+                    <svg width="210" height="140" viewBox="0 0 210 140" fill="none">
+                      <rect x="1" y="1" width="208" height="138" rx="10" fill="#161A34" stroke="#A2B4CB" stroke-width="2" />
+                      <rect x="12" y="12" width="186" height="116" rx="6" stroke="rgba(162,180,203,0.22)" stroke-width="2" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="f05-moon" class="f05-moon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#A2B4CB" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 14.2A8.2 8.2 0 1 1 9.8 4a6.4 6.4 0 0 0 10.2 10.2z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- progress card -->
+        <div id="f05-card" class="f05-card">
+          <div class="f05-card-head">
+            <div class="f05-status-row">
+              <div class="f05-spin-wrap">
+                <div id="f05-spin" class="f05-spin">
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="16" stroke="rgba(166,167,255,0.22)" stroke-width="3.5" />
+                  </svg>
+                  <div id="f05-spin-rot" class="f05-spin-rot">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                      <circle cx="20" cy="20" r="16" stroke="#A6A7FF" stroke-width="3.5" stroke-linecap="round" pathLength="100" stroke-dasharray="30 70" />
+                    </svg>
+                  </div>
+                </div>
+                <div id="f05-spin-done" class="f05-spin-done">
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" fill="#17B14E" />
+                    <path id="f05-spin-check" class="f05-check" d="M12.5 20.5L17.5 25.5L27.5 15" stroke="#EEF3F8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" pathLength="1" />
+                  </svg>
+                </div>
+              </div>
+              <div class="f05-status-stack">
+                <div id="f05-st-1" class="f05-status">Investigando…</div>
+                <div id="f05-st-2" class="f05-status">Redactando…</div>
+                <div id="f05-st-3" class="f05-status">Armando slides…</div>
+                <div id="f05-st-4" class="f05-status f05-status-ok">Listo</div>
+              </div>
+            </div>
+            <div class="f05-bar"><div id="f05-bar-fill" class="f05-bar-fill"></div></div>
+          </div>
+          <div id="f05-card-plate" class="f05-card-plate"></div>
+          <div id="f05-card-foot" class="f05-card-foot"></div>
+          <div id="f05-divider" class="f05-divider"></div>
+
+          <div id="f05-rows" class="f05-rows">
+            <div id="f05-row-1" class="f05-row f05-row-1">
+              <div class="f05-badge">
+                <div id="f05-b1-pend" class="f05-badge-pend">
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="16" stroke="rgba(162,180,203,0.35)" stroke-width="2.5" />
+                  </svg>
+                  <div id="f05-b1-spin" class="f05-badge-spin">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                      <circle cx="20" cy="20" r="16" stroke="#A6A7FF" stroke-width="2.5" stroke-linecap="round" pathLength="100" stroke-dasharray="26 74" />
+                    </svg>
+                  </div>
+                </div>
+                <div id="f05-b1-done" class="f05-badge-done">
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" fill="#17B14E" />
+                    <path id="f05-b1-check" class="f05-check" d="M12.5 20.5L17.5 25.5L27.5 15" stroke="#EEF3F8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" pathLength="1" />
+                  </svg>
+                </div>
+              </div>
+              <div class="f05-ficon">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="#A2B4CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 3H18L24 9V26A1 1 0 0 1 23 27H8A1 1 0 0 1 7 26V4A1 1 0 0 1 8 3Z" />
+                  <path d="M18 3V9H24" />
+                  <path d="M11 15H20M11 19.5H20M11 24H16" />
+                </svg>
+              </div>
+              <div class="f05-row-label">Documento</div>
+            </div>
+
+            <div id="f05-row-2" class="f05-row f05-row-2">
+              <div id="f05-row-hl" class="f05-row-hl"></div>
+              <div class="f05-badge">
+                <div id="f05-b2-pend" class="f05-badge-pend">
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="16" stroke="rgba(162,180,203,0.35)" stroke-width="2.5" />
+                  </svg>
+                  <div id="f05-b2-spin" class="f05-badge-spin">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                      <circle cx="20" cy="20" r="16" stroke="#A6A7FF" stroke-width="2.5" stroke-linecap="round" pathLength="100" stroke-dasharray="26 74" />
+                    </svg>
+                  </div>
+                </div>
+                <div id="f05-b2-done" class="f05-badge-done">
+                  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <circle cx="20" cy="20" r="18" fill="#17B14E" />
+                    <path id="f05-b2-check" class="f05-check" d="M12.5 20.5L17.5 25.5L27.5 15" stroke="#EEF3F8" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" pathLength="1" />
+                  </svg>
+                </div>
+              </div>
+              <div class="f05-ficon">
+                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="#A2B4CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 5H27" />
+                  <rect x="5" y="5" width="20" height="15" rx="1.5" />
+                  <path d="M15 20V24M10.5 27L15 24L19.5 27" />
+                  <path d="M10 16V13.5M15 16V10M20 16V12" />
+                </svg>
+              </div>
+              <div class="f05-row-label">Presentación</div>
+              <div class="f05-chips">
+                <div id="f05-chip-ppt" class="f05-chip">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#A6A7FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 11.5L11.5 4.5M6 4.5H11.5V10" /></svg>
+                  <span>PowerPoint</span>
+                </div>
+                <div id="f05-chip-pdf" class="f05-chip">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#A6A7FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 11.5L11.5 4.5M6 4.5H11.5V10" /></svg>
+                  <span>PDF</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="f05-chrome"
+      class="clip f05-layer"
+      data-start="0"
+      data-duration="9.254"
+      data-track-index="2"
+    >
+      <div id="f05-bug" class="f05-bug f05-chrome-item">
+        <img src="../../assets/brand/aecode-isotipo.png" alt="" />
+        <span>AECODE · Lo último de Claude</span>
+      </div>
+      <div id="f05-counter" class="f05-counter f05-chrome-item">03 / 05</div>
+      <div id="f05-rail" class="f05-rail f05-chrome-item">Fuente: claude.com/blog/cowork-is-now-claude · 16-sep-2026</div>
+    </div>
+  </div>
+
+  <script src="../../assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var D = 9.254;
+      var tl = gsap.timeline({ paused: true });
+
+      // ---- card extension (anchored-layout-expand) ----
+      // The card is authored at its final height; its visible body grows downward in two
+      // steps. Plate scaleY, footer translate and the rows' clip share start, duration and
+      // ease, so the growing bottom edge and the rows stay in exact contact every frame.
+      function cardGrow(s0, s1, at, first) {
+        var vars = { duration: 0.45, ease: "power3.out" };
+        var plate = Object.assign({ scaleY: s1 }, vars);
+        var foot = Object.assign({ y: -180 * (1 - s1) }, vars);
+        var rows = Object.assign({ clipPath: "inset(0px 0px " + (183 - 180 * s1) + "px 0px)" }, vars);
+        if (!first) {
+          plate.immediateRender = false;
+          foot.immediateRender = false;
+          rows.immediateRender = false;
+        }
+        tl.fromTo("#f05-card-plate", { scaleY: s0 }, plate, at);
+        tl.fromTo("#f05-card-foot", { y: -180 * (1 - s0) }, foot, at);
+        tl.fromTo("#f05-rows", { clipPath: "inset(0px 0px " + (183 - 180 * s0) + "px 0px)" }, rows, at);
+      }
+
+      // ---- chrome: opacity-only fade at t=0, then perfectly still ----
+      tl.fromTo(".f05-chrome-item", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
+
+      // ---- Scene 1 (0.0–1.7): listicle stage ----
+      tl.fromTo("#f05-kicker", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.15);
+      tl.fromTo(
+        ".f05-word",
+        { yPercent: 110, opacity: 0 },
+        { yPercent: 0, opacity: 1, duration: 0.45, ease: "power3.out", stagger: 0.18 },
+        0.5
+      );
+      tl.fromTo("#f05-date", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.15);
+      tl.fromTo("#f05-note", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 1.4);
+
+      // ---- Scene 2 (1.8–4.0): the machine works; the laptop closes, the work does not stop ----
+      tl.fromTo("#f05-lap-wrap", { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 1.0);
+      tl.fromTo("#f05-card", { opacity: 0, scale: 0.86, y: 16 }, { opacity: 1, scale: 1, y: 0, duration: 0.6, ease: "power3.out" }, 1.4);
+      tl.fromTo("#f05-card-glow", { opacity: 0 }, { opacity: 1, duration: 0.9, ease: "power2.out" }, 1.5);
+      // one slow receipt push under the whole working run
+      tl.fromTo("#f05-right", { scale: 1 }, { scale: 1.03, duration: D - 1.4, ease: "sine.inOut" }, 1.4);
+
+      // spinner + first status on "Sigue trabajando"
+      tl.fromTo("#f05-spin", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power3.out" }, 1.85);
+      tl.fromTo("#f05-spin-rot", { rotation: 0 }, { rotation: 1800, duration: 6.68 - 1.85, ease: "none" }, 1.85);
+      tl.fromTo("#f05-st-1", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out" }, 1.9);
+
+      // gradient-stroke progress: ONE steady fill that runs straight through the lid close
+      var FILL_AT = 1.95;
+      var FILL_END = 6.45;
+      tl.fromTo("#f05-bar-fill", { xPercent: -100 }, { xPercent: 0, duration: FILL_END - FILL_AT, ease: "none" }, FILL_AT);
+      // the laptop's own screen mirrors the same progress until the lid shuts
+      tl.fromTo(
+        "#f05-lap-bar-fill",
+        { xPercent: -100 },
+        { xPercent: -100 + (100 * (3.0 - FILL_AT)) / (FILL_END - FILL_AT), duration: 3.0 - FILL_AT, ease: "none" },
+        FILL_AT
+      );
+
+      // "cierres la laptop" — 3D hinge close
+      tl.fromTo("#f05-lap-lid", { rotationX: 12 }, { rotationX: -90, duration: 0.5, ease: "power3.inOut" }, 3.0);
+      tl.fromTo("#f05-lap-dim", { opacity: 1 }, { opacity: 0.5, duration: 0.5, ease: "power2.out" }, 3.5);
+      tl.fromTo("#f05-moon", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 3.62);
+
+      // status couplet swaps (quick fade/slide)
+      function statusSwap(outSel, inSel, t) {
+        tl.fromTo(outSel, { opacity: 1, y: 0 }, { opacity: 0, y: -16, duration: 0.2, ease: "power2.in", immediateRender: false }, t);
+        tl.fromTo(inSel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" }, t + 0.14);
+      }
+      statusSwap("#f05-st-1", "#f05-st-2", 3.3);
+
+      // ---- Scene 3 (4.3–6.8): the receipt cascades and checks off ----
+      statusSwap("#f05-st-2", "#f05-st-3", 4.45);
+
+      tl.fromTo("#f05-divider", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 4.85);
+      tl.fromTo(grow, { s: 0 }, { s: 0.5, duration: 0.45, ease: "power3.out", onUpdate: applyGrow }, 4.85);
+      tl.fromTo(grow, { s: 0.5 }, { s: 1, duration: 0.45, ease: "power3.out", onUpdate: applyGrow, immediateRender: false }, 5.75);
+
+      // row "Documento" on "documentos" @5.0
+      tl.fromTo("#f05-row-1", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 5.0);
+      tl.fromTo("#f05-b1-spin", { rotation: 0 }, { rotation: 460, duration: 0.63, ease: "none" }, 5.0);
+      tl.fromTo("#f05-b1-pend", { opacity: 1, scale: 1 }, { opacity: 0, scale: 0.6, duration: 0.18, ease: "power2.in", immediateRender: false }, 5.45);
+      tl.fromTo("#f05-b1-done", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, 5.55);
+      tl.fromTo("#f05-b1-check", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 5.63);
+
+      // row "Presentación" on "presentaciones" @5.9
+      tl.fromTo("#f05-row-2", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 5.9);
+      tl.fromTo("#f05-b2-spin", { rotation: 0 }, { rotation: 460, duration: 0.63, ease: "none" }, 5.9);
+      tl.fromTo("#f05-b2-pend", { opacity: 1, scale: 1 }, { opacity: 0, scale: 0.6, duration: 0.18, ease: "power2.in", immediateRender: false }, 6.3);
+      tl.fromTo("#f05-b2-done", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, 6.4);
+      tl.fromTo("#f05-b2-check", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 6.48);
+
+      // status resolves: spinner -> green check, "Listo" in green (the working pulse dies here)
+      tl.fromTo("#f05-spin", { opacity: 1, scale: 1 }, { opacity: 0, scale: 0.6, duration: 0.18, ease: "power2.in", immediateRender: false }, 6.5);
+      tl.fromTo("#f05-spin-done", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(1.4)" }, 6.6);
+      tl.fromTo("#f05-spin-check", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.3, ease: "power2.out" }, 6.68);
+      statusSwap("#f05-st-3", "#f05-st-4", 6.55);
+
+      // ---- Scene 4 (7.0–8.6): export chips pop at the right of "Presentación" ----
+      tl.fromTo("#f05-row-hl", { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.out" }, 7.4);
+      tl.fromTo("#f05-chip-ppt", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 7.7);
+      tl.fromTo("#f05-chip-pdf", { opacity: 0, scale: 0 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power3.out" }, 8.4);
+
+      // ---- Scene 5 (8.6–9.25): hold ----
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["05-un-solo-claude"] = tl;
+    })();
+  </script>
+</template>

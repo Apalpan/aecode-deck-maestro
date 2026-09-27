@@ -15,7 +15,7 @@
       font-family: "Manrope";
       color: #EEF3F8;
     }
-    #root *, #root *::before, #root *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    #root *, #root *::before, #root *::after { box-sizing: border-box; }
 
     /* ---------- ground (full-bleed clip, static) ---------- */
     .f04-contexto-ground {
@@ -438,7 +438,6 @@
   <script src="assets/vendor/gsap.min.js"></script>
   <script>
     (function () {
-      var FRAME_ID = "04-contexto";
       var byId = function (id) { return document.getElementById(id); };
 
       var stage = byId("f04-contexto-stage");
@@ -564,7 +563,7 @@
       tl.fromTo(convchip, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2.2)" }, 6.36);
 
       window.__timelines = window.__timelines || {};
-      window.__timelines[FRAME_ID] = tl;
+      window.__timelines["04-contexto"] = tl;
     })();
   </script>
 </template>
