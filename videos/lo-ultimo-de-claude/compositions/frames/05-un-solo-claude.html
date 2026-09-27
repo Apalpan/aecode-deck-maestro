@@ -551,7 +551,7 @@
     >
       <!-- LEFT column -->
       <div class="f05-left">
-        <div id="f05-kicker" class="f05-kicker">Novedad 03 · Producto</div>
+        <div id="f05-kicker" class="f05-kicker">NOVEDAD 03 · PRODUCTO</div>
         <div class="f05-headline">
           <span class="f05-wmask"><span class="f05-word">Un</span></span>
           <span class="f05-wmask"><span class="f05-word">solo</span></span>
@@ -736,7 +736,7 @@
     >
       <div id="f05-bug" class="f05-bug f05-chrome-item">
         <img src="../../assets/brand/aecode-isotipo.png" alt="" />
-        <span>AECODE · Lo último de Claude</span>
+        <span>AECODE · LO ÚLTIMO DE CLAUDE</span>
       </div>
       <div id="f05-counter" class="f05-counter f05-chrome-item">03 / 05</div>
       <div id="f05-rail" class="f05-rail f05-chrome-item">Fuente: claude.com/blog/cowork-is-now-claude · 16-sep-2026</div>
@@ -822,8 +822,8 @@
       statusSwap("#f05-st-2", "#f05-st-3", 4.45);
 
       tl.fromTo("#f05-divider", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 4.85);
-      tl.fromTo(grow, { s: 0 }, { s: 0.5, duration: 0.45, ease: "power3.out", onUpdate: applyGrow }, 4.85);
-      tl.fromTo(grow, { s: 0.5 }, { s: 1, duration: 0.45, ease: "power3.out", onUpdate: applyGrow, immediateRender: false }, 5.75);
+      cardGrow(0, 0.5, 4.85, true);
+      cardGrow(0.5, 1, 5.75, false);
 
       // row "Documento" on "documentos" @5.0
       tl.fromTo("#f05-row-1", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 5.0);
