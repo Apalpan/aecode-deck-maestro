@@ -455,7 +455,7 @@
         { opacity: 1, y: 0, duration: 0.45 },
         0.2,
       );
-      // typing dots: two finite bounce waves (unrolled, no repeat/yoyo)
+      // typing dots: two finite bounce waves, unrolled into explicit tweens
       const dots = [$("dot0"), $("dot1"), $("dot2")];
       for (let k = 0; k < 2; k++) {
         dots.forEach((d, i) => {
@@ -499,30 +499,29 @@
       const R0_BL = (8 * 0.55) / S0; // tail corner
       const MORPH_START = 2.5;
       const MORPH_DUR = 0.9;
-      tl.fromTo(
-        $("card"),
-        {
-          x: -829.5,
-          y: 0,
-          scale: S0,
-          borderTopLeftRadius: R0,
-          borderTopRightRadius: R0,
-          borderBottomRightRadius: R0,
-          borderBottomLeftRadius: R0_BL,
-        },
-        {
-          x: 0,
-          y: 0,
-          scale: 1,
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          borderBottomRightRadius: 24,
-          borderBottomLeftRadius: 24,
-          duration: MORPH_DUR,
-          ease: "power2.inOut",
-        },
-        MORPH_START,
-      );
+      const MORPH_FROM = {
+        x: -829.5,
+        y: 0,
+        scale: S0,
+        borderTopLeftRadius: R0,
+        borderTopRightRadius: R0,
+        borderBottomRightRadius: R0,
+        borderBottomLeftRadius: R0_BL,
+      };
+      const MORPH_TO = {
+        x: 0,
+        y: 0,
+        scale: 1,
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+        borderBottomRightRadius: 24,
+        borderBottomLeftRadius: 24,
+        duration: MORPH_DUR,
+        ease: "power2.inOut",
+      };
+      tl.fromTo($("card"), { ...MORPH_FROM }, { ...MORPH_TO }, MORPH_START);
+      // the glow layer rides the identical morph so it always sits exactly behind the card
+      tl.fromTo($("glow"), { ...MORPH_FROM }, { ...MORPH_TO }, MORPH_START);
       // lifts off the dimmed bubble
       tl.fromTo(
         $("card"),
@@ -554,8 +553,8 @@
       // ai-glow blooms behind the card, landing with its settle (bloom, then hold)
       tl.fromTo(
         $("glow"),
-        { opacity: 0, scale: 0.94 },
-        { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" },
+        { opacity: 0 },
+        { opacity: 1, duration: 0.6, ease: "power2.out" },
         2.85,
       );
 
