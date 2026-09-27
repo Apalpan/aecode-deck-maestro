@@ -1,0 +1,373 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Manrope";
+      font-weight: 700;
+      font-style: normal;
+      src: url("../../assets/fonts/Manrope-700.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "Manrope";
+      font-weight: 800;
+      font-style: normal;
+      src: url("../../assets/fonts/Manrope-800.woff2") format("woff2");
+    }
+    @font-face {
+      font-family: "JetBrains Mono";
+      font-weight: 500;
+      font-style: normal;
+      src: url("../../assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+    }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      font-family: "Manrope";
+      color: #eef3f8;
+    }
+
+    /* ── ground: static full-bleed blueprint field (lowest track) ── */
+    [id="01-hook-ground"] {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-color: #0e1121;
+      background-image:
+        radial-gradient(900px 700px at 12% 8%, rgba(74, 58, 193, 0.28), transparent 70%),
+        radial-gradient(900px 700px at 92% 96%, rgba(68, 101, 238, 0.14), transparent 70%),
+        linear-gradient(to right, rgba(166, 167, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(166, 167, 255, 0.07) 1px, transparent 1px);
+      background-size:
+        100% 100%,
+        100% 100%,
+        64px 64px,
+        64px 64px;
+    }
+
+    /* ── chrome: brand-bug (shared pixel position) ── */
+    [id="01-hook-bug"] {
+      position: absolute;
+      left: 80px;
+      top: 56px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 6;
+    }
+    [id="01-hook-bug-mark"] {
+      display: block;
+      height: 40px;
+      width: auto;
+    }
+    [id="01-hook-bug-label"] {
+      font-family: "Manrope";
+      font-weight: 700;
+      font-size: 17px;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #a2b4cb;
+      white-space: nowrap;
+    }
+
+    /* ── kicker (supporting) ── */
+    [id="01-hook-kicker"] {
+      position: absolute;
+      left: 80px;
+      top: 276px;
+      z-index: 3;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #a6a7ff;
+      white-space: nowrap;
+    }
+
+    /* ── hero question (foreground subject) — display-hero, left-anchored ── */
+    [id="01-hook-q"] {
+      position: absolute;
+      left: 73px;
+      top: 321px;
+      z-index: 3;
+      font-weight: 800;
+      font-size: 146px;
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      white-space: nowrap;
+      color: #eef3f8;
+    }
+    [id="01-hook-q-w1"],
+    [id="01-hook-q-w2"] {
+      display: inline-block;
+    }
+    [id="01-hook-q-w1"] {
+      color: #eef3f8;
+    }
+    [id="01-hook-q-w2"] {
+      color: #a6a7ff;
+    }
+
+    /* ── gradient-stroke strike-through (the one gradient accent) ── */
+    [id="01-hook-strike"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      z-index: 4;
+      overflow: visible;
+      pointer-events: none;
+      filter: drop-shadow(0 0 14px rgba(109, 18, 227, 0.5));
+    }
+
+    /* ── chip-date at the stroke's end ── */
+    [id="01-hook-chip"] {
+      position: absolute;
+      left: 1318px;
+      top: 383px;
+      height: 44px;
+      box-sizing: border-box;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      z-index: 5;
+      border: 1px solid #a6a7ff;
+      border-radius: 999px;
+      background: transparent;
+      font-family: "JetBrains Mono";
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: #a6a7ff;
+      white-space: nowrap;
+      transform-origin: 0% 50%;
+    }
+
+    /* ── ai-glow bloom behind the answer line ── */
+    [id="01-hook-glow"] {
+      position: absolute;
+      left: -125px;
+      top: 390px;
+      width: 1200px;
+      height: 360px;
+      z-index: 1;
+      background: radial-gradient(
+        closest-side,
+        rgba(84, 80, 217, 1) 0%,
+        rgba(84, 80, 217, 0.45) 45%,
+        rgba(84, 80, 217, 0) 100%
+      );
+    }
+
+    /* ── answer line "Eso cambió." — display-hero slam ── */
+    [id="01-hook-eso"] {
+      position: absolute;
+      left: 73px;
+      top: 499px;
+      z-index: 3;
+      font-weight: 800;
+      font-size: 146px;
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      white-space: nowrap;
+      color: #eef3f8;
+      transform-origin: 6% 62%;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="01-hook"
+    data-start="0"
+    data-duration="5.94"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div
+      id="01-hook-ground"
+      class="clip"
+      data-start="0"
+      data-duration="5.94"
+      data-track-index="0"
+    ></div>
+
+    <div id="01-hook-bug">
+      <img id="01-hook-bug-mark" src="../../assets/brand/aecode-isotipo.png" alt="" />
+      <span id="01-hook-bug-label">AECODE · LO ÚLTIMO DE CLAUDE</span>
+    </div>
+
+    <div id="01-hook-kicker">LA IA EN TU TRABAJO</div>
+
+    <div id="01-hook-q"><span id="01-hook-q-w1">¿Solo</span> <span id="01-hook-q-w2">preguntas?</span></div>
+
+    <svg
+      id="01-hook-strike"
+      width="1920"
+      height="1080"
+      viewBox="0 0 1920 1080"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <defs>
+        <linearGradient
+          id="01-hook-strike-grad"
+          gradientUnits="userSpaceOnUse"
+          x1="48"
+          y1="405"
+          x2="1300"
+          y2="405"
+        >
+          <stop offset="0" stop-color="#4465EE" />
+          <stop offset="1" stop-color="#6D12E3" />
+        </linearGradient>
+      </defs>
+      <line
+        id="01-hook-strike-line"
+        x1="48"
+        y1="405"
+        x2="1300"
+        y2="405"
+        fill="none"
+        stroke="url(#01-hook-strike-grad)"
+        stroke-width="12"
+        stroke-linecap="round"
+      />
+    </svg>
+
+    <div id="01-hook-chip">SEP · 2026</div>
+
+    <div id="01-hook-glow"></div>
+    <div id="01-hook-eso">Eso cambió.</div>
+  </div>
+
+  <script src="../../assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var DURATION = 5.94;
+      var el = function (name) {
+        return document.getElementById("01-hook-" + name);
+      };
+
+      // Voiceover word onsets (assets/voice/01.wav) — the one beat array every reveal reads.
+      var VO = { solo: 2.226, preguntas: 3.163, en: 3.91, eso: 4.309, cambio: 4.821 };
+      var LEAD = 0.05; // entrances start a hair before the word so the hit resolves on it
+      var DRAW = 0.48; // strike self-draw length
+
+      var bug = el("bug");
+      var kicker = el("kicker");
+      var q = el("q");
+      var w1 = el("q-w1");
+      var w2 = el("q-w2");
+      var line = el("strike-line");
+      var chip = el("chip");
+      var glow = el("glow");
+      var eso = el("eso");
+
+      // SVG self-draw setup: one dash the length of the measured line.
+      var len = 1252;
+      try {
+        len = line.getTotalLength() || len;
+      } catch (e) {}
+      line.style.strokeDasharray = len + " " + len;
+      line.style.strokeDashoffset = String(len);
+
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      // Scene 1 (0.0–1.4) — chrome settles, kicker fades up; the frame stays quiet.
+      tl.fromTo(bug, { opacity: 0 }, { opacity: 0.9, duration: 0.35, ease: "power3.out" }, 0);
+      tl.fromTo(
+        kicker,
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+        0.25,
+      );
+
+      // Scene 2 (1.4–3.6) — the question builds word-by-word, each word its own entrance.
+      tl.fromTo(
+        w1,
+        { opacity: 0, y: 40, filter: "blur(10px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "power3.out" },
+        VO.solo - LEAD,
+      );
+      tl.fromTo(
+        w2,
+        { opacity: 0, x: 90, filter: "blur(10px)" },
+        { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.45, ease: "expo.out" },
+        VO.preguntas - LEAD,
+      );
+
+      // Scene 3 (3.9–4.4) — gradient-stroke self-draws left→right through the question,
+      // the question dims to text-muted ~40%, the date chip pops out of the stroke's end.
+      tl.fromTo(line, { opacity: 0 }, { opacity: 1, duration: 0.06, ease: "none" }, VO.en);
+      tl.fromTo(
+        line,
+        { strokeDashoffset: len },
+        { strokeDashoffset: 0, duration: DRAW, ease: "power2.out" },
+        VO.en,
+      );
+      tl.fromTo(
+        q,
+        { opacity: 1 },
+        { opacity: 0.4, duration: 0.5, ease: "power2.out", immediateRender: false },
+        VO.en + 0.04,
+      );
+      tl.fromTo(
+        w1,
+        { color: "#EEF3F8" },
+        { color: "#A2B4CB", duration: 0.5, ease: "power2.out", immediateRender: false },
+        VO.en + 0.04,
+      );
+      tl.fromTo(
+        w2,
+        { color: "#A6A7FF" },
+        { color: "#A2B4CB", duration: 0.5, ease: "power2.out", immediateRender: false },
+        VO.en + 0.04,
+      );
+      tl.fromTo(
+        chip,
+        { opacity: 0, scale: 0.3, x: -14 },
+        { opacity: 1, scale: 1, x: 0, duration: 0.5, ease: "power3.out" },
+        VO.en + DRAW * 0.62,
+      );
+
+      // Scene 4 (4.3–5.94) — "Eso cambió." slams in beneath (scale + blur slam),
+      // ai-glow blooms behind it on "cambió", then everything holds still.
+      tl.fromTo(
+        eso,
+        { opacity: 0, scale: 1.4, filter: "blur(12px)" },
+        { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.5, ease: "power4.out" },
+        VO.eso - 0.02,
+      );
+      tl.fromTo(
+        glow,
+        { opacity: 0, scale: 0.8 },
+        { opacity: 0.42, scale: 1, duration: 0.8, ease: "power2.out" },
+        VO.eso + 0.14,
+      );
+      tl.fromTo(
+        eso,
+        { textShadow: "0px 0px 0px rgba(84,80,217,0)" },
+        {
+          textShadow: "0px 0px 48px rgba(84,80,217,0.55)",
+          duration: 0.6,
+          ease: "power2.out",
+          immediateRender: false,
+        },
+        VO.cambio - 0.2,
+      );
+
+      // Pin the timeline length to the frame's fixed duration (static hold to the end).
+      tl.set({}, {}, DURATION);
+
+      window.__timelines["01-hook"] = tl;
+    })();
+  </script>
+</template>
