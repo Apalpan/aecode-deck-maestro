@@ -1,0 +1,1353 @@
+{
+  "bgm": {
+    "path": "assets/bgm/track.mp3",
+    "volume": 0.2,
+    "query": "calm confident minimal tech underscore (procedural, local synth)",
+    "duration_s": 75.5
+  },
+  "bgm_pending": false,
+  "voices": [
+    {
+      "frame": 1,
+      "path": "assets/voice/01.wav",
+      "duration_s": 5.94,
+      "words": [
+        {
+          "id": 0,
+          "text": "¿Todavía",
+          "start": 0,
+          "end": 0.445
+        },
+        {
+          "id": 1,
+          "text": "usas",
+          "start": 0.445,
+          "end": 0.757
+        },
+        {
+          "id": 2,
+          "text": "la",
+          "start": 0.757,
+          "end": 0.937
+        },
+        {
+          "id": 3,
+          "text": "inteligencia",
+          "start": 0.937,
+          "end": 1.648
+        },
+        {
+          "id": 4,
+          "text": "artificial",
+          "start": 1.648,
+          "end": 2.226
+        },
+        {
+          "id": 5,
+          "text": "solo",
+          "start": 2.226,
+          "end": 2.538
+        },
+        {
+          "id": 6,
+          "text": "para",
+          "start": 2.538,
+          "end": 2.851
+        },
+        {
+          "id": 7,
+          "text": "hacer",
+          "start": 2.851,
+          "end": 3.163
+        },
+        {
+          "id": 8,
+          "text": "preguntas?",
+          "start": 3.163,
+          "end": 3.608
+        },
+        {
+          "id": 9,
+          "text": "En",
+          "start": 3.91,
+          "end": 3.984
+        },
+        {
+          "id": 10,
+          "text": "septiembre,",
+          "start": 3.984,
+          "end": 4.168
+        },
+        {
+          "id": 11,
+          "text": "eso",
+          "start": 4.309,
+          "end": 4.821
+        },
+        {
+          "id": 12,
+          "text": "cambió.",
+          "start": 4.821,
+          "end": 5.334
+        }
+      ]
+    },
+    {
+      "frame": 2,
+      "path": "assets/voice/02.wav",
+      "duration_s": 7.4,
+      "words": [
+        {
+          "id": 0,
+          "text": "Claude",
+          "start": 0,
+          "end": 0.339
+        },
+        {
+          "id": 1,
+          "text": "dejó",
+          "start": 0.339,
+          "end": 0.677
+        },
+        {
+          "id": 2,
+          "text": "de",
+          "start": 0.677,
+          "end": 0.872
+        },
+        {
+          "id": 3,
+          "text": "ser",
+          "start": 0.872,
+          "end": 1.066
+        },
+        {
+          "id": 4,
+          "text": "un",
+          "start": 1.066,
+          "end": 1.261
+        },
+        {
+          "id": 5,
+          "text": "chat",
+          "start": 1.261,
+          "end": 1.456
+        },
+        {
+          "id": 6,
+          "text": "que",
+          "start": 1.456,
+          "end": 1.65
+        },
+        {
+          "id": 7,
+          "text": "responde.",
+          "start": 1.65,
+          "end": 2.133
+        },
+        {
+          "id": 8,
+          "text": "Ahora",
+          "start": 2.542,
+          "end": 2.903
+        },
+        {
+          "id": 9,
+          "text": "es",
+          "start": 2.903,
+          "end": 3.048
+        },
+        {
+          "id": 10,
+          "text": "un",
+          "start": 3.048,
+          "end": 3.194
+        },
+        {
+          "id": 11,
+          "text": "colega",
+          "start": 3.194,
+          "end": 3.554
+        },
+        {
+          "id": 12,
+          "text": "que",
+          "start": 3.554,
+          "end": 3.7
+        },
+        {
+          "id": 13,
+          "text": "investiga,",
+          "start": 3.7,
+          "end": 4.168
+        },
+        {
+          "id": 14,
+          "text": "construye",
+          "start": 4.302,
+          "end": 4.703
+        },
+        {
+          "id": 15,
+          "text": "y",
+          "start": 4.703,
+          "end": 4.934
+        },
+        {
+          "id": 16,
+          "text": "entrega",
+          "start": 4.934,
+          "end": 5.506
+        },
+        {
+          "id": 17,
+          "text": "trabajo",
+          "start": 5.506,
+          "end": 6.078
+        },
+        {
+          "id": 18,
+          "text": "real.",
+          "start": 6.078,
+          "end": 6.308
+        }
+      ]
+    },
+    {
+      "frame": 3,
+      "path": "assets/voice/03.wav",
+      "duration_s": 11.046,
+      "words": [
+        {
+          "id": 0,
+          "text": "Primero:",
+          "start": 0,
+          "end": 0.513
+        },
+        {
+          "id": 1,
+          "text": "Opus",
+          "start": 0.513,
+          "end": 0.873
+        },
+        {
+          "id": 2,
+          "text": "cinco",
+          "start": 0.873,
+          "end": 1.234
+        },
+        {
+          "id": 3,
+          "text": "punto",
+          "start": 1.234,
+          "end": 1.594
+        },
+        {
+          "id": 4,
+          "text": "cinco.",
+          "start": 1.594,
+          "end": 1.954
+        },
+        {
+          "id": 5,
+          "text": "Rinde",
+          "start": 2.417,
+          "end": 2.717
+        },
+        {
+          "id": 6,
+          "text": "al",
+          "start": 2.717,
+          "end": 2.89
+        },
+        {
+          "id": 7,
+          "text": "nivel",
+          "start": 2.89,
+          "end": 3.19
+        },
+        {
+          "id": 8,
+          "text": "de",
+          "start": 3.19,
+          "end": 3.363
+        },
+        {
+          "id": 9,
+          "text": "Fable",
+          "start": 3.363,
+          "end": 3.663
+        },
+        {
+          "id": 10,
+          "text": "cinco",
+          "start": 3.663,
+          "end": 3.964
+        },
+        {
+          "id": 11,
+          "text": "punto",
+          "start": 3.964,
+          "end": 4.264
+        },
+        {
+          "id": 12,
+          "text": "uno",
+          "start": 4.264,
+          "end": 4.565
+        },
+        {
+          "id": 13,
+          "text": "en",
+          "start": 4.565,
+          "end": 4.737
+        },
+        {
+          "id": 14,
+          "text": "la",
+          "start": 4.737,
+          "end": 4.91
+        },
+        {
+          "id": 15,
+          "text": "mayoría",
+          "start": 4.91,
+          "end": 5.21
+        },
+        {
+          "id": 16,
+          "text": "de",
+          "start": 5.21,
+          "end": 5.383
+        },
+        {
+          "id": 17,
+          "text": "tareas,",
+          "start": 5.383,
+          "end": 5.683
+        },
+        {
+          "id": 18,
+          "text": "cuesta",
+          "start": 5.946,
+          "end": 6.281
+        },
+        {
+          "id": 19,
+          "text": "cuarenta",
+          "start": 6.281,
+          "end": 6.759
+        },
+        {
+          "id": 20,
+          "text": "por",
+          "start": 6.759,
+          "end": 6.952
+        },
+        {
+          "id": 21,
+          "text": "ciento",
+          "start": 6.952,
+          "end": 7.287
+        },
+        {
+          "id": 22,
+          "text": "menos",
+          "start": 7.287,
+          "end": 7.623
+        },
+        {
+          "id": 23,
+          "text": "y",
+          "start": 7.623,
+          "end": 7.816
+        },
+        {
+          "id": 24,
+          "text": "es",
+          "start": 7.816,
+          "end": 8.008
+        },
+        {
+          "id": 25,
+          "text": "treinta",
+          "start": 8.008,
+          "end": 8.344
+        },
+        {
+          "id": 26,
+          "text": "por",
+          "start": 8.344,
+          "end": 8.536
+        },
+        {
+          "id": 27,
+          "text": "ciento",
+          "start": 8.536,
+          "end": 8.872
+        },
+        {
+          "id": 28,
+          "text": "más",
+          "start": 8.872,
+          "end": 9.064
+        },
+        {
+          "id": 29,
+          "text": "rápido",
+          "start": 9.064,
+          "end": 9.542
+        },
+        {
+          "id": 30,
+          "text": "que",
+          "start": 9.542,
+          "end": 9.735
+        },
+        {
+          "id": 31,
+          "text": "Opus",
+          "start": 9.735,
+          "end": 10.071
+        },
+        {
+          "id": 32,
+          "text": "cinco.",
+          "start": 10.071,
+          "end": 10.406
+        }
+      ]
+    },
+    {
+      "frame": 4,
+      "path": "assets/voice/04.wav",
+      "duration_s": 8.123,
+      "words": [
+        {
+          "id": 0,
+          "text": "Segundo:",
+          "start": 0,
+          "end": 0.477
+        },
+        {
+          "id": 1,
+          "text": "un",
+          "start": 0.477,
+          "end": 0.669
+        },
+        {
+          "id": 2,
+          "text": "millón",
+          "start": 0.669,
+          "end": 1.004
+        },
+        {
+          "id": 3,
+          "text": "de",
+          "start": 1.004,
+          "end": 1.196
+        },
+        {
+          "id": 4,
+          "text": "tokens",
+          "start": 1.196,
+          "end": 1.531
+        },
+        {
+          "id": 5,
+          "text": "de",
+          "start": 1.531,
+          "end": 1.724
+        },
+        {
+          "id": 6,
+          "text": "contexto.",
+          "start": 1.724,
+          "end": 2.201
+        },
+        {
+          "id": 7,
+          "text": "Más",
+          "start": 2.545,
+          "end": 2.746
+        },
+        {
+          "id": 8,
+          "text": "de",
+          "start": 2.746,
+          "end": 2.948
+        },
+        {
+          "id": 9,
+          "text": "quinientas",
+          "start": 2.948,
+          "end": 3.447
+        },
+        {
+          "id": 10,
+          "text": "mil",
+          "start": 3.447,
+          "end": 3.649
+        },
+        {
+          "id": 11,
+          "text": "palabras:",
+          "start": 3.649,
+          "end": 4.148
+        },
+        {
+          "id": 12,
+          "text": "tu",
+          "start": 4.383,
+          "end": 4.567
+        },
+        {
+          "id": 13,
+          "text": "expediente",
+          "start": 4.567,
+          "end": 5.159
+        },
+        {
+          "id": 14,
+          "text": "técnico",
+          "start": 5.159,
+          "end": 5.616
+        },
+        {
+          "id": 15,
+          "text": "completo,",
+          "start": 5.616,
+          "end": 6.072
+        },
+        {
+          "id": 16,
+          "text": "en",
+          "start": 6.172,
+          "end": 6.342
+        },
+        {
+          "id": 17,
+          "text": "una",
+          "start": 6.342,
+          "end": 6.639
+        },
+        {
+          "id": 18,
+          "text": "sola",
+          "start": 6.639,
+          "end": 6.936
+        },
+        {
+          "id": 19,
+          "text": "conversación.",
+          "start": 6.936,
+          "end": 7.485
+        }
+      ]
+    },
+    {
+      "frame": 5,
+      "path": "assets/voice/05.wav",
+      "duration_s": 9.254,
+      "words": [
+        {
+          "id": 0,
+          "text": "Tercero:",
+          "start": 0,
+          "end": 0.496
+        },
+        {
+          "id": 1,
+          "text": "un",
+          "start": 0.496,
+          "end": 0.696
+        },
+        {
+          "id": 2,
+          "text": "solo",
+          "start": 0.696,
+          "end": 1.044
+        },
+        {
+          "id": 3,
+          "text": "Claude.",
+          "start": 1.044,
+          "end": 1.393
+        },
+        {
+          "id": 4,
+          "text": "Sigue",
+          "start": 1.766,
+          "end": 2.088
+        },
+        {
+          "id": 5,
+          "text": "trabajando",
+          "start": 2.088,
+          "end": 2.683
+        },
+        {
+          "id": 6,
+          "text": "aunque",
+          "start": 2.683,
+          "end": 3.005
+        },
+        {
+          "id": 7,
+          "text": "cierres",
+          "start": 3.005,
+          "end": 3.327
+        },
+        {
+          "id": 8,
+          "text": "la",
+          "start": 3.327,
+          "end": 3.512
+        },
+        {
+          "id": 9,
+          "text": "laptop,",
+          "start": 3.512,
+          "end": 3.834
+        },
+        {
+          "id": 10,
+          "text": "y",
+          "start": 4.097,
+          "end": 4.307
+        },
+        {
+          "id": 11,
+          "text": "te",
+          "start": 4.307,
+          "end": 4.517
+        },
+        {
+          "id": 12,
+          "text": "entrega",
+          "start": 4.517,
+          "end": 5.037
+        },
+        {
+          "id": 13,
+          "text": "documentos",
+          "start": 5.037,
+          "end": 5.713
+        },
+        {
+          "id": 14,
+          "text": "y",
+          "start": 5.713,
+          "end": 5.923
+        },
+        {
+          "id": 15,
+          "text": "presentaciones",
+          "start": 5.923,
+          "end": 6.754
+        },
+        {
+          "id": 16,
+          "text": "que",
+          "start": 6.754,
+          "end": 6.964
+        },
+        {
+          "id": 17,
+          "text": "exportas",
+          "start": 6.964,
+          "end": 7.484
+        },
+        {
+          "id": 18,
+          "text": "a",
+          "start": 7.484,
+          "end": 7.694
+        },
+        {
+          "id": 19,
+          "text": "PowerPoint",
+          "start": 7.694,
+          "end": 8.214
+        },
+        {
+          "id": 20,
+          "text": "o",
+          "start": 8.214,
+          "end": 8.424
+        },
+        {
+          "id": 21,
+          "text": "PDF.",
+          "start": 8.424,
+          "end": 8.634
+        }
+      ]
+    },
+    {
+      "frame": 6,
+      "path": "assets/voice/06.wav",
+      "duration_s": 7.739,
+      "words": [
+        {
+          "id": 0,
+          "text": "Cuarto:",
+          "start": 0,
+          "end": 0.373
+        },
+        {
+          "id": 1,
+          "text": "Claude",
+          "start": 0.373,
+          "end": 0.746
+        },
+        {
+          "id": 2,
+          "text": "en",
+          "start": 0.746,
+          "end": 0.961
+        },
+        {
+          "id": 3,
+          "text": "Chrome.",
+          "start": 0.961,
+          "end": 1.334
+        },
+        {
+          "id": 4,
+          "text": "Navega,",
+          "start": 1.689,
+          "end": 2.139
+        },
+        {
+          "id": 5,
+          "text": "hace",
+          "start": 2.139,
+          "end": 2.456
+        },
+        {
+          "id": 6,
+          "text": "clic",
+          "start": 2.456,
+          "end": 2.637
+        },
+        {
+          "id": 7,
+          "text": "y",
+          "start": 2.637,
+          "end": 2.819
+        },
+        {
+          "id": 8,
+          "text": "llena",
+          "start": 2.819,
+          "end": 3.135
+        },
+        {
+          "id": 9,
+          "text": "formularios",
+          "start": 3.135,
+          "end": 3.72
+        },
+        {
+          "id": 10,
+          "text": "por",
+          "start": 3.72,
+          "end": 3.901
+        },
+        {
+          "id": 11,
+          "text": "ti,",
+          "start": 3.901,
+          "end": 4.083
+        },
+        {
+          "id": 12,
+          "text": "con",
+          "start": 4.186,
+          "end": 4.383
+        },
+        {
+          "id": 13,
+          "text": "un",
+          "start": 4.383,
+          "end": 4.58
+        },
+        {
+          "id": 14,
+          "text": "filtro",
+          "start": 4.58,
+          "end": 4.922
+        },
+        {
+          "id": 15,
+          "text": "de",
+          "start": 4.922,
+          "end": 5.119
+        },
+        {
+          "id": 16,
+          "text": "seguridad",
+          "start": 5.119,
+          "end": 5.753
+        },
+        {
+          "id": 17,
+          "text": "que",
+          "start": 5.753,
+          "end": 5.95
+        },
+        {
+          "id": 18,
+          "text": "revisa",
+          "start": 5.95,
+          "end": 6.438
+        },
+        {
+          "id": 19,
+          "text": "cada",
+          "start": 6.438,
+          "end": 6.781
+        },
+        {
+          "id": 20,
+          "text": "acción.",
+          "start": 6.781,
+          "end": 7.123
+        }
+      ]
+    },
+    {
+      "frame": 7,
+      "path": "assets/voice/07.wav",
+      "duration_s": 6.424,
+      "words": [
+        {
+          "id": 0,
+          "text": "Quinto:",
+          "start": 0,
+          "end": 0.365
+        },
+        {
+          "id": 1,
+          "text": "más",
+          "start": 0.365,
+          "end": 0.575
+        },
+        {
+          "id": 2,
+          "text": "de",
+          "start": 0.575,
+          "end": 0.784
+        },
+        {
+          "id": 3,
+          "text": "dos",
+          "start": 0.784,
+          "end": 0.994
+        },
+        {
+          "id": 4,
+          "text": "mil",
+          "start": 0.994,
+          "end": 1.204
+        },
+        {
+          "id": 5,
+          "text": "conectores",
+          "start": 1.204,
+          "end": 1.879
+        },
+        {
+          "id": 6,
+          "text": "y",
+          "start": 1.879,
+          "end": 2.089
+        },
+        {
+          "id": 7,
+          "text": "plugins.",
+          "start": 2.089,
+          "end": 2.454
+        },
+        {
+          "id": 8,
+          "text": "Claude",
+          "start": 2.803,
+          "end": 3.094
+        },
+        {
+          "id": 9,
+          "text": "se",
+          "start": 3.094,
+          "end": 3.262
+        },
+        {
+          "id": 10,
+          "text": "conecta",
+          "start": 3.262,
+          "end": 3.677
+        },
+        {
+          "id": 11,
+          "text": "a",
+          "start": 3.677,
+          "end": 3.844
+        },
+        {
+          "id": 12,
+          "text": "las",
+          "start": 3.844,
+          "end": 4.012
+        },
+        {
+          "id": 13,
+          "text": "herramientas",
+          "start": 4.012,
+          "end": 4.551
+        },
+        {
+          "id": 14,
+          "text": "que",
+          "start": 4.551,
+          "end": 4.718
+        },
+        {
+          "id": 15,
+          "text": "tu",
+          "start": 4.718,
+          "end": 4.885
+        },
+        {
+          "id": 16,
+          "text": "equipo",
+          "start": 4.885,
+          "end": 5.301
+        },
+        {
+          "id": 17,
+          "text": "ya",
+          "start": 5.301,
+          "end": 5.468
+        },
+        {
+          "id": 18,
+          "text": "usa.",
+          "start": 5.468,
+          "end": 5.759
+        }
+      ]
+    },
+    {
+      "frame": 8,
+      "path": "assets/voice/08.wav",
+      "duration_s": 9.035,
+      "words": [
+        {
+          "id": 0,
+          "text": "¿Y",
+          "start": 0,
+          "end": 0.18
+        },
+        {
+          "id": 1,
+          "text": "qué",
+          "start": 0.18,
+          "end": 0.36
+        },
+        {
+          "id": 2,
+          "text": "significa",
+          "start": 0.36,
+          "end": 0.94
+        },
+        {
+          "id": 3,
+          "text": "para",
+          "start": 0.94,
+          "end": 1.253
+        },
+        {
+          "id": 4,
+          "text": "AEC?",
+          "start": 1.253,
+          "end": 1.433
+        },
+        {
+          "id": 5,
+          "text": "Imagina:",
+          "start": 1.722,
+          "end": 2.316
+        },
+        {
+          "id": 6,
+          "text": "Claude",
+          "start": 2.724,
+          "end": 3.039
+        },
+        {
+          "id": 7,
+          "text": "lee",
+          "start": 3.039,
+          "end": 3.22
+        },
+        {
+          "id": 8,
+          "text": "tu",
+          "start": 3.22,
+          "end": 3.4
+        },
+        {
+          "id": 9,
+          "text": "expediente,",
+          "start": 3.4,
+          "end": 3.983
+        },
+        {
+          "id": 10,
+          "text": "revisa",
+          "start": 3.983,
+          "end": 4.432
+        },
+        {
+          "id": 11,
+          "text": "el",
+          "start": 4.432,
+          "end": 4.613
+        },
+        {
+          "id": 12,
+          "text": "portal",
+          "start": 4.613,
+          "end": 4.928
+        },
+        {
+          "id": 13,
+          "text": "del",
+          "start": 4.928,
+          "end": 5.109
+        },
+        {
+          "id": 14,
+          "text": "proveedor",
+          "start": 5.109,
+          "end": 5.558
+        },
+        {
+          "id": 15,
+          "text": "y",
+          "start": 5.558,
+          "end": 5.739
+        },
+        {
+          "id": 16,
+          "text": "te",
+          "start": 5.739,
+          "end": 5.92
+        },
+        {
+          "id": 17,
+          "text": "entrega",
+          "start": 5.92,
+          "end": 6.368
+        },
+        {
+          "id": 18,
+          "text": "el",
+          "start": 6.368,
+          "end": 6.549
+        },
+        {
+          "id": 19,
+          "text": "informe",
+          "start": 6.549,
+          "end": 6.998
+        },
+        {
+          "id": 20,
+          "text": "listo",
+          "start": 6.998,
+          "end": 7.313
+        },
+        {
+          "id": 21,
+          "text": "para",
+          "start": 7.313,
+          "end": 7.628
+        },
+        {
+          "id": 22,
+          "text": "la",
+          "start": 7.628,
+          "end": 7.809
+        },
+        {
+          "id": 23,
+          "text": "reunión.",
+          "start": 7.809,
+          "end": 8.124
+        }
+      ]
+    },
+    {
+      "frame": 9,
+      "path": "assets/voice/09.wav",
+      "duration_s": 9.568,
+      "words": [
+        {
+          "id": 0,
+          "text": "La",
+          "start": 0,
+          "end": 0.17
+        },
+        {
+          "id": 1,
+          "text": "pregunta",
+          "start": 0.17,
+          "end": 0.591
+        },
+        {
+          "id": 2,
+          "text": "ya",
+          "start": 0.591,
+          "end": 0.761
+        },
+        {
+          "id": 3,
+          "text": "no",
+          "start": 0.761,
+          "end": 0.931
+        },
+        {
+          "id": 4,
+          "text": "es",
+          "start": 0.931,
+          "end": 1.101
+        },
+        {
+          "id": 5,
+          "text": "qué",
+          "start": 1.101,
+          "end": 1.271
+        },
+        {
+          "id": 6,
+          "text": "le",
+          "start": 1.271,
+          "end": 1.441
+        },
+        {
+          "id": 7,
+          "text": "preguntas",
+          "start": 1.441,
+          "end": 1.862
+        },
+        {
+          "id": 8,
+          "text": "a",
+          "start": 1.862,
+          "end": 2.032
+        },
+        {
+          "id": 9,
+          "text": "Claude.",
+          "start": 2.032,
+          "end": 2.327
+        },
+        {
+          "id": 10,
+          "text": "Es",
+          "start": 2.57,
+          "end": 2.739
+        },
+        {
+          "id": 11,
+          "text": "qué",
+          "start": 2.739,
+          "end": 2.908
+        },
+        {
+          "id": 12,
+          "text": "trabajo",
+          "start": 2.908,
+          "end": 3.327
+        },
+        {
+          "id": 13,
+          "text": "le",
+          "start": 3.327,
+          "end": 3.496
+        },
+        {
+          "id": 14,
+          "text": "delegas.",
+          "start": 3.496,
+          "end": 3.916
+        },
+        {
+          "id": 15,
+          "text": "Aprende,",
+          "start": 4.243,
+          "end": 4.81
+        },
+        {
+          "id": 16,
+          "text": "aplica,",
+          "start": 4.81,
+          "end": 5.377
+        },
+        {
+          "id": 17,
+          "text": "construye",
+          "start": 5.377,
+          "end": 5.775
+        },
+        {
+          "id": 18,
+          "text": "mejor:",
+          "start": 5.775,
+          "end": 6.173
+        },
+        {
+          "id": 19,
+          "text": "esto",
+          "start": 6.31,
+          "end": 6.576
+        },
+        {
+          "id": 20,
+          "text": "es",
+          "start": 6.576,
+          "end": 6.729
+        },
+        {
+          "id": 21,
+          "text": "AECODE.",
+          "start": 6.729,
+          "end": 7.108
+        }
+      ]
+    }
+  ],
+  "sfx": [
+    {
+      "frame": 1,
+      "file": "assets/sfx/click-soft.mp3",
+      "offset_s": 3.9,
+      "duration_s": 0.366,
+      "volume": 0.3
+    },
+    {
+      "frame": 2,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.575,
+      "volume": 0.22
+    },
+    {
+      "frame": 2,
+      "file": "assets/sfx/pop.mp3",
+      "offset_s": 3.7,
+      "duration_s": 0.72,
+      "volume": 0.25
+    },
+    {
+      "frame": 3,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.575,
+      "volume": 0.22
+    },
+    {
+      "frame": 3,
+      "file": "assets/sfx/ping.mp3",
+      "offset_s": 5.9,
+      "duration_s": 1.32,
+      "volume": 0.2
+    },
+    {
+      "frame": 4,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.575,
+      "volume": 0.22
+    },
+    {
+      "frame": 4,
+      "file": "assets/sfx/sparkle.mp3",
+      "offset_s": 6.3,
+      "duration_s": 1.802,
+      "volume": 0.22
+    },
+    {
+      "frame": 5,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.575,
+      "volume": 0.22
+    },
+    {
+      "frame": 5,
+      "file": "assets/sfx/chime.mp3",
+      "offset_s": 6.0,
+      "duration_s": 2.544,
+      "volume": 0.25
+    },
+    {
+      "frame": 6,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.575,
+      "volume": 0.22
+    },
+    {
+      "frame": 6,
+      "file": "assets/sfx/click.mp3",
+      "offset_s": 2.5,
+      "duration_s": 0.366,
+      "volume": 0.3
+    },
+    {
+      "frame": 7,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.575,
+      "volume": 0.22
+    },
+    {
+      "frame": 7,
+      "file": "assets/sfx/sparkle.mp3",
+      "offset_s": 4.0,
+      "duration_s": 1.802,
+      "volume": 0.2
+    },
+    {
+      "frame": 8,
+      "file": "assets/sfx/whoosh-short.mp3",
+      "offset_s": 0.0,
+      "duration_s": 0.575,
+      "volume": 0.15
+    },
+    {
+      "frame": 8,
+      "file": "assets/sfx/chime.mp3",
+      "offset_s": 6.6,
+      "duration_s": 2.544,
+      "volume": 0.25
+    },
+    {
+      "frame": 9,
+      "file": "assets/sfx/riser-short.mp3",
+      "offset_s": 3.5,
+      "duration_s": 3.2,
+      "volume": 0.18
+    },
+    {
+      "frame": 9,
+      "file": "assets/sfx/impact-bass-1.mp3",
+      "offset_s": 6.6,
+      "duration_s": 2.116,
+      "volume": 0.3
+    }
+  ]
+}

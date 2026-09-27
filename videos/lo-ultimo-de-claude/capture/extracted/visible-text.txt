@@ -1,0 +1,17 @@
+LO ÚLTIMO DE CLAUDE — hechos verificados al 27-sep-2026 (fuentes oficiales Anthropic)
+
+MODELOS
+- Claude Opus 5.5 (22-sep-2026): "performs at the level of Claude Fable 5.1 on most work"; "costs 40% less to run than Opus 5"; "generates output more than 30% faster than Opus 5"; Terminal-Bench 4.0 = 66.4%. Fuente: https://www.anthropic.com/news/claude-opus-5-5
+- Claude Fable 5.1 (1-sep-2026): el modelo más capaz, para razonamiento exigente y trabajo agéntico de largo aliento. Fuente: https://www.anthropic.com/claude-fable-and-mythos-5-1
+- Claude Sonnet 5 (30-jun-2026): la mejor combinación de velocidad e inteligencia. Fuente: https://www.anthropic.com/news/claude-sonnet-5
+- Claude Haiku 4.5: el más rápido. Fuente: https://platform.claude.com/docs/en/about-claude/models/overview
+- Contexto de 1 millón de tokens (~555.000 palabras) en Fable 5.1, Opus 5.5 y Sonnet 5. Fuente: docs de modelos.
+
+PRODUCTO
+- 16-sep-2026 "Cowork is now Claude": chat y Cowork se unen en un solo Claude; sigue trabajando "even after you've closed your laptop"; Claude Docs y Claude Slides (beta, planes pagos) exportan a PowerPoint o PDF; llegando primero a Pro y Max en las próximas semanas. Fuente: https://claude.com/blog/cowork-is-now-claude
+- 26-ago-2026: Claude in Chrome disponible en todos los planes pagos; navega, hace clic, llena formularios; un clasificador de seguridad revisa cada acción. Fuente: https://claude.com/blog/claude-in-chrome-generally-available
+- 23-sep-2026: Claude Marketplace con más de 2.000 conectores y plugins (Atlassian, Google, Microsoft, Notion, Salesforce). Fuente: https://claude.com/blog/claude-marketplace
+- 25-sep-2026: Plugins para Claude (conectores MCP + Agent Skills) funcionan en la app, Claude Code y Cowork. Fuente: https://claude.com/blog/build-plugins-for-claude
+
+LECTURA PARA AEC (inferencia editorial, no anuncio de Anthropic)
+- No hay un lanzamiento específico para arquitectura/ingeniería/construcción. El puente con AEC es por capacidades generales: contexto largo para expedientes técnicos, Docs/Slides para entregables, Chrome para portales de proveedores y conectores para las herramientas del equipo.

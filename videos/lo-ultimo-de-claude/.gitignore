@@ -1,0 +1,6 @@
+# regenerable intermediates
+.hyperframes/frame-packets/
+.hyperframes_lines.json
+snapshots/
+node_modules/
+*.tmp.wav

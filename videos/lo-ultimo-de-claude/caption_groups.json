@@ -1,0 +1,1426 @@
+{
+  "total_duration_s": 74.529,
+  "width": 1920,
+  "height": 1080,
+  "groups": [
+    {
+      "id": "caption-group-0",
+      "frame": 1,
+      "start": 0,
+      "end": 2.226,
+      "text": "¿Todavía usas la inteligencia artificial",
+      "words": [
+        {
+          "id": "caption-word-0-0",
+          "text": "¿Todavía",
+          "start": 0,
+          "end": 0.445
+        },
+        {
+          "id": "caption-word-0-1",
+          "text": "usas",
+          "start": 0.445,
+          "end": 0.757
+        },
+        {
+          "id": "caption-word-0-2",
+          "text": "la",
+          "start": 0.757,
+          "end": 0.937
+        },
+        {
+          "id": "caption-word-0-3",
+          "text": "inteligencia",
+          "start": 0.937,
+          "end": 1.648
+        },
+        {
+          "id": "caption-word-0-4",
+          "text": "artificial",
+          "start": 1.648,
+          "end": 2.226
+        }
+      ]
+    },
+    {
+      "id": "caption-group-1",
+      "frame": 1,
+      "start": 2.226,
+      "end": 3.858,
+      "text": "solo para hacer preguntas?",
+      "words": [
+        {
+          "id": "caption-word-1-0",
+          "text": "solo",
+          "start": 2.226,
+          "end": 2.538
+        },
+        {
+          "id": "caption-word-1-1",
+          "text": "para",
+          "start": 2.538,
+          "end": 2.851
+        },
+        {
+          "id": "caption-word-1-2",
+          "text": "hacer",
+          "start": 2.851,
+          "end": 3.163
+        },
+        {
+          "id": "caption-word-1-3",
+          "text": "preguntas?",
+          "start": 3.163,
+          "end": 3.608
+        }
+      ]
+    },
+    {
+      "id": "caption-group-2",
+      "frame": 1,
+      "start": 3.91,
+      "end": 5.584,
+      "text": "En septiembre, eso cambió.",
+      "words": [
+        {
+          "id": "caption-word-2-0",
+          "text": "En",
+          "start": 3.91,
+          "end": 3.984
+        },
+        {
+          "id": "caption-word-2-1",
+          "text": "septiembre,",
+          "start": 3.984,
+          "end": 4.168
+        },
+        {
+          "id": "caption-word-2-2",
+          "text": "eso",
+          "start": 4.309,
+          "end": 4.821
+        },
+        {
+          "id": "caption-word-2-3",
+          "text": "cambió.",
+          "start": 4.821,
+          "end": 5.334
+        }
+      ]
+    },
+    {
+      "id": "caption-group-3",
+      "frame": 2,
+      "start": 5.94,
+      "end": 7.006,
+      "text": "Claude dejó de ser",
+      "words": [
+        {
+          "id": "caption-word-3-0",
+          "text": "Claude",
+          "start": 5.94,
+          "end": 6.279
+        },
+        {
+          "id": "caption-word-3-1",
+          "text": "dejó",
+          "start": 6.279,
+          "end": 6.617
+        },
+        {
+          "id": "caption-word-3-2",
+          "text": "de",
+          "start": 6.617,
+          "end": 6.812
+        },
+        {
+          "id": "caption-word-3-3",
+          "text": "ser",
+          "start": 6.812,
+          "end": 7.006
+        }
+      ]
+    },
+    {
+      "id": "caption-group-4",
+      "frame": 2,
+      "start": 7.006,
+      "end": 8.323,
+      "text": "un chat que responde.",
+      "words": [
+        {
+          "id": "caption-word-4-0",
+          "text": "un",
+          "start": 7.006,
+          "end": 7.201
+        },
+        {
+          "id": "caption-word-4-1",
+          "text": "chat",
+          "start": 7.201,
+          "end": 7.396
+        },
+        {
+          "id": "caption-word-4-2",
+          "text": "que",
+          "start": 7.396,
+          "end": 7.59
+        },
+        {
+          "id": "caption-word-4-3",
+          "text": "responde.",
+          "start": 7.59,
+          "end": 8.073
+        }
+      ]
+    },
+    {
+      "id": "caption-group-5",
+      "frame": 2,
+      "start": 8.482,
+      "end": 10.242,
+      "text": "Ahora es un colega que investiga,",
+      "words": [
+        {
+          "id": "caption-word-5-0",
+          "text": "Ahora",
+          "start": 8.482,
+          "end": 8.843
+        },
+        {
+          "id": "caption-word-5-1",
+          "text": "es",
+          "start": 8.843,
+          "end": 8.988
+        },
+        {
+          "id": "caption-word-5-2",
+          "text": "un",
+          "start": 8.988,
+          "end": 9.134
+        },
+        {
+          "id": "caption-word-5-3",
+          "text": "colega",
+          "start": 9.134,
+          "end": 9.494
+        },
+        {
+          "id": "caption-word-5-4",
+          "text": "que",
+          "start": 9.494,
+          "end": 9.64
+        },
+        {
+          "id": "caption-word-5-5",
+          "text": "investiga,",
+          "start": 9.64,
+          "end": 10.108
+        }
+      ]
+    },
+    {
+      "id": "caption-group-6",
+      "frame": 2,
+      "start": 10.242,
+      "end": 12.498,
+      "text": "construye y entrega trabajo real.",
+      "words": [
+        {
+          "id": "caption-word-6-0",
+          "text": "construye",
+          "start": 10.242,
+          "end": 10.643
+        },
+        {
+          "id": "caption-word-6-1",
+          "text": "y",
+          "start": 10.643,
+          "end": 10.874
+        },
+        {
+          "id": "caption-word-6-2",
+          "text": "entrega",
+          "start": 10.874,
+          "end": 11.446
+        },
+        {
+          "id": "caption-word-6-3",
+          "text": "trabajo",
+          "start": 11.446,
+          "end": 12.018
+        },
+        {
+          "id": "caption-word-6-4",
+          "text": "real.",
+          "start": 12.018,
+          "end": 12.248
+        }
+      ]
+    },
+    {
+      "id": "caption-group-7",
+      "frame": 3,
+      "start": 13.34,
+      "end": 15.544,
+      "text": "Primero: Opus 5.5.",
+      "words": [
+        {
+          "id": "caption-word-7-0",
+          "text": "Primero:",
+          "start": 13.34,
+          "end": 13.853
+        },
+        {
+          "id": "caption-word-7-1",
+          "text": "Opus 5.5.",
+          "start": 13.853,
+          "end": 15.294
+        }
+      ]
+    },
+    {
+      "id": "caption-group-8",
+      "frame": 3,
+      "start": 15.757,
+      "end": 17.905,
+      "text": "Rinde al nivel de Fable 5.1",
+      "words": [
+        {
+          "id": "caption-word-8-0",
+          "text": "Rinde",
+          "start": 15.757,
+          "end": 16.057
+        },
+        {
+          "id": "caption-word-8-1",
+          "text": "al",
+          "start": 16.057,
+          "end": 16.23
+        },
+        {
+          "id": "caption-word-8-2",
+          "text": "nivel",
+          "start": 16.23,
+          "end": 16.53
+        },
+        {
+          "id": "caption-word-8-3",
+          "text": "de",
+          "start": 16.53,
+          "end": 16.703
+        },
+        {
+          "id": "caption-word-8-4",
+          "text": "Fable",
+          "start": 16.703,
+          "end": 17.003
+        },
+        {
+          "id": "caption-word-8-5",
+          "text": "5.1",
+          "start": 17.003,
+          "end": 17.905
+        }
+      ]
+    },
+    {
+      "id": "caption-group-9",
+      "frame": 3,
+      "start": 17.905,
+      "end": 19.273,
+      "text": "en la mayoría de tareas,",
+      "words": [
+        {
+          "id": "caption-word-9-0",
+          "text": "en",
+          "start": 17.905,
+          "end": 18.077
+        },
+        {
+          "id": "caption-word-9-1",
+          "text": "la",
+          "start": 18.077,
+          "end": 18.25
+        },
+        {
+          "id": "caption-word-9-2",
+          "text": "mayoría",
+          "start": 18.25,
+          "end": 18.55
+        },
+        {
+          "id": "caption-word-9-3",
+          "text": "de",
+          "start": 18.55,
+          "end": 18.723
+        },
+        {
+          "id": "caption-word-9-4",
+          "text": "tareas,",
+          "start": 18.723,
+          "end": 19.023
+        }
+      ]
+    },
+    {
+      "id": "caption-group-10",
+      "frame": 3,
+      "start": 19.286,
+      "end": 21.348,
+      "text": "cuesta 40 % menos y es",
+      "words": [
+        {
+          "id": "caption-word-10-0",
+          "text": "cuesta",
+          "start": 19.286,
+          "end": 19.621
+        },
+        {
+          "id": "caption-word-10-1",
+          "text": "40 %",
+          "start": 19.621,
+          "end": 20.627
+        },
+        {
+          "id": "caption-word-10-2",
+          "text": "menos",
+          "start": 20.627,
+          "end": 20.963
+        },
+        {
+          "id": "caption-word-10-3",
+          "text": "y",
+          "start": 20.963,
+          "end": 21.156
+        },
+        {
+          "id": "caption-word-10-4",
+          "text": "es",
+          "start": 21.156,
+          "end": 21.348
+        }
+      ]
+    },
+    {
+      "id": "caption-group-11",
+      "frame": 3,
+      "start": 21.348,
+      "end": 23.996,
+      "text": "30 % más rápido que Opus 5.",
+      "words": [
+        {
+          "id": "caption-word-11-0",
+          "text": "30 %",
+          "start": 21.348,
+          "end": 22.212
+        },
+        {
+          "id": "caption-word-11-1",
+          "text": "más",
+          "start": 22.212,
+          "end": 22.404
+        },
+        {
+          "id": "caption-word-11-2",
+          "text": "rápido",
+          "start": 22.404,
+          "end": 22.882
+        },
+        {
+          "id": "caption-word-11-3",
+          "text": "que",
+          "start": 22.882,
+          "end": 23.075
+        },
+        {
+          "id": "caption-word-11-4",
+          "text": "Opus 5.",
+          "start": 23.075,
+          "end": 23.746
+        }
+      ]
+    },
+    {
+      "id": "caption-group-12",
+      "frame": 4,
+      "start": 24.386,
+      "end": 26.837,
+      "text": "Segundo: un millón de tokens de contexto.",
+      "words": [
+        {
+          "id": "caption-word-12-0",
+          "text": "Segundo:",
+          "start": 24.386,
+          "end": 24.863
+        },
+        {
+          "id": "caption-word-12-1",
+          "text": "un",
+          "start": 24.863,
+          "end": 25.055
+        },
+        {
+          "id": "caption-word-12-2",
+          "text": "millón",
+          "start": 25.055,
+          "end": 25.39
+        },
+        {
+          "id": "caption-word-12-3",
+          "text": "de",
+          "start": 25.39,
+          "end": 25.582
+        },
+        {
+          "id": "caption-word-12-4",
+          "text": "tokens",
+          "start": 25.582,
+          "end": 25.917
+        },
+        {
+          "id": "caption-word-12-5",
+          "text": "de",
+          "start": 25.917,
+          "end": 26.11
+        },
+        {
+          "id": "caption-word-12-6",
+          "text": "contexto.",
+          "start": 26.11,
+          "end": 26.587
+        }
+      ]
+    },
+    {
+      "id": "caption-group-13",
+      "frame": 4,
+      "start": 26.931,
+      "end": 28.769,
+      "text": "Más de 500.000 palabras:",
+      "words": [
+        {
+          "id": "caption-word-13-0",
+          "text": "Más",
+          "start": 26.931,
+          "end": 27.132
+        },
+        {
+          "id": "caption-word-13-1",
+          "text": "de",
+          "start": 27.132,
+          "end": 27.334
+        },
+        {
+          "id": "caption-word-13-2",
+          "text": "500.000",
+          "start": 27.334,
+          "end": 28.035
+        },
+        {
+          "id": "caption-word-13-3",
+          "text": "palabras:",
+          "start": 28.035,
+          "end": 28.534
+        }
+      ]
+    },
+    {
+      "id": "caption-group-14",
+      "frame": 4,
+      "start": 28.769,
+      "end": 30.558,
+      "text": "tu expediente técnico completo,",
+      "words": [
+        {
+          "id": "caption-word-14-0",
+          "text": "tu",
+          "start": 28.769,
+          "end": 28.953
+        },
+        {
+          "id": "caption-word-14-1",
+          "text": "expediente",
+          "start": 28.953,
+          "end": 29.545
+        },
+        {
+          "id": "caption-word-14-2",
+          "text": "técnico",
+          "start": 29.545,
+          "end": 30.002
+        },
+        {
+          "id": "caption-word-14-3",
+          "text": "completo,",
+          "start": 30.002,
+          "end": 30.458
+        }
+      ]
+    },
+    {
+      "id": "caption-group-15",
+      "frame": 4,
+      "start": 30.558,
+      "end": 32.121,
+      "text": "en una sola conversación.",
+      "words": [
+        {
+          "id": "caption-word-15-0",
+          "text": "en",
+          "start": 30.558,
+          "end": 30.728
+        },
+        {
+          "id": "caption-word-15-1",
+          "text": "una",
+          "start": 30.728,
+          "end": 31.025
+        },
+        {
+          "id": "caption-word-15-2",
+          "text": "sola",
+          "start": 31.025,
+          "end": 31.322
+        },
+        {
+          "id": "caption-word-15-3",
+          "text": "conversación.",
+          "start": 31.322,
+          "end": 31.871
+        }
+      ]
+    },
+    {
+      "id": "caption-group-16",
+      "frame": 5,
+      "start": 32.509,
+      "end": 34.152,
+      "text": "Tercero: un solo Claude.",
+      "words": [
+        {
+          "id": "caption-word-16-0",
+          "text": "Tercero:",
+          "start": 32.509,
+          "end": 33.005
+        },
+        {
+          "id": "caption-word-16-1",
+          "text": "un",
+          "start": 33.005,
+          "end": 33.205
+        },
+        {
+          "id": "caption-word-16-2",
+          "text": "solo",
+          "start": 33.205,
+          "end": 33.553
+        },
+        {
+          "id": "caption-word-16-3",
+          "text": "Claude.",
+          "start": 33.553,
+          "end": 33.902
+        }
+      ]
+    },
+    {
+      "id": "caption-group-17",
+      "frame": 5,
+      "start": 34.275,
+      "end": 36.593,
+      "text": "Sigue trabajando aunque cierres la laptop,",
+      "words": [
+        {
+          "id": "caption-word-17-0",
+          "text": "Sigue",
+          "start": 34.275,
+          "end": 34.597
+        },
+        {
+          "id": "caption-word-17-1",
+          "text": "trabajando",
+          "start": 34.597,
+          "end": 35.192
+        },
+        {
+          "id": "caption-word-17-2",
+          "text": "aunque",
+          "start": 35.192,
+          "end": 35.514
+        },
+        {
+          "id": "caption-word-17-3",
+          "text": "cierres",
+          "start": 35.514,
+          "end": 35.836
+        },
+        {
+          "id": "caption-word-17-4",
+          "text": "la",
+          "start": 35.836,
+          "end": 36.021
+        },
+        {
+          "id": "caption-word-17-5",
+          "text": "laptop,",
+          "start": 36.021,
+          "end": 36.343
+        }
+      ]
+    },
+    {
+      "id": "caption-group-18",
+      "frame": 5,
+      "start": 36.606,
+      "end": 39.263,
+      "text": "y te entrega documentos y presentaciones",
+      "words": [
+        {
+          "id": "caption-word-18-0",
+          "text": "y",
+          "start": 36.606,
+          "end": 36.816
+        },
+        {
+          "id": "caption-word-18-1",
+          "text": "te",
+          "start": 36.816,
+          "end": 37.026
+        },
+        {
+          "id": "caption-word-18-2",
+          "text": "entrega",
+          "start": 37.026,
+          "end": 37.546
+        },
+        {
+          "id": "caption-word-18-3",
+          "text": "documentos",
+          "start": 37.546,
+          "end": 38.222
+        },
+        {
+          "id": "caption-word-18-4",
+          "text": "y",
+          "start": 38.222,
+          "end": 38.432
+        },
+        {
+          "id": "caption-word-18-5",
+          "text": "presentaciones",
+          "start": 38.432,
+          "end": 39.263
+        }
+      ]
+    },
+    {
+      "id": "caption-group-19",
+      "frame": 5,
+      "start": 39.263,
+      "end": 41.393,
+      "text": "que exportas a PowerPoint o PDF.",
+      "words": [
+        {
+          "id": "caption-word-19-0",
+          "text": "que",
+          "start": 39.263,
+          "end": 39.473
+        },
+        {
+          "id": "caption-word-19-1",
+          "text": "exportas",
+          "start": 39.473,
+          "end": 39.993
+        },
+        {
+          "id": "caption-word-19-2",
+          "text": "a",
+          "start": 39.993,
+          "end": 40.203
+        },
+        {
+          "id": "caption-word-19-3",
+          "text": "PowerPoint",
+          "start": 40.203,
+          "end": 40.723
+        },
+        {
+          "id": "caption-word-19-4",
+          "text": "o",
+          "start": 40.723,
+          "end": 40.933
+        },
+        {
+          "id": "caption-word-19-5",
+          "text": "PDF.",
+          "start": 40.933,
+          "end": 41.143
+        }
+      ]
+    },
+    {
+      "id": "caption-group-20",
+      "frame": 6,
+      "start": 41.763,
+      "end": 43.347,
+      "text": "Cuarto: Claude en Chrome.",
+      "words": [
+        {
+          "id": "caption-word-20-0",
+          "text": "Cuarto:",
+          "start": 41.763,
+          "end": 42.136
+        },
+        {
+          "id": "caption-word-20-1",
+          "text": "Claude",
+          "start": 42.136,
+          "end": 42.509
+        },
+        {
+          "id": "caption-word-20-2",
+          "text": "en",
+          "start": 42.509,
+          "end": 42.724
+        },
+        {
+          "id": "caption-word-20-3",
+          "text": "Chrome.",
+          "start": 42.724,
+          "end": 43.097
+        }
+      ]
+    },
+    {
+      "id": "caption-group-21",
+      "frame": 6,
+      "start": 43.452,
+      "end": 44.582,
+      "text": "Navega, hace clic y",
+      "words": [
+        {
+          "id": "caption-word-21-0",
+          "text": "Navega,",
+          "start": 43.452,
+          "end": 43.902
+        },
+        {
+          "id": "caption-word-21-1",
+          "text": "hace",
+          "start": 43.902,
+          "end": 44.219
+        },
+        {
+          "id": "caption-word-21-2",
+          "text": "clic",
+          "start": 44.219,
+          "end": 44.4
+        },
+        {
+          "id": "caption-word-21-3",
+          "text": "y",
+          "start": 44.4,
+          "end": 44.582
+        }
+      ]
+    },
+    {
+      "id": "caption-group-22",
+      "frame": 6,
+      "start": 44.582,
+      "end": 45.949,
+      "text": "llena formularios por ti,",
+      "words": [
+        {
+          "id": "caption-word-22-0",
+          "text": "llena",
+          "start": 44.582,
+          "end": 44.898
+        },
+        {
+          "id": "caption-word-22-1",
+          "text": "formularios",
+          "start": 44.898,
+          "end": 45.483
+        },
+        {
+          "id": "caption-word-22-2",
+          "text": "por",
+          "start": 45.483,
+          "end": 45.664
+        },
+        {
+          "id": "caption-word-22-3",
+          "text": "ti,",
+          "start": 45.664,
+          "end": 45.846
+        }
+      ]
+    },
+    {
+      "id": "caption-group-23",
+      "frame": 6,
+      "start": 45.949,
+      "end": 47.516,
+      "text": "con un filtro de seguridad",
+      "words": [
+        {
+          "id": "caption-word-23-0",
+          "text": "con",
+          "start": 45.949,
+          "end": 46.146
+        },
+        {
+          "id": "caption-word-23-1",
+          "text": "un",
+          "start": 46.146,
+          "end": 46.343
+        },
+        {
+          "id": "caption-word-23-2",
+          "text": "filtro",
+          "start": 46.343,
+          "end": 46.685
+        },
+        {
+          "id": "caption-word-23-3",
+          "text": "de",
+          "start": 46.685,
+          "end": 46.882
+        },
+        {
+          "id": "caption-word-23-4",
+          "text": "seguridad",
+          "start": 46.882,
+          "end": 47.516
+        }
+      ]
+    },
+    {
+      "id": "caption-group-24",
+      "frame": 6,
+      "start": 47.516,
+      "end": 49.136,
+      "text": "que revisa cada acción.",
+      "words": [
+        {
+          "id": "caption-word-24-0",
+          "text": "que",
+          "start": 47.516,
+          "end": 47.713
+        },
+        {
+          "id": "caption-word-24-1",
+          "text": "revisa",
+          "start": 47.713,
+          "end": 48.201
+        },
+        {
+          "id": "caption-word-24-2",
+          "text": "cada",
+          "start": 48.201,
+          "end": 48.544
+        },
+        {
+          "id": "caption-word-24-3",
+          "text": "acción.",
+          "start": 48.544,
+          "end": 48.886
+        }
+      ]
+    },
+    {
+      "id": "caption-group-25",
+      "frame": 7,
+      "start": 49.502,
+      "end": 52.206,
+      "text": "Quinto: más de 2.000 conectores y plugins.",
+      "words": [
+        {
+          "id": "caption-word-25-0",
+          "text": "Quinto:",
+          "start": 49.502,
+          "end": 49.867
+        },
+        {
+          "id": "caption-word-25-1",
+          "text": "más",
+          "start": 49.867,
+          "end": 50.077
+        },
+        {
+          "id": "caption-word-25-2",
+          "text": "de",
+          "start": 50.077,
+          "end": 50.286
+        },
+        {
+          "id": "caption-word-25-3",
+          "text": "2.000",
+          "start": 50.286,
+          "end": 50.706
+        },
+        {
+          "id": "caption-word-25-4",
+          "text": "conectores",
+          "start": 50.706,
+          "end": 51.381
+        },
+        {
+          "id": "caption-word-25-5",
+          "text": "y",
+          "start": 51.381,
+          "end": 51.591
+        },
+        {
+          "id": "caption-word-25-6",
+          "text": "plugins.",
+          "start": 51.591,
+          "end": 51.956
+        }
+      ]
+    },
+    {
+      "id": "caption-group-26",
+      "frame": 7,
+      "start": 52.305,
+      "end": 54.053,
+      "text": "Claude se conecta a las herramientas",
+      "words": [
+        {
+          "id": "caption-word-26-0",
+          "text": "Claude",
+          "start": 52.305,
+          "end": 52.596
+        },
+        {
+          "id": "caption-word-26-1",
+          "text": "se",
+          "start": 52.596,
+          "end": 52.764
+        },
+        {
+          "id": "caption-word-26-2",
+          "text": "conecta",
+          "start": 52.764,
+          "end": 53.179
+        },
+        {
+          "id": "caption-word-26-3",
+          "text": "a",
+          "start": 53.179,
+          "end": 53.346
+        },
+        {
+          "id": "caption-word-26-4",
+          "text": "las",
+          "start": 53.346,
+          "end": 53.514
+        },
+        {
+          "id": "caption-word-26-5",
+          "text": "herramientas",
+          "start": 53.514,
+          "end": 54.053
+        }
+      ]
+    },
+    {
+      "id": "caption-group-27",
+      "frame": 7,
+      "start": 54.053,
+      "end": 55.511,
+      "text": "que tu equipo ya usa.",
+      "words": [
+        {
+          "id": "caption-word-27-0",
+          "text": "que",
+          "start": 54.053,
+          "end": 54.22
+        },
+        {
+          "id": "caption-word-27-1",
+          "text": "tu",
+          "start": 54.22,
+          "end": 54.387
+        },
+        {
+          "id": "caption-word-27-2",
+          "text": "equipo",
+          "start": 54.387,
+          "end": 54.803
+        },
+        {
+          "id": "caption-word-27-3",
+          "text": "ya",
+          "start": 54.803,
+          "end": 54.97
+        },
+        {
+          "id": "caption-word-27-4",
+          "text": "usa.",
+          "start": 54.97,
+          "end": 55.261
+        }
+      ]
+    },
+    {
+      "id": "caption-group-28",
+      "frame": 8,
+      "start": 55.926,
+      "end": 57.609,
+      "text": "¿Y qué significa para AEC?",
+      "words": [
+        {
+          "id": "caption-word-28-0",
+          "text": "¿Y",
+          "start": 55.926,
+          "end": 56.106
+        },
+        {
+          "id": "caption-word-28-1",
+          "text": "qué",
+          "start": 56.106,
+          "end": 56.286
+        },
+        {
+          "id": "caption-word-28-2",
+          "text": "significa",
+          "start": 56.286,
+          "end": 56.866
+        },
+        {
+          "id": "caption-word-28-3",
+          "text": "para",
+          "start": 56.866,
+          "end": 57.179
+        },
+        {
+          "id": "caption-word-28-4",
+          "text": "AEC?",
+          "start": 57.179,
+          "end": 57.359
+        }
+      ]
+    },
+    {
+      "id": "caption-group-29",
+      "frame": 8,
+      "start": 57.648,
+      "end": 59.909,
+      "text": "Imagina: Claude lee tu expediente,",
+      "words": [
+        {
+          "id": "caption-word-29-0",
+          "text": "Imagina:",
+          "start": 57.648,
+          "end": 58.242
+        },
+        {
+          "id": "caption-word-29-1",
+          "text": "Claude",
+          "start": 58.65,
+          "end": 58.965
+        },
+        {
+          "id": "caption-word-29-2",
+          "text": "lee",
+          "start": 58.965,
+          "end": 59.146
+        },
+        {
+          "id": "caption-word-29-3",
+          "text": "tu",
+          "start": 59.146,
+          "end": 59.326
+        },
+        {
+          "id": "caption-word-29-4",
+          "text": "expediente,",
+          "start": 59.326,
+          "end": 59.909
+        }
+      ]
+    },
+    {
+      "id": "caption-group-30",
+      "frame": 8,
+      "start": 59.909,
+      "end": 61.846,
+      "text": "revisa el portal del proveedor y te",
+      "words": [
+        {
+          "id": "caption-word-30-0",
+          "text": "revisa",
+          "start": 59.909,
+          "end": 60.358
+        },
+        {
+          "id": "caption-word-30-1",
+          "text": "el",
+          "start": 60.358,
+          "end": 60.539
+        },
+        {
+          "id": "caption-word-30-2",
+          "text": "portal",
+          "start": 60.539,
+          "end": 60.854
+        },
+        {
+          "id": "caption-word-30-3",
+          "text": "del",
+          "start": 60.854,
+          "end": 61.035
+        },
+        {
+          "id": "caption-word-30-4",
+          "text": "proveedor",
+          "start": 61.035,
+          "end": 61.484
+        },
+        {
+          "id": "caption-word-30-5",
+          "text": "y",
+          "start": 61.484,
+          "end": 61.665
+        },
+        {
+          "id": "caption-word-30-6",
+          "text": "te",
+          "start": 61.665,
+          "end": 61.846
+        }
+      ]
+    },
+    {
+      "id": "caption-group-31",
+      "frame": 8,
+      "start": 61.846,
+      "end": 64.3,
+      "text": "entrega el informe listo para la reunión.",
+      "words": [
+        {
+          "id": "caption-word-31-0",
+          "text": "entrega",
+          "start": 61.846,
+          "end": 62.294
+        },
+        {
+          "id": "caption-word-31-1",
+          "text": "el",
+          "start": 62.294,
+          "end": 62.475
+        },
+        {
+          "id": "caption-word-31-2",
+          "text": "informe",
+          "start": 62.475,
+          "end": 62.924
+        },
+        {
+          "id": "caption-word-31-3",
+          "text": "listo",
+          "start": 62.924,
+          "end": 63.239
+        },
+        {
+          "id": "caption-word-31-4",
+          "text": "para",
+          "start": 63.239,
+          "end": 63.554
+        },
+        {
+          "id": "caption-word-31-5",
+          "text": "la",
+          "start": 63.554,
+          "end": 63.735
+        },
+        {
+          "id": "caption-word-31-6",
+          "text": "reunión.",
+          "start": 63.735,
+          "end": 64.05
+        }
+      ]
+    },
+    {
+      "id": "caption-group-32",
+      "frame": 9,
+      "start": 64.961,
+      "end": 66.062,
+      "text": "La pregunta ya no es",
+      "words": [
+        {
+          "id": "caption-word-32-0",
+          "text": "La",
+          "start": 64.961,
+          "end": 65.131
+        },
+        {
+          "id": "caption-word-32-1",
+          "text": "pregunta",
+          "start": 65.131,
+          "end": 65.552
+        },
+        {
+          "id": "caption-word-32-2",
+          "text": "ya",
+          "start": 65.552,
+          "end": 65.722
+        },
+        {
+          "id": "caption-word-32-3",
+          "text": "no",
+          "start": 65.722,
+          "end": 65.892
+        },
+        {
+          "id": "caption-word-32-4",
+          "text": "es",
+          "start": 65.892,
+          "end": 66.062
+        }
+      ]
+    },
+    {
+      "id": "caption-group-33",
+      "frame": 9,
+      "start": 66.062,
+      "end": 67.531,
+      "text": "qué le preguntas a Claude.",
+      "words": [
+        {
+          "id": "caption-word-33-0",
+          "text": "qué",
+          "start": 66.062,
+          "end": 66.232
+        },
+        {
+          "id": "caption-word-33-1",
+          "text": "le",
+          "start": 66.232,
+          "end": 66.402
+        },
+        {
+          "id": "caption-word-33-2",
+          "text": "preguntas",
+          "start": 66.402,
+          "end": 66.823
+        },
+        {
+          "id": "caption-word-33-3",
+          "text": "a",
+          "start": 66.823,
+          "end": 66.993
+        },
+        {
+          "id": "caption-word-33-4",
+          "text": "Claude.",
+          "start": 66.993,
+          "end": 67.288
+        }
+      ]
+    },
+    {
+      "id": "caption-group-34",
+      "frame": 9,
+      "start": 67.531,
+      "end": 69.127,
+      "text": "Es qué trabajo le delegas.",
+      "words": [
+        {
+          "id": "caption-word-34-0",
+          "text": "Es",
+          "start": 67.531,
+          "end": 67.7
+        },
+        {
+          "id": "caption-word-34-1",
+          "text": "qué",
+          "start": 67.7,
+          "end": 67.869
+        },
+        {
+          "id": "caption-word-34-2",
+          "text": "trabajo",
+          "start": 67.869,
+          "end": 68.288
+        },
+        {
+          "id": "caption-word-34-3",
+          "text": "le",
+          "start": 68.288,
+          "end": 68.457
+        },
+        {
+          "id": "caption-word-34-4",
+          "text": "delegas.",
+          "start": 68.457,
+          "end": 68.877
+        }
+      ]
+    },
+    {
+      "id": "caption-group-35",
+      "frame": 9,
+      "start": 69.204,
+      "end": 71.271,
+      "text": "Aprende, aplica, construye mejor:",
+      "words": [
+        {
+          "id": "caption-word-35-0",
+          "text": "Aprende,",
+          "start": 69.204,
+          "end": 69.771
+        },
+        {
+          "id": "caption-word-35-1",
+          "text": "aplica,",
+          "start": 69.771,
+          "end": 70.338
+        },
+        {
+          "id": "caption-word-35-2",
+          "text": "construye",
+          "start": 70.338,
+          "end": 70.736
+        },
+        {
+          "id": "caption-word-35-3",
+          "text": "mejor:",
+          "start": 70.736,
+          "end": 71.134
+        }
+      ]
+    },
+    {
+      "id": "caption-group-36",
+      "frame": 9,
+      "start": 71.271,
+      "end": 72.319,
+      "text": "esto es AECODE.",
+      "words": [
+        {
+          "id": "caption-word-36-0",
+          "text": "esto",
+          "start": 71.271,
+          "end": 71.537
+        },
+        {
+          "id": "caption-word-36-1",
+          "text": "es",
+          "start": 71.537,
+          "end": 71.69
+        },
+        {
+          "id": "caption-word-36-2",
+          "text": "AECODE.",
+          "start": 71.69,
+          "end": 72.069
+        }
+      ]
+    }
+  ]
+}
