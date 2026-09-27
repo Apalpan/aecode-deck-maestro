@@ -1,0 +1,552 @@
+<template>
+  <style>
+    @font-face { font-family: "Manrope"; font-weight: 400; font-style: normal; font-display: block; src: url("assets/fonts/Manrope-400.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 500; font-style: normal; font-display: block; src: url("assets/fonts/Manrope-500.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 600; font-style: normal; font-display: block; src: url("assets/fonts/Manrope-600.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 700; font-style: normal; font-display: block; src: url("assets/fonts/Manrope-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; font-style: normal; font-display: block; src: url("assets/fonts/Manrope-800.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; font-display: block; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; font-display: block; src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2"); }
+
+    #root {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      font-family: "Manrope";
+      color: #EEF3F8;
+    }
+    #root * { box-sizing: border-box; }
+
+    /* ---------- ground (full-bleed clip, static) ---------- */
+    .f03-opus-ground {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 1080px;
+      z-index: 0;
+      background-color: #0E1121;
+      background-image:
+        linear-gradient(rgba(166,167,255,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(166,167,255,0.07) 1px, transparent 1px),
+        radial-gradient(900px 700px at 12% 8%, rgba(74,58,193,0.28), transparent 70%),
+        radial-gradient(900px 700px at 92% 96%, rgba(68,101,238,0.14), transparent 70%);
+      background-size: 64px 64px, 64px 64px, 100% 100%, 100% 100%;
+    }
+
+    /* ---------- chrome ---------- */
+    .f03-opus-brand {
+      position: absolute;
+      left: 80px;
+      top: 56px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .f03-opus-brand-mark { display: block; width: 40px; height: 40px; opacity: 0.9; }
+    .f03-opus-brand-text {
+      font-weight: 700;
+      font-size: 17px;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #A2B4CB;
+      white-space: nowrap;
+    }
+    .f03-opus-idx {
+      position: absolute;
+      right: 80px;
+      top: 64px;
+      z-index: 5;
+      font-family: "JetBrains Mono";
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: #8C97DC;
+      white-space: nowrap;
+    }
+    .f03-opus-source {
+      position: absolute;
+      left: 80px;
+      top: 862px;
+      height: 22px;
+      z-index: 5;
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 22px;
+      letter-spacing: 0.02em;
+      color: #8C97DC;
+      white-space: nowrap;
+    }
+
+    /* ---------- left text column (x 80 → 860) ---------- */
+    .f03-opus-kicker {
+      position: absolute;
+      left: 80px;
+      top: 236px;
+      z-index: 3;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 22px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #A6A7FF;
+      white-space: nowrap;
+    }
+    .f03-opus-headline {
+      position: absolute;
+      left: 80px;
+      top: 282px;
+      width: 780px;
+      z-index: 3;
+      font-weight: 800;
+      font-size: 104px;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #EEF3F8;
+      white-space: nowrap;
+    }
+    .f03-opus-wmask {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: top;
+      padding: 0.1em 0.06em 0.24em;
+      margin: -0.1em -0.06em -0.24em;
+    }
+    .f03-opus-word { display: inline-block; }
+    .f03-opus-chip-date {
+      position: absolute;
+      left: 80px;
+      top: 418px;
+      z-index: 3;
+      padding: 8px 16px;
+      border: 1px solid #A6A7FF;
+      border-radius: 999px;
+      font-family: "JetBrains Mono";
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 22px;
+      letter-spacing: 0.04em;
+      color: #A6A7FF;
+      white-space: nowrap;
+    }
+
+    /* ---------- right visual stage (x 940 → 1840, y 150 → 840) ---------- */
+    .f03-opus-stage {
+      position: absolute;
+      left: 940px;
+      top: 150px;
+      width: 900px;
+      height: 690px;
+      z-index: 2;
+      transform-origin: 50% 50%;
+    }
+    .f03-opus-baseline {
+      position: absolute;
+      left: 0;
+      top: 345px;
+      width: 900px;
+      height: 2px;
+      border-radius: 1px;
+      background: rgba(124,126,223,0.40);
+      transform-origin: 0% 50%;
+    }
+    .f03-opus-col {
+      position: absolute;
+      bottom: 344px;
+      width: 225px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .f03-opus-pill {
+      position: relative;
+      z-index: 3;
+      height: 46px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(124,126,223,0.40);
+      border-radius: 999px;
+      background: rgba(109,112,249,0.16);
+      font-weight: 700;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #A2B4CB;
+      white-space: nowrap;
+    }
+    .f03-opus-pill-opus {
+      background: #6D5CF0;
+      border-color: rgba(238,243,248,0.40);
+      color: #EEF3F8;
+    }
+    .f03-opus-bar {
+      width: 132px;
+      margin-top: 10px;
+      border: 1px solid rgba(124,126,223,0.40);
+      border-bottom: none;
+      border-radius: 14px 14px 4px 4px;
+      background: #1B1E3C;
+      transform-origin: 50% 100%;
+    }
+    .f03-opus-bar-opus {
+      border-color: rgba(166,167,255,0.55);
+      background: linear-gradient(180deg, #6D5CF0, #4A3AC1);
+    }
+    .f03-opus-level {
+      position: absolute;
+      left: 244px;
+      top: 74px;
+      width: 610px;
+      height: 2px;
+      z-index: 2;
+      background: repeating-linear-gradient(90deg, #A6A7FF 0 10px, transparent 10px 18px);
+      transform-origin: 100% 50%;
+    }
+    .f03-opus-tag {
+      position: absolute;
+      left: 0;
+      top: 53px;
+      height: 44px;
+      z-index: 2;
+      padding: 0 16px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(166,167,255,0.55);
+      border-radius: 999px;
+      background: rgba(109,112,249,0.16);
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1;
+      color: #A6A7FF;
+      white-space: nowrap;
+    }
+    .f03-opus-approx { display: block; flex: none; width: 22px; height: 14px; }
+    .f03-opus-tag-star { display: inline-block; margin-left: 2px; }
+    .f03-opus-note {
+      position: absolute;
+      left: 0;
+      top: 362px;
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 1.3;
+      color: #A2B4CB;
+      white-space: nowrap;
+    }
+
+    /* ---------- stat cards (right stage, lower half) ---------- */
+    .f03-opus-card {
+      position: absolute;
+      top: 434px;
+      width: 438px;
+      height: 256px;
+      padding: 30px 36px 0;
+      border: 1px solid rgba(124,126,223,0.40);
+      border-radius: 24px;
+      background: linear-gradient(180deg, #13172F, #1B1E3C);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.28), 0 0 0px rgba(84,80,217,0);
+    }
+    .f03-opus-card-1 { left: 0; }
+    .f03-opus-card-2 { left: 462px; }
+    .f03-opus-icon { position: absolute; right: 30px; top: 30px; width: 36px; height: 36px; }
+    .f03-opus-numrow {
+      display: flex;
+      align-items: baseline;
+      width: 366px;
+      height: 126px;
+    }
+    .f03-opus-num {
+      display: inline-block;
+      font-weight: 800;
+      font-size: 140px;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      color: #EEF3F8;
+      white-space: nowrap;
+      transform-origin: 0% 85%;
+    }
+    .f03-opus-suffix {
+      display: inline-block;
+      margin-left: 12px;
+      font-weight: 800;
+      font-size: 70px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #A6A7FF;
+    }
+    .f03-opus-label {
+      margin-top: 16px;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1.2;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #A2B4CB;
+      white-space: nowrap;
+    }
+    .f03-opus-track {
+      position: relative;
+      margin-top: 24px;
+      width: 366px;
+      height: 10px;
+      border-radius: 5px;
+      background: rgba(124,126,223,0.14);
+    }
+    .f03-opus-track-base {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 77%;
+      height: 10px;
+      border-radius: 5px;
+      background: rgba(140,151,220,0.35);
+    }
+    .f03-opus-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #4465EE, #6D12E3);
+      transform-origin: 0% 50%;
+    }
+    .f03-opus-tick {
+      position: absolute;
+      left: calc(77% - 1px);
+      top: -7px;
+      width: 2px;
+      height: 24px;
+      border-radius: 1px;
+      background: #EEF3F8;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="03-opus"
+    data-start="0"
+    data-duration="11.046"
+    data-width="1920"
+    data-height="1080"
+  >
+    <!-- ground: full-duration background clip on the lowest track -->
+    <div
+      id="f03-opus-ground"
+      class="clip f03-opus-ground"
+      data-start="0"
+      data-duration="11.046"
+      data-track-index="0"
+    ></div>
+
+    <!-- chrome -->
+    <div class="f03-opus-brand">
+      <img class="f03-opus-brand-mark" src="assets/brand/aecode-isotipo.png" alt="" />
+      <span class="f03-opus-brand-text">AECODE · LO ÚLTIMO DE CLAUDE</span>
+    </div>
+    <div class="f03-opus-idx">01 / 05</div>
+    <div class="f03-opus-source">Fuente: anthropic.com/news/claude-opus-5-5 · 22-sep-2026</div>
+
+    <!-- left text column -->
+    <div class="f03-opus-kicker">NOVEDAD 01 · MODELOS</div>
+    <div class="f03-opus-headline"><span class="f03-opus-wmask"><span class="f03-opus-word">Opus</span></span> <span class="f03-opus-wmask"><span class="f03-opus-word">5.5</span></span></div>
+    <div class="f03-opus-chip-date">22-SEP-2026</div>
+
+    <!-- right stage -->
+    <div class="f03-opus-stage">
+      <div class="f03-opus-baseline"></div>
+
+      <div class="f03-opus-col" style="left: 0px">
+        <div class="f03-opus-pill f03-opus-pill-haiku">Haiku 4.5</div>
+        <div class="f03-opus-bar f03-opus-bar-haiku" style="height: 110px"></div>
+      </div>
+      <div class="f03-opus-col" style="left: 225px">
+        <div class="f03-opus-pill f03-opus-pill-sonnet">Sonnet 5</div>
+        <div class="f03-opus-bar f03-opus-bar-sonnet" style="height: 170px"></div>
+      </div>
+      <div class="f03-opus-col" style="left: 450px">
+        <div class="f03-opus-pill f03-opus-pill-opus">Opus 5.5</div>
+        <div class="f03-opus-bar f03-opus-bar-opus" style="height: 270px"></div>
+      </div>
+      <div class="f03-opus-col" style="left: 675px">
+        <div class="f03-opus-pill f03-opus-pill-fable">Fable 5.1</div>
+        <div class="f03-opus-bar f03-opus-bar-fable" style="height: 270px"></div>
+      </div>
+
+      <div class="f03-opus-level"></div>
+      <div class="f03-opus-tag">
+        <svg class="f03-opus-approx" viewBox="0 0 22 14" aria-hidden="true">
+          <path d="M2 5c3-3 6-3 9 0s6 3 9 0M2 11c3-3 6-3 9 0s6 3 9 0" fill="none" stroke="#A6A7FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span>nivel Fable 5.1<span class="f03-opus-tag-star">*</span></span>
+      </div>
+      <div class="f03-opus-note">*en la mayoría de tareas</div>
+
+      <!-- card 1: cost -->
+      <div class="f03-opus-card f03-opus-card-1">
+        <svg class="f03-opus-icon" viewBox="0 0 36 36" aria-hidden="true">
+          <path d="M4 10l9 9 6-6 12 12M23 25h8v-8" fill="none" stroke="#A6A7FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <div class="f03-opus-numrow">
+          <span class="f03-opus-num f03-opus-num-1">−<span class="f03-opus-digits-1">0</span></span><span class="f03-opus-suffix f03-opus-suffix-1">%</span>
+        </div>
+        <div class="f03-opus-label f03-opus-label-1">costo vs Opus 5</div>
+      </div>
+
+      <!-- card 2: speed -->
+      <div class="f03-opus-card f03-opus-card-2">
+        <svg class="f03-opus-icon" viewBox="0 0 36 36" aria-hidden="true">
+          <path d="M6 27a12 12 0 1 1 24 0M18 27l7-10" fill="none" stroke="#A6A7FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="18" cy="27" r="1.6" fill="#A6A7FF" />
+        </svg>
+        <div class="f03-opus-numrow">
+          <span class="f03-opus-num f03-opus-num-2">+<span class="f03-opus-digits-2">0</span></span><span class="f03-opus-suffix f03-opus-suffix-2">%</span>
+        </div>
+        <div class="f03-opus-label f03-opus-label-2">más rápido que Opus 5</div>
+        <div class="f03-opus-track">
+          <div class="f03-opus-track-base"></div>
+          <div class="f03-opus-fill"></div>
+          <div class="f03-opus-tick"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var P = "f03-opus-";
+      function one(name) {
+        return document.getElementsByClassName(P + name)[0];
+      }
+      function all(name) {
+        return Array.prototype.slice.call(document.getElementsByClassName(P + name));
+      }
+
+      var tl = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
+
+      // ---- Chrome: opacity-only fade at t=0, then perfectly still ----
+      tl.fromTo(
+        [one("brand"), one("idx"), one("source")],
+        { opacity: 0 },
+        { opacity: 1, duration: 0.35, ease: "power1.out" },
+        0
+      );
+
+      // ---- Scene 1 (0.0–1.6): kicker, per-word headline, date chip ----
+      tl.fromTo(one("kicker"), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5 }, 0.1);
+      var words = all("word");
+      tl.fromTo(words[0], { yPercent: 140, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, 0.45);
+      tl.fromTo(words[1], { yPercent: 140, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, 0.95);
+      tl.fromTo(one("chip-date"), { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.55 }, 1.4);
+
+      // ---- Macro camera: gentle push on the stage, settles before the hold ----
+      tl.fromTo(one("stage"), { scale: 0.975 }, { scale: 1, duration: 7.2, ease: "power1.inOut" }, 2.4);
+
+      // ---- Scene 2 (2.4–5.4): model ladder assembles left→right ("Rinde" @2.4) ----
+      tl.fromTo(one("baseline"), { scaleX: 0 }, { scaleX: 1, duration: 0.6 }, 2.4);
+
+      var OPUS_R = 210 / 270; // Opus starts below Fable, then rises to Fable's height
+      var ladder = [
+        { bar: one("bar-haiku"), pill: one("pill-haiku"), h: 110, r: 1 },
+        { bar: one("bar-sonnet"), pill: one("pill-sonnet"), h: 170, r: 1 },
+        { bar: one("bar-opus"), pill: one("pill-opus"), h: 270, r: OPUS_R },
+        { bar: one("bar-fable"), pill: one("pill-fable"), h: 270, r: 1 }
+      ];
+      ladder.forEach(function (c, i) {
+        var at = 2.45 + i * 0.1;
+        // bar grows from the baseline; its pill rides the bar top (same ease + duration)
+        tl.fromTo(c.bar, { scaleY: 0 }, { scaleY: c.r, duration: 0.7 }, at);
+        tl.fromTo(c.pill, { y: c.h }, { y: c.h * (1 - c.r), duration: 0.7 }, at);
+        tl.fromTo(c.pill, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, at);
+      });
+
+      // "Fable cinco punto uno" @3.4 — Fable pill outlines in lavender
+      tl.fromTo(
+        one("pill-fable"),
+        { borderColor: "rgba(124,126,223,0.40)", color: "#A2B4CB", boxShadow: "0 0 0 0px rgba(166,167,255,0)" },
+        { borderColor: "rgba(166,167,255,1)", color: "#A6A7FF", boxShadow: "0 0 0 1px rgba(166,167,255,1)", duration: 0.35, ease: "power2.out" },
+        3.4
+      );
+
+      // Opus bar + pill rise to Fable's level (focal), with a violet glow bloom
+      var opusBar = one("bar-opus");
+      var opusPill = one("pill-opus");
+      tl.fromTo(opusBar, { scaleY: OPUS_R }, { scaleY: 1, duration: 0.9, immediateRender: false }, 3.45);
+      tl.fromTo(opusPill, { y: 270 * (1 - OPUS_R) }, { y: 0, duration: 0.9, immediateRender: false }, 3.45);
+      tl.fromTo(opusBar, { boxShadow: "0 0 0px rgba(84,80,217,0)" }, { boxShadow: "0 0 48px rgba(84,80,217,0.55)", duration: 0.9 }, 3.45);
+      tl.fromTo(opusPill, { boxShadow: "0 0 0px rgba(84,80,217,0)" }, { boxShadow: "0 0 48px rgba(84,80,217,0.55)", duration: 0.9 }, 3.45);
+
+      // dashed lavender level line draws Fable → Opus → tag, then the tag lands
+      tl.fromTo(one("level"), { scaleX: 0 }, { scaleX: 1, duration: 0.8 }, 3.7);
+      tl.fromTo(one("tag"), { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.45 }, 4.1);
+
+      // "en la mayoría de tareas" @4.9 — qualifier note beneath the ladder
+      tl.fromTo(one("note"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.5 }, 4.9);
+      tl.fromTo(one("tag-star"), { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 4.9);
+
+      // ---- Stat helper: card enters, number counts up with dynamic scale, suffix lands after ----
+      var BASE_SHADOW_FROM = "0 18px 50px rgba(0,0,0,0.28), 0 0 0px rgba(84,80,217,0)";
+      var BASE_SHADOW_TO = "0 18px 50px rgba(0,0,0,0.28), 0 0 48px rgba(84,80,217,0.55)";
+      var COUNT_DUR = 1.3;
+      var START_SCALE = 0.55;
+
+      function stat(n, target, enterAt, countAt) {
+        var card = one("card-" + n);
+        var num = one("num-" + n);
+        var digits = one("digits-" + n);
+        var proxy = { v: 0 };
+
+        tl.fromTo(card, { opacity: 0, y: 40, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, duration: 0.6 }, enterAt);
+
+        tl.fromTo(
+          proxy,
+          { v: 0 },
+          {
+            v: target,
+            duration: COUNT_DUR,
+            ease: "power3.out",
+            onUpdate: function () {
+              digits.textContent = String(Math.round(proxy.v));
+            }
+          },
+          countAt
+        );
+        tl.fromTo(num, { scale: START_SCALE }, { scale: 1, duration: COUNT_DUR, ease: "power3.out" }, countAt);
+
+        tl.fromTo(one("label-" + n), { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, countAt + 0.25);
+        tl.fromTo(one("suffix-" + n), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(1.6)" }, countAt + COUNT_DUR);
+
+        // focal on its cue: soft ai-glow bloom on the card as the figure lands
+        tl.fromTo(
+          card,
+          { boxShadow: BASE_SHADOW_FROM, borderColor: "rgba(124,126,223,0.40)" },
+          { boxShadow: BASE_SHADOW_TO, borderColor: "rgba(166,167,255,0.70)", duration: 0.6, ease: "power2.out" },
+          countAt + COUNT_DUR
+        );
+      }
+
+      // ---- Scene 3 (5.9–7.6): "−40 %" on "cuesta cuarenta por ciento menos" ----
+      stat(1, 40, 5.75, 5.95);
+
+      // ---- Scene 4 (7.8–9.6): "+30 %" on "treinta por ciento más rápido" + gradient progress fill ----
+      stat(2, 30, 7.65, 7.85);
+      tl.fromTo(one("fill"), { scaleX: 0 }, { scaleX: 1, duration: COUNT_DUR, ease: "power3.out" }, 7.85);
+
+      // ---- Scene 5 (9.6–11.05): source rail already visible; everything holds still ----
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["03-opus"] = tl;
+    })();
+  </script>
+</template>

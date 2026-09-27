@@ -4,19 +4,19 @@
       font-family: "Manrope";
       font-weight: 700;
       font-style: normal;
-      src: url("../../assets/fonts/Manrope-700.woff2") format("woff2");
+      src: url("assets/fonts/Manrope-700.woff2") format("woff2");
     }
     @font-face {
       font-family: "Manrope";
       font-weight: 800;
       font-style: normal;
-      src: url("../../assets/fonts/Manrope-800.woff2") format("woff2");
+      src: url("assets/fonts/Manrope-800.woff2") format("woff2");
     }
     @font-face {
       font-family: "JetBrains Mono";
       font-weight: 500;
       font-style: normal;
-      src: url("../../assets/fonts/JetBrainsMono-500.woff2") format("woff2");
+      src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2");
     }
 
     #root {
@@ -30,7 +30,7 @@
     }
 
     /* ── ground: static full-bleed blueprint field (lowest track) ── */
-    [id="01-hook-ground"] {
+    [id="f01-hook-ground"] {
       position: absolute;
       inset: 0;
       z-index: 0;
@@ -48,7 +48,7 @@
     }
 
     /* ── chrome: brand-bug (shared pixel position) ── */
-    [id="01-hook-bug"] {
+    [id="f01-hook-bug"] {
       position: absolute;
       left: 80px;
       top: 56px;
@@ -58,12 +58,12 @@
       gap: 14px;
       z-index: 6;
     }
-    [id="01-hook-bug-mark"] {
+    [id="f01-hook-bug-mark"] {
       display: block;
       height: 40px;
       width: auto;
     }
-    [id="01-hook-bug-label"] {
+    [id="f01-hook-bug-label"] {
       font-family: "Manrope";
       font-weight: 700;
       font-size: 17px;
@@ -75,7 +75,7 @@
     }
 
     /* ── kicker (supporting) ── */
-    [id="01-hook-kicker"] {
+    [id="f01-hook-kicker"] {
       position: absolute;
       left: 80px;
       top: 276px;
@@ -90,7 +90,7 @@
     }
 
     /* ── hero question (foreground subject) — display-hero, left-anchored ── */
-    [id="01-hook-q"] {
+    [id="f01-hook-q"] {
       position: absolute;
       left: 73px;
       top: 321px;
@@ -102,19 +102,19 @@
       white-space: nowrap;
       color: #eef3f8;
     }
-    [id="01-hook-q-w1"],
-    [id="01-hook-q-w2"] {
+    [id="f01-hook-q-w1"],
+    [id="f01-hook-q-w2"] {
       display: inline-block;
     }
-    [id="01-hook-q-w1"] {
+    [id="f01-hook-q-w1"] {
       color: #eef3f8;
     }
-    [id="01-hook-q-w2"] {
+    [id="f01-hook-q-w2"] {
       color: #a6a7ff;
     }
 
     /* ── gradient-stroke strike-through (the one gradient accent) ── */
-    [id="01-hook-strike"] {
+    [id="f01-hook-strike"] {
       position: absolute;
       left: 0;
       top: 0;
@@ -127,7 +127,7 @@
     }
 
     /* ── chip-date at the stroke's end ── */
-    [id="01-hook-chip"] {
+    [id="f01-hook-chip"] {
       position: absolute;
       left: 1318px;
       top: 383px;
@@ -151,7 +151,7 @@
     }
 
     /* ── ai-glow bloom behind the answer line ── */
-    [id="01-hook-glow"] {
+    [id="f01-hook-glow"] {
       position: absolute;
       left: -125px;
       top: 390px;
@@ -167,7 +167,7 @@
     }
 
     /* ── answer line "Eso cambió." — display-hero slam ── */
-    [id="01-hook-eso"] {
+    [id="f01-hook-eso"] {
       position: absolute;
       left: 73px;
       top: 499px;
@@ -191,24 +191,24 @@
     data-height="1080"
   >
     <div
-      id="01-hook-ground"
+      id="f01-hook-ground"
       class="clip"
       data-start="0"
       data-duration="5.94"
       data-track-index="0"
     ></div>
 
-    <div id="01-hook-bug">
-      <img id="01-hook-bug-mark" src="../../assets/brand/aecode-isotipo.png" alt="" />
-      <span id="01-hook-bug-label">AECODE · LO ÚLTIMO DE CLAUDE</span>
+    <div id="f01-hook-bug">
+      <img id="f01-hook-bug-mark" src="assets/brand/aecode-isotipo.png" alt="" />
+      <span id="f01-hook-bug-label">AECODE · LO ÚLTIMO DE CLAUDE</span>
     </div>
 
-    <div id="01-hook-kicker">LA IA EN TU TRABAJO</div>
+    <div id="f01-hook-kicker">LA IA EN TU TRABAJO</div>
 
-    <div id="01-hook-q"><span id="01-hook-q-w1">¿Solo</span> <span id="01-hook-q-w2">preguntas?</span></div>
+    <div id="f01-hook-q"><span id="f01-hook-q-w1">¿Solo</span> <span id="f01-hook-q-w2">preguntas?</span></div>
 
     <svg
-      id="01-hook-strike"
+      id="f01-hook-strike"
       width="1920"
       height="1080"
       viewBox="0 0 1920 1080"
@@ -217,7 +217,7 @@
     >
       <defs>
         <linearGradient
-          id="01-hook-strike-grad"
+          id="f01-hook-strike-grad"
           gradientUnits="userSpaceOnUse"
           x1="48"
           y1="405"
@@ -229,30 +229,30 @@
         </linearGradient>
       </defs>
       <line
-        id="01-hook-strike-line"
+        id="f01-hook-strike-line"
         x1="48"
         y1="405"
         x2="1300"
         y2="405"
         fill="none"
-        stroke="url(#01-hook-strike-grad)"
+        stroke="url(#f01-hook-strike-grad)"
         stroke-width="12"
         stroke-linecap="round"
       />
     </svg>
 
-    <div id="01-hook-chip">SEP · 2026</div>
+    <div id="f01-hook-chip">SEP · 2026</div>
 
-    <div id="01-hook-glow"></div>
-    <div id="01-hook-eso">Eso cambió.</div>
+    <div id="f01-hook-glow"></div>
+    <div id="f01-hook-eso">Eso cambió.</div>
   </div>
 
-  <script src="../../assets/vendor/gsap.min.js"></script>
+  <script src="assets/vendor/gsap.min.js"></script>
   <script>
     (function () {
       var DURATION = 5.94;
       var el = function (name) {
-        return document.getElementById("01-hook-" + name);
+        return document.getElementById("f01-hook-" + name);
       };
 
       // Voiceover word onsets (assets/voice/01.wav) — the one beat array every reveal reads.

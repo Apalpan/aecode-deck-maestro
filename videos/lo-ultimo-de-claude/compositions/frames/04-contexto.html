@@ -1,0 +1,570 @@
+<template>
+  <style>
+    @font-face { font-family: "Manrope"; font-weight: 500; font-style: normal; font-display: block; src: url("assets/fonts/Manrope-500.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 700; font-style: normal; font-display: block; src: url("assets/fonts/Manrope-700.woff2") format("woff2"); }
+    @font-face { font-family: "Manrope"; font-weight: 800; font-style: normal; font-display: block; src: url("assets/fonts/Manrope-800.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-style: normal; font-display: block; src: url("assets/fonts/JetBrainsMono-400.woff2") format("woff2"); }
+    @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-style: normal; font-display: block; src: url("assets/fonts/JetBrainsMono-500.woff2") format("woff2"); }
+
+    #root {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      font-family: "Manrope";
+      color: #EEF3F8;
+    }
+    #root *, #root *::before, #root *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ---------- ground (full-bleed clip, static) ---------- */
+    .f04-contexto-ground {
+      position: absolute;
+      inset: 0;
+      background-color: #0E1121;
+      background-image:
+        radial-gradient(900px 700px at 12% 8%, rgba(74, 58, 193, 0.28), transparent 70%),
+        radial-gradient(900px 700px at 92% 96%, rgba(68, 101, 238, 0.14), transparent 70%),
+        linear-gradient(rgba(166, 167, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(166, 167, 255, 0.07) 1px, transparent 1px);
+      background-size: auto, auto, 64px 64px, 64px 64px;
+    }
+
+    /* ---------- camera wrapper (slow push-in) ---------- */
+    .f04-contexto-stage {
+      position: absolute;
+      inset: 0;
+      transform-origin: 960px 497px;
+    }
+
+    /* ---------- left column ---------- */
+    .f04-contexto-kicker {
+      position: absolute;
+      left: 80px;
+      top: 236px;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 24px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #A6A7FF;
+      white-space: nowrap;
+    }
+    .f04-contexto-numwrap {
+      position: absolute;
+      left: 56px;              /* tabular "1" carries ~25px side bearing: ink lands on x=80 */
+      top: 276px;
+      width: 800px;            /* fixed box: no layout shift as digit count grows */
+      height: 152px;
+      font-weight: 800;
+      font-size: 168px;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      white-space: nowrap;
+      color: #EEF3F8;
+      transform-origin: 25px 100%;
+    }
+    .f04-contexto-num {
+      display: inline-block;
+      transform-origin: 25px 100%;
+    }
+    .f04-contexto-bar {
+      position: absolute;
+      left: 80px;
+      top: 446px;
+      width: 752px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(124, 126, 223, 0.20);
+      overflow: hidden;
+    }
+    .f04-contexto-barfill {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, #4465EE, #6D12E3);
+      transform-origin: 0 50%;
+    }
+    .f04-contexto-label {
+      position: absolute;
+      left: 80px;
+      top: 478px;
+      font-weight: 800;
+      font-size: 56px;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: #EEF3F8;
+      white-space: nowrap;
+    }
+    .f04-contexto-words {
+      position: absolute;
+      left: 80px;
+      top: 562px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      font-size: 31px;
+      line-height: 1.4;
+      color: #A2B4CB;
+      white-space: nowrap;
+    }
+    .f04-contexto-approx { display: block; width: 22px; height: 22px; }
+    .f04-contexto-wnum {
+      display: inline-grid;
+      font-weight: 700;
+      color: #EEF3F8;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+    .f04-contexto-wnum > span { grid-area: 1 / 1; text-align: right; }
+    .f04-contexto-wghost { visibility: hidden; }
+    .f04-contexto-models {
+      position: absolute;
+      left: 80px;
+      top: 644px;
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 14px 8px 16px;
+      border-radius: 999px;
+      background: rgba(109, 112, 249, 0.30);
+      border: 1px solid rgba(124, 126, 223, 0.40);
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 24px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #EEF3F8;
+      white-space: nowrap;
+      transform-origin: 0 50%;
+    }
+
+    /* ---------- right stage: conversation window ---------- */
+    .f04-contexto-win {
+      position: absolute;
+      left: 940px;
+      top: 172px;
+      width: 900px;
+      height: 668px;
+      transform-origin: 50% 50%;
+    }
+    .f04-contexto-glow {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      box-shadow: 0 0 48px rgba(84, 80, 217, 0.55), 0 0 140px rgba(84, 80, 217, 0.30);
+    }
+    .f04-contexto-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #13172F, #1B1E3C);
+      border: 1px solid rgba(124, 126, 223, 0.40);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+    }
+    .f04-contexto-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 24px;
+      border: 2px solid #A6A7FF;
+      pointer-events: none;
+    }
+    .f04-contexto-head {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 84px;
+      padding: 0 30px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid rgba(124, 126, 223, 0.20);
+    }
+    .f04-contexto-head-ico { display: block; width: 26px; height: 26px; }
+    .f04-contexto-head-title {
+      font-weight: 700;
+      font-size: 26px;
+      line-height: 1.15;
+      color: #EEF3F8;
+    }
+    .f04-contexto-convchip {
+      margin-left: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px 8px 14px;
+      border-radius: 999px;
+      background: rgba(109, 112, 249, 0.30);
+      border: 1px solid rgba(124, 126, 223, 0.40);
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 24px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #EEF3F8;
+      white-space: nowrap;
+      transform-origin: 100% 50%;
+    }
+    .f04-contexto-convdot {
+      display: block;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #A6A7FF;
+    }
+    .f04-contexto-grid {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 84px;
+      bottom: 104px;
+      padding: 26px 30px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .f04-contexto-cell { position: relative; }
+    .f04-contexto-slot {
+      position: absolute;
+      inset: 0;
+      border-radius: 12px;
+      border: 1.5px dashed rgba(124, 126, 223, 0.30);
+    }
+    .f04-contexto-tile {
+      position: absolute;
+      inset: 0;
+      padding: 22px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #1B1E3C, #222341);
+      border: 1px solid rgba(124, 126, 223, 0.40);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.30);
+      transform-origin: 50% 50%;
+    }
+    .f04-contexto-ico {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: rgba(166, 167, 255, 0.10);
+      border: 1px solid rgba(166, 167, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .f04-contexto-ico svg { display: block; width: 30px; height: 30px; }
+    .f04-contexto-tname {
+      margin-top: 18px;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1.2;
+      color: #EEF3F8;
+      white-space: nowrap;
+    }
+    .f04-contexto-skel { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .f04-contexto-skel i { display: block; height: 8px; border-radius: 4px; background: rgba(124, 126, 223, 0.20); }
+    .f04-contexto-skel i:first-child { width: 78%; }
+    .f04-contexto-skel i:last-child { width: 52%; }
+    .f04-contexto-composer {
+      position: absolute;
+      left: 30px;
+      right: 30px;
+      bottom: 20px;
+      height: 64px;
+      border-radius: 999px;
+      background: #0D0F1F;
+      border: 1px solid rgba(124, 126, 223, 0.20);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 10px 0 22px;
+    }
+    .f04-contexto-clipico { display: block; width: 26px; height: 26px; }
+    .f04-contexto-caret { display: block; width: 2px; height: 28px; border-radius: 1px; background: #A6A7FF; }
+    .f04-contexto-send {
+      margin-left: auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: #6D5CF0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .f04-contexto-send svg { display: block; width: 22px; height: 22px; }
+
+    /* ---------- chrome (fixed positions shared by frames 03–07) ---------- */
+    .f04-contexto-bug {
+      position: absolute;
+      left: 80px;
+      top: 56px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .f04-contexto-bug img { display: block; height: 40px; width: auto; }
+    .f04-contexto-bug span {
+      font-weight: 700;
+      font-size: 17px;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #A2B4CB;
+      white-space: nowrap;
+    }
+    .f04-contexto-index {
+      position: absolute;
+      right: 80px;
+      top: 64px;
+      font-family: "JetBrains Mono";
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 24px;
+      color: #8C97DC;
+      white-space: nowrap;
+    }
+    .f04-contexto-source {
+      position: absolute;
+      left: 80px;
+      top: 862px;
+      font-family: "JetBrains Mono";
+      font-weight: 400;
+      font-size: 15px;
+      line-height: 22px;
+      color: #8C97DC;
+      white-space: nowrap;
+    }
+  </style>
+
+  <div id="root" data-composition-id="04-contexto" data-start="0" data-duration="8.123" data-width="1920" data-height="1080">
+    <div id="f04-contexto-ground" class="clip f04-contexto-ground" data-start="0" data-duration="8.123" data-track-index="0"></div>
+
+    <div id="f04-contexto-stage" class="f04-contexto-stage">
+      <!-- LEFT column -->
+      <div id="f04-contexto-kicker" class="f04-contexto-kicker">NOVEDAD 02 · CONTEXTO</div>
+
+      <div id="f04-contexto-numwrap" class="f04-contexto-numwrap"><span id="f04-contexto-num" class="f04-contexto-num">0</span></div>
+      <div id="f04-contexto-bar" class="f04-contexto-bar"><div id="f04-contexto-barfill" class="f04-contexto-barfill"></div></div>
+
+      <div id="f04-contexto-label" class="f04-contexto-label">tokens de contexto</div>
+
+      <div id="f04-contexto-words" class="f04-contexto-words">
+        <svg class="f04-contexto-approx" viewBox="0 0 20 20" fill="none" stroke="#A2B4CB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="aproximadamente"><path d="M3 8c2-2.2 4.4-2.2 7 0s5 2.2 7 0M3 13.5c2-2.2 4.4-2.2 7 0s5 2.2 7 0"/></svg>
+        <span class="f04-contexto-wnum"><span class="f04-contexto-wghost">555.000</span><span id="f04-contexto-wlive">0</span></span>
+        <span>palabras</span>
+      </div>
+
+      <div id="f04-contexto-models" class="f04-contexto-models">FABLE 5.1 · OPUS 5.5 · SONNET 5</div>
+
+      <!-- RIGHT stage: one conversation window -->
+      <div id="f04-contexto-win" class="f04-contexto-win">
+        <div id="f04-contexto-glow" class="f04-contexto-glow"></div>
+        <div class="f04-contexto-card">
+          <div class="f04-contexto-head">
+            <svg class="f04-contexto-head-ico" viewBox="0 0 24 24" fill="none" stroke="#A6A7FF" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c.6 4.6 3.4 7.4 8 8-4.6.6-7.4 3.4-8 8-.6-4.6-3.4-7.4-8-8 4.6-.6 7.4-3.4 8-8z"/></svg>
+            <span class="f04-contexto-head-title">Conversación</span>
+            <span id="f04-contexto-convchip" class="f04-contexto-convchip"><span class="f04-contexto-convdot"></span>1 conversación</span>
+          </div>
+
+          <div class="f04-contexto-grid">
+            <div class="f04-contexto-cell">
+              <div class="f04-contexto-slot"></div>
+              <div id="f04-contexto-tile-1" class="f04-contexto-tile">
+                <div class="f04-contexto-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#A6A7FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 12h5M12 12h9M16 12v8M12 12V8"/><path d="M12 8a4 4 0 0 0-4 4"/></svg></div>
+                <div class="f04-contexto-tname">Planos</div>
+                <div class="f04-contexto-skel"><i></i><i></i></div>
+              </div>
+            </div>
+            <div class="f04-contexto-cell">
+              <div class="f04-contexto-slot"></div>
+              <div id="f04-contexto-tile-2" class="f04-contexto-tile">
+                <div class="f04-contexto-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#A6A7FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 9h2M9 12.5h6M9 16h6"/></svg></div>
+                <div class="f04-contexto-tname">Especificaciones</div>
+                <div class="f04-contexto-skel"><i></i><i></i></div>
+              </div>
+            </div>
+            <div class="f04-contexto-cell">
+              <div class="f04-contexto-slot"></div>
+              <div id="f04-contexto-tile-3" class="f04-contexto-tile">
+                <div class="f04-contexto-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#A6A7FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 7.5h7M8.5 11h7"/><path d="M8.5 16.5c1-1.8 2-1.8 2.5 0s1.5 1.8 2.5 0 1.2-1 2 0"/></svg></div>
+                <div class="f04-contexto-tname">Contratos</div>
+                <div class="f04-contexto-skel"><i></i><i></i></div>
+              </div>
+            </div>
+            <div class="f04-contexto-cell">
+              <div class="f04-contexto-slot"></div>
+              <div id="f04-contexto-tile-4" class="f04-contexto-tile">
+                <div class="f04-contexto-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#A6A7FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-8l-5 4v-4H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M9.6 7.6a2.4 2.4 0 1 1 3.4 2.2c-.6.3-1 .8-1 1.5v.2"/><path d="M12 13.7v.01"/></svg></div>
+                <div class="f04-contexto-tname">RFIs</div>
+                <div class="f04-contexto-skel"><i></i><i></i></div>
+              </div>
+            </div>
+            <div class="f04-contexto-cell">
+              <div class="f04-contexto-slot"></div>
+              <div id="f04-contexto-tile-5" class="f04-contexto-tile">
+                <div class="f04-contexto-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#A6A7FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><rect x="8" y="6" width="8" height="3.5" rx=".6"/><path d="M8.5 13.5h1M11.5 13.5h1M14.5 13.5h1M8.5 17h1M11.5 17h1M14.5 17h1"/></svg></div>
+                <div class="f04-contexto-tname">Presupuesto</div>
+                <div class="f04-contexto-skel"><i></i><i></i></div>
+              </div>
+            </div>
+            <div class="f04-contexto-cell">
+              <div class="f04-contexto-slot"></div>
+              <div id="f04-contexto-tile-6" class="f04-contexto-tile">
+                <div class="f04-contexto-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#A6A7FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9.5h18M8 3v4M16 3v4"/><path d="M6.5 12.8h5M9.5 15.6h7M13 18.4h4"/></svg></div>
+                <div class="f04-contexto-tname">Cronograma</div>
+                <div class="f04-contexto-skel"><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="f04-contexto-composer">
+            <svg class="f04-contexto-clipico" viewBox="0 0 24 24" fill="none" stroke="#8C97DC" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            <span class="f04-contexto-caret"></span>
+            <span class="f04-contexto-send"><svg viewBox="0 0 24 24" fill="none" stroke="#EEF3F8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></span>
+          </div>
+        </div>
+        <div id="f04-contexto-ring" class="f04-contexto-ring"></div>
+      </div>
+    </div>
+
+    <!-- CHROME (static after a 0.35s opacity fade) -->
+    <div id="f04-contexto-bug" class="f04-contexto-bug"><img src="assets/brand/aecode-isotipo.png" alt="AECODE"><span>AECODE · LO ÚLTIMO DE CLAUDE</span></div>
+    <div id="f04-contexto-index" class="f04-contexto-index">02 / 05</div>
+    <div id="f04-contexto-source" class="f04-contexto-source">Fuente: platform.claude.com/docs · modelos</div>
+  </div>
+
+  <script src="assets/vendor/gsap.min.js"></script>
+  <script>
+    (function () {
+      var FRAME_ID = "04-contexto";
+      var byId = function (id) { return document.getElementById(id); };
+
+      var stage = byId("f04-contexto-stage");
+      var kicker = byId("f04-contexto-kicker");
+      var numwrap = byId("f04-contexto-numwrap");
+      var num = byId("f04-contexto-num");
+      var bar = byId("f04-contexto-bar");
+      var barfill = byId("f04-contexto-barfill");
+      var label = byId("f04-contexto-label");
+      var words = byId("f04-contexto-words");
+      var wlive = byId("f04-contexto-wlive");
+      var models = byId("f04-contexto-models");
+      var win = byId("f04-contexto-win");
+      var glow = byId("f04-contexto-glow");
+      var ring = byId("f04-contexto-ring");
+      var convchip = byId("f04-contexto-convchip");
+      var bug = byId("f04-contexto-bug");
+      var indexEl = byId("f04-contexto-index");
+      var source = byId("f04-contexto-source");
+
+      // Spanish thousands separator ("1.000.000") — locale-independent, deterministic.
+      function fmt(n) {
+        return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      }
+
+      var tl = gsap.timeline({ paused: true });
+
+      // ---- Chrome: opacity only, 0.35s, then perfectly still ----
+      tl.fromTo(bug, { opacity: 0 }, { opacity: 0.9, duration: 0.35, ease: "power1.out" }, 0);
+      tl.fromTo(indexEl, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
+      tl.fromTo(source, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
+
+      // ---- Camera: very slow continuous push-in under the whole shot ----
+      tl.fromTo(stage, { scale: 1 }, { scale: 1.025, duration: 8.123, ease: "sine.inOut" }, 0);
+
+      // ---- Scene 1 (0.0–0.5): listicle stage — kicker ----
+      tl.fromTo(kicker, { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: 0.45, ease: "power3.out" }, 0.05);
+
+      // ---- Scene 2 (0.5–2.4): counting-dynamic-scale 0 → 1.000.000 on "un millón" ----
+      var COUNT_AT = 0.48;
+      var COUNT_DUR = 1.52;
+      var COUNT_EASE = "power3.out";
+      var START_SCALE = 0.5; // START_SIZE / END_SIZE (84px → 168px)
+      var countState = { v: 0 };
+
+      tl.fromTo(numwrap, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 0.2);
+      tl.fromTo(bar, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 0.2);
+
+      tl.to(countState, {
+        v: 1000000,
+        duration: COUNT_DUR,
+        ease: COUNT_EASE,
+        onUpdate: function () {
+          num.textContent = fmt(Math.round(countState.v));
+        }
+      }, COUNT_AT);
+      tl.fromTo(num, { scale: START_SCALE }, { scale: 1, duration: COUNT_DUR, ease: COUNT_EASE }, COUNT_AT);
+      // paired graphic: gradient fill lands with the number (same position, duration, ease)
+      tl.fromTo(barfill, { scaleX: 0 }, { scaleX: 1, duration: COUNT_DUR, ease: COUNT_EASE }, COUNT_AT);
+
+      // small spring on landing (on the wrapper, after the count — the data never bounces)
+      tl.to(numwrap, { scale: 1.04, duration: 0.12, ease: "power2.out" }, COUNT_AT + COUNT_DUR);
+      tl.to(numwrap, { scale: 1, duration: 0.6, ease: "elastic.out(1, 0.5)" }, COUNT_AT + COUNT_DUR + 0.12);
+
+      // label on "tokens de contexto" (@1.2)
+      tl.fromTo(label, { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 1.2);
+      // model chip beneath, on "contexto"
+      tl.fromTo(models, { opacity: 0, y: 14, scale: 0.94 }, { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "back.out(1.6)" }, 1.75);
+
+      // ---- Scene 3 (2.5–4.3): "≈ 555.000 palabras" on "Más de quinientas mil palabras" ----
+      var wordsState = { v: 0 };
+      tl.fromTo(words, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 2.55);
+      tl.to(wordsState, {
+        v: 555000,
+        duration: 1.1,
+        ease: "power2.out",
+        onUpdate: function () {
+          wlive.textContent = fmt(Math.round(wordsState.v));
+        }
+      }, 2.6);
+
+      // ---- Scene 4 (4.4–6.2): the conversation window fades up on "tu expediente" ----
+      tl.fromTo(win, { opacity: 0, y: 48, scale: 0.97 }, { opacity: 1, y: 0, scale: 1, duration: 0.75, ease: "power3.out" }, 4.38);
+
+      // grid-card-assemble cascade, paced by dynamic-content-sequencing:
+      // each document's window is BASE + name.length × SEC_PER_CHAR, pre-computed ONCE,
+      // then the flat schedule is fitted onto "expediente técnico completo" (4.60 → 5.70).
+      var DOCS = [
+        { name: "Planos", el: byId("f04-contexto-tile-1"), rot: -4 },
+        { name: "Especificaciones", el: byId("f04-contexto-tile-2"), rot: 3 },
+        { name: "Contratos", el: byId("f04-contexto-tile-3"), rot: -2.5 },
+        { name: "RFIs", el: byId("f04-contexto-tile-4"), rot: 3.5 },
+        { name: "Presupuesto", el: byId("f04-contexto-tile-5"), rot: -3 },
+        { name: "Cronograma", el: byId("f04-contexto-tile-6"), rot: 2.5 }
+      ];
+      var BASE_DURATION = 0.6;
+      var SEC_PER_CHAR = 0.04;
+      var cumulative = 0;
+      var SEQ = DOCS.map(function (doc) {
+        var start = cumulative;
+        cumulative += BASE_DURATION + doc.name.length * SEC_PER_CHAR;
+        return { el: doc.el, rot: doc.rot, start: start };
+      });
+      var WIN_START = 4.6;
+      var WIN_END = 5.7;
+      var lastStart = SEQ[SEQ.length - 1].start;
+      for (var i = 0; i < SEQ.length; i++) {
+        var entry = SEQ[i];
+        var at = WIN_START + (entry.start / lastStart) * (WIN_END - WIN_START);
+        tl.fromTo(entry.el, { opacity: 0 }, { opacity: 1, duration: 0.22, ease: "power1.out" }, at);
+        tl.fromTo(
+          entry.el,
+          { y: -140, rotation: entry.rot, scale: 1.06 },
+          { y: 0, rotation: 0, scale: 1, duration: 0.62, ease: "back.out(1.5)" },
+          at
+        );
+      }
+
+      // ---- Scene 5 (6.3–8.12): "una sola conversación" — border to lavender + ai-glow bloom, chip pops; hold ----
+      tl.fromTo(ring, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 6.34);
+      tl.fromTo(glow, { opacity: 0, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power2.out" }, 6.34);
+      tl.to(glow, { opacity: 0.6, duration: 0.9, ease: "power2.inOut" }, 6.79);
+      tl.fromTo(convchip, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(2.2)" }, 6.36);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[FRAME_ID] = tl;
+    })();
+  </script>
+</template>
