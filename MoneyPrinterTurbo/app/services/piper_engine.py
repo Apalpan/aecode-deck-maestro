@@ -108,6 +108,72 @@ def synthesize(text: str, voice: str, speed: float = 1.0) -> tuple[np.ndarray, i
     return samples, int(audio.sample_rate)
 
 
+def spoken_length(text: str) -> float:
+    """Approximate spoken length in characters: lexicon applied, digits read out."""
+    text = apply_lexicon(text)
+
+    def expand(match):
+        digits = match.group(0).replace(" ", "")
+        try:
+            from num2words import num2words
+
+            return num2words(int(digits), lang="es")
+        except Exception:
+            return "x" * int(len(digits) * 3.5)
+
+    text = re.sub(r"\d+(?: \d{3})*", expand, text)
+    return float(len(text))
+
+
+def clause_boundaries(samples: np.ndarray, sample_rate: int, weights: list[float]) -> list[float]:
+    """
+    Times (s) where each clause after the first starts inside one sentence.
+
+    First guess: split the speech by the spoken length of each clause. Then
+    snap every guess to the nearest real pause (commas make Piper breathe),
+    so subtitles and on-screen reveals land on what the voice actually says.
+    """
+    duration = len(samples) / sample_rate
+    total = sum(weights) or 1.0
+    guesses, acc = [], 0.0
+    for w in weights[:-1]:
+        acc += w
+        guesses.append(duration * acc / total)
+    if not guesses:
+        return []
+
+    frame = int(0.01 * sample_rate)
+    frames = samples[: len(samples) // frame * frame].reshape(-1, frame)
+    rms = np.sqrt((frames ** 2).mean(axis=1))
+    quiet = rms < max(1e-4, rms.max() * 0.05)
+    pauses, start = [], None
+    for i, q in enumerate(quiet):
+        if q and start is None:
+            start = i
+        elif not q and start is not None:
+            if i - start >= 6:  # >= 60 ms
+                pauses.append(((start + i) / 2 * 0.01, (i - start) * 0.01))
+            start = None
+
+    points, floor = [], 0.0
+    for index, guess in enumerate(guesses):
+        # A clause never lasts much less than its spoken length suggests;
+        # this skips the short closures of stop consonants (p, t, k).
+        min_len = max(0.15, 0.55 * duration * weights[index] / total)
+        best = None
+        for center, length in pauses:
+            dist = abs(center - guess)
+            if center > floor + min_len and dist < 0.7:
+                score = dist - length * 2  # prefer longer pauses
+                if best is None or score < best[0]:
+                    best = (score, center)
+        point = best[1] if best else guess
+        point = max(point, floor + 0.15)
+        points.append(point)
+        floor = point
+    return points
+
+
 def trim_silence(samples: np.ndarray, sample_rate: int, threshold: float = 0.01) -> np.ndarray:
     """Drop leading/trailing near-silence so our own pauses stay predictable."""
     loud = np.flatnonzero(np.abs(samples) > threshold)

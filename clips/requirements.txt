@@ -1,0 +1,6 @@
+# Además de MoneyPrinterTurbo/requirements.txt
+sherpa-onnx>=1.12      # voz Piper offline
+num2words>=0.5         # lectura de cifras para sincronizar subtítulos
+playwright>=1.50       # render de escenas HTML -> fotogramas
+numpy
+scipy                  # síntesis de la música original

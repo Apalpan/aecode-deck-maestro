@@ -2384,8 +2384,8 @@ def piper_tts(
 
     Each sentence is synthesized on its own and joined with a fixed pause, so
     the SubMaker carries real sentence boundaries instead of a proportional
-    guess over the whole script. Clauses inside a sentence (split on commas,
-    colons...) share the sentence time by character count, which is what
+    guess over the whole script. Clause boundaries inside a sentence (commas,
+    colons...) are snapped to the pauses Piper actually makes, which is what
     ``create_subtitle()`` aggregates into SRT lines.
     """
     from app.services import piper_engine
@@ -2414,15 +2414,12 @@ def piper_tts(
             samples, sample_rate = piper_engine.synthesize(sentence, voice, voice_rate)
             samples = piper_engine.trim_silence(samples, sample_rate)
             speech = len(samples) / sample_rate
-            total_chars = sum(len(c) for c in clauses) or 1
-            start = cursor
+            splits = piper_engine.clause_boundaries(
+                samples, sample_rate, [piper_engine.spoken_length(c) for c in clauses]
+            )
+            edges = [cursor] + [cursor + s for s in splits] + [cursor + speech + pause]
             for index, clause in enumerate(clauses):
-                if index == len(clauses) - 1:
-                    end = cursor + speech + pause
-                else:
-                    end = start + speech * len(clause) / total_chars
-                timeline.append((start, end, clause))
-                start = end
+                timeline.append((edges[index], edges[index + 1], clause))
             chunks.append(samples)
             chunks.append(np.zeros(int(pause * sample_rate), dtype=np.float32))
             cursor += speech + pause
