@@ -595,6 +595,17 @@ model_id = "kokoro"
 # from the server (GET {base_url}/audio/voices).
 voices = []
 
+[piper]
+# Offline Piper voices via sherpa-onnx (`pip install sherpa-onnx`): no API key,
+# no network once the model is downloaded. Use voice_name = "piper:<voice>",
+# e.g. "piper:es_MX-claude-high". Models: vits-piper-<voice>.tar.bz2 from
+# https://github.com/k2-fsa/sherpa-onnx/releases/tag/tts-models, extracted into models_dir.
+models_dir = "./models/piper"
+sentence_pause = 0.32
+num_threads = 4
+# Spoken form for words the phonemizer mispronounces (audio only, subtitles keep the original).
+# lexicon = { "ChatGPT" = "Chat ye pe te" }
+
 [fish_audio]
 # Fish Audio TTS service: https://fish.audio
 # API key: https://fish.audio/app/developers

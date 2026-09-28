@@ -20,6 +20,7 @@ from urllib.parse import urlparse
 from xml.sax.saxutils import escape, unescape
 
 import edge_tts
+import numpy as np
 import requests
 from edge_tts import SubMaker
 from edge_tts.srt_composer import Subtitle
@@ -434,6 +435,10 @@ def is_kokoro_voice(voice_name: str) -> bool:
     return (voice_name or "").startswith("kokoro:")
 
 
+def is_piper_voice(voice_name: str | None) -> bool:
+    return (voice_name or "").startswith("piper:")
+
+
 def is_fish_audio_voice(voice_name: str) -> bool:
     return (voice_name or "").startswith("fish_audio:")
 
@@ -703,6 +708,15 @@ def _single_tts(
         else:
             logger.error(f"Invalid kokoro voice name format: {voice_name}")
             return None
+    elif is_piper_voice(voice_name):
+        # 格式: piper:<voice>，例如 piper:es_MX-claude-high，可带 -Female/-Male 后缀
+        piper_voice = voice_name.split(":", 1)[1].strip()
+        if piper_voice.endswith(("-Female", "-Male")):
+            piper_voice = piper_voice.rsplit("-", 1)[0]
+        if piper_voice:
+            return piper_tts(text, piper_voice, voice_file, voice_rate, voice_volume)
+        logger.error(f"Invalid piper voice name format: {voice_name}")
+        return None
     elif is_fish_audio_voice(voice_name):
         parts = voice_name.split(":")
         reference_id = parts[1] if len(parts) >= 2 else "default"
@@ -2357,6 +2371,104 @@ def kokoro_tts(
     return _openai_compatible_tts(
         "kokoro", base_url, api_key, model_id, voice, text, voice_rate, voice_file
     )
+
+
+def piper_tts(
+    text: str,
+    voice: str,
+    voice_file: str,
+    voice_rate: float = 1.0,
+    voice_volume: float = 1.0,
+) -> Union[SubMaker, None]:
+    """Generate speech with a local Piper voice (sherpa-onnx), fully offline.
+
+    Each sentence is synthesized on its own and joined with a fixed pause, so
+    the SubMaker carries real sentence boundaries instead of a proportional
+    guess over the whole script. Clauses inside a sentence (split on commas,
+    colons...) share the sentence time by character count, which is what
+    ``create_subtitle()`` aggregates into SRT lines.
+    """
+    from app.services import piper_engine
+
+    text = _format_text(text)
+    if not any(character.isalnum() for character in text):
+        logger.error("Piper TTS text contains no speakable characters")
+        return None
+
+    sentences = [
+        s.strip()
+        for s in re.split(r"(?<=[.!?…])\s+|\n+", text)
+        if s and s.strip()
+    ]
+    pause = float(config.piper.get("sentence_pause", 0.32))
+
+    try:
+        chunks = []
+        timeline = []  # (start_s, end_s, clause)
+        cursor = 0.0
+        sample_rate = 22050
+        for sentence in sentences:
+            clauses = utils.split_string_by_punctuations(sentence)
+            if not clauses:
+                continue
+            samples, sample_rate = piper_engine.synthesize(sentence, voice, voice_rate)
+            samples = piper_engine.trim_silence(samples, sample_rate)
+            speech = len(samples) / sample_rate
+            total_chars = sum(len(c) for c in clauses) or 1
+            start = cursor
+            for index, clause in enumerate(clauses):
+                if index == len(clauses) - 1:
+                    end = cursor + speech + pause
+                else:
+                    end = start + speech * len(clause) / total_chars
+                timeline.append((start, end, clause))
+                start = end
+            chunks.append(samples)
+            chunks.append(np.zeros(int(pause * sample_rate), dtype=np.float32))
+            cursor += speech + pause
+    except Exception as e:
+        logger.error(f"piper tts failed: {str(e)}")
+        return None
+
+    if not chunks:
+        logger.error("Piper TTS produced no audio")
+        return None
+
+    audio = np.concatenate(chunks) * float(voice_volume or 1.0)
+    pcm = (np.clip(audio, -1.0, 1.0) * 32767).astype(np.int16)
+    ensure_file_path_exists(voice_file)
+    wav_file = f"{os.path.splitext(voice_file)[0]}.piper.wav"
+    with wave.open(wav_file, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(sample_rate)
+        wf.writeframes(pcm.tobytes())
+
+    if voice_file.lower().endswith(".wav"):
+        shutil.move(wav_file, voice_file)
+    else:
+        result = subprocess.run(
+            [
+                utils.get_ffmpeg_binary(), "-y", "-i", wav_file,
+                "-codec:a", "libmp3lame", "-b:a", "192k", voice_file,
+            ],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            check=False,
+        )
+        os.remove(wav_file)
+        if result.returncode != 0:
+            logger.error(f"piper tts mp3 encode failed: {result.stderr.strip()}")
+            return None
+
+    sub_maker = ensure_legacy_submaker_fields(SubMaker())
+    for start, end, clause in timeline:
+        sub_maker.subs.append(clause)
+        sub_maker.offset.append((int(start * 10000000), int(end * 10000000)))
+    logger.success(f"piper tts succeeded: {voice_file} ({cursor:.2f}s)")
+    return sub_maker
 
 
 # Fish Audio supported models.
