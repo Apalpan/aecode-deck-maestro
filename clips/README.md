@@ -6,7 +6,7 @@ como motor de voz, subtítulos y montaje, más una capa de diseño propia.
 | Ep | Clip | Duración |
 |---|---|---|
 | 01 | [El verano que inventó la IA](output/ep01-el-verano-que-invento-la-ia.mp4) | ~49 s |
-| 02 | [La jugada 37](output/ep02-la-jugada-37.mp4) | ~44 s |
+| 02 | [La jugada 37](output/ep02-la-jugada-37.mp4) | ~45 s |
 | 03 | [La canción detrás de ChatGPT](output/ep03-la-cancion-detras-de-chatgpt.mp4) | ~47 s |
 
 Textos para publicar, hashtags y fuentes: [`output/PUBLICAR.md`](output/PUBLICAR.md).

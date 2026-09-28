@@ -1,0 +1,80 @@
+1
+00:00:00,000 --> 00:00:04,628
+La T de ChatGPT nació de un paper con título de canción de los Beatles
+
+2
+00:00:04,628 --> 00:00:05,698
+En 2017
+
+3
+00:00:05,698 --> 00:00:09,861
+ocho investigadores de Google publicaron Attention Is All You Need
+
+4
+00:00:09,861 --> 00:00:12,549
+El título juega con All You Need Is Love
+
+5
+00:00:12,549 --> 00:00:15,692
+Y el nombre Transformer se eligió porque sonaba bien
+
+6
+00:00:15,692 --> 00:00:17,032
+Su idea clave es la atención
+
+7
+00:00:17,032 --> 00:00:21,300
+mirar todas las palabras a la vez y decidir cuáles importan
+
+8
+00:00:21,300 --> 00:00:23,725
+Cinco años después llegó ChatGPT
+
+9
+00:00:23,725 --> 00:00:25,860
+un millón de usuarios en cinco días
+
+10
+00:00:25,860 --> 00:00:27,904
+y cien millones en dos meses
+
+11
+00:00:27,904 --> 00:00:28,584
+Y la novedad
+
+12
+00:00:28,584 --> 00:00:30,304
+en junio de 2026
+
+13
+00:00:30,304 --> 00:00:31,284
+Noam Shazeer
+
+14
+00:00:31,284 --> 00:00:32,144
+coautor del paper
+
+15
+00:00:32,144 --> 00:00:34,161
+dejó Google por OpenAI
+
+16
+00:00:34,161 --> 00:00:35,261
+La lección
+
+17
+00:00:35,261 --> 00:00:36,211
+una idea simple
+
+18
+00:00:36,211 --> 00:00:38,346
+bien nombrada y publicada a tiempo
+
+19
+00:00:38,346 --> 00:00:40,764
+puede cambiar una industria entera
+
+20
+00:00:40,764 --> 00:00:44,432
+Sigue a AECODE y aprende a aplicar la IA en la construcción
+

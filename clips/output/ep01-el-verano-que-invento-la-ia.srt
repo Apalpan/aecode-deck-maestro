@@ -1,0 +1,92 @@
+1
+00:00:00,000 --> 00:00:01,855
+En 1956
+
+2
+00:00:01,855 --> 00:00:06,862
+diez científicos creyeron que resolverían la inteligencia artificial en un solo verano
+
+3
+00:00:06,862 --> 00:00:11,227
+Este 2026 se cumplen 70 años de aquel taller en Dartmouth
+
+4
+00:00:11,227 --> 00:00:13,269
+el evento que fundó la IA
+
+5
+00:00:13,269 --> 00:00:14,924
+Lo propusieron McCarthy
+
+6
+00:00:14,924 --> 00:00:15,549
+Minsky
+
+7
+00:00:15,549 --> 00:00:16,986
+Rochester y Shannon
+
+8
+00:00:16,986 --> 00:00:18,336
+Y bautizaron el campo
+
+9
+00:00:18,336 --> 00:00:20,207
+inteligencia artificial
+
+10
+00:00:20,207 --> 00:00:20,747
+El plan
+
+11
+00:00:20,747 --> 00:00:21,442
+dos meses
+
+12
+00:00:21,442 --> 00:00:24,442
+diez personas y 13 500 dólares
+
+13
+00:00:24,442 --> 00:00:27,737
+La Fundación Rockefeller aprobó 7 500
+
+14
+00:00:27,737 --> 00:00:28,437
+Su apuesta
+
+15
+00:00:28,437 --> 00:00:33,490
+un avance significativo si un grupo selecto trabajaba junto durante un verano
+
+16
+00:00:33,490 --> 00:00:34,830
+70 años después
+
+17
+00:00:34,830 --> 00:00:36,145
+ese verano sigue
+
+18
+00:00:36,145 --> 00:00:36,792
+La lección
+
+19
+00:00:36,792 --> 00:00:40,165
+sobreestimamos lo que una tecnología hace en un año
+
+20
+00:00:40,165 --> 00:00:42,631
+y subestimamos lo que hace en diez
+
+21
+00:00:42,631 --> 00:00:43,945
+Sigue a AECODE
+
+22
+00:00:43,945 --> 00:00:44,950
+Próxima historia
+
+23
+00:00:44,950 --> 00:00:46,693
+la jugada 37
+

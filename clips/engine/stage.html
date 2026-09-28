@@ -135,8 +135,8 @@ em, .acc { font-style: normal; background: var(--grad); -webkit-background-clip:
 .tag.q { background: #E26A62; color: #fff; box-shadow: 0 10px 30px rgba(226,106,98,.45); }
 
 /* dots */
-.dotsbox { position: relative; width: 760px; height: 760px; margin: 26px auto 0; }
-.dotsbox canvas { width: 760px; height: 760px; }
+.dotsbox { position: relative; width: 620px; height: 620px; margin: 30px auto 0; }
+.dotsbox canvas { width: 620px; height: 620px; }
 
 /* timer */
 .ring { width: 600px; height: 600px; }
@@ -448,12 +448,12 @@ const TPL = {
     s.center = true;
     s.init = el => {
       const c = el.querySelector("canvas");
-      c.width = 760; c.height = 760;
+      c.width = 620; c.height = 620;
       s.ctx = c.getContext("2d");
     };
     s.update = local => {
-      const ctx = s.ctx, n = 100, pitch = 7.6, r = 3.4;
-      ctx.clearRect(0, 0, 760, 760);
+      const ctx = s.ctx, n = 100, pitch = 6.2, r = 2.9;
+      ctx.clearRect(0, 0, 620, 620);
       const reveal = clamp((local - 0.2) / 1.2);
       const focus = clamp((local - s.tt("c1")) / 0.8);
       const hx = 71, hy = 38;
@@ -464,12 +464,12 @@ const TPL = {
           if (a <= 0) continue;
           ctx.globalAlpha = a * lerp(0.85, 0.38, focus);
           ctx.fillStyle = "#A6A7FF";
-          ctx.fillRect(x * pitch + 2.1, y * pitch + 2.1, r, r);
+          ctx.fillRect(x * pitch + 1.6, y * pitch + 1.6, r, r);
         }
       }
       ctx.globalAlpha = 1;
       if (focus > 0) {
-        const cx = hx * pitch + 3.2, cy = hy * pitch + 3.2;
+        const cx = hx * pitch + 3, cy = hy * pitch + 3;
         const e = EASE.back(focus);
         ctx.fillStyle = "#19C356";
         ctx.shadowColor = "rgba(25,195,86,.95)"; ctx.shadowBlur = 24;
@@ -482,7 +482,7 @@ const TPL = {
     };
     return `<div class="h-lg" data-a="pop" data-t="c1"><span class="acc">${esc(s.big)}</span></div>
       <div class="dotsbox" data-a="fade" data-t="0"><canvas></canvas></div>
-      <div class="body-lg" data-a="up" data-t="c1+0.4" style="margin-top:26px;font-size:34px;max-width:860px">${esc(s.caption)}</div>`;
+      <div class="body-lg" data-a="up" data-t="c1+0.4" style="margin-top:30px;font-size:32px">${esc(s.caption)}</div>`;
   },
 
   timer(s) {

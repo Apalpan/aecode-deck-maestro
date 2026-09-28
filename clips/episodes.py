@@ -143,7 +143,7 @@ EPISODES = [
                 type="dots",
                 say="AlphaGo calculó que un humano la jugaría con una probabilidad de 1 en 10 000.",
                 big="1 en 10 000",
-                caption="Probabilidad estimada de que un humano jugara esa piedra",
+                caption="Probabilidad estimada de que un humano la jugara",
             ),
             dict(
                 type="timer",

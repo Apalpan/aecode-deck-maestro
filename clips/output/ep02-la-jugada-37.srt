@@ -1,0 +1,84 @@
+1
+00:00:00,000 --> 00:00:00,650
+Hace 10 años
+
+2
+00:00:00,650 --> 00:00:04,938
+una máquina hizo una jugada que ningún humano habría hecho
+
+3
+00:00:04,938 --> 00:00:05,513
+AlphaGo
+
+4
+00:00:05,513 --> 00:00:06,318
+de DeepMind
+
+5
+00:00:06,318 --> 00:00:07,638
+enfrentaba a Lee Sedol
+
+6
+00:00:07,638 --> 00:00:09,244
+leyenda mundial del Go
+
+7
+00:00:09,244 --> 00:00:10,514
+En la segunda partida
+
+8
+00:00:10,514 --> 00:00:11,694
+jugada 37
+
+9
+00:00:11,694 --> 00:00:15,197
+puso una piedra que los comentaristas tomaron por error
+
+10
+00:00:15,197 --> 00:00:20,459
+AlphaGo calculó que un humano la jugaría con una probabilidad de 1 en 10 000
+
+11
+00:00:20,459 --> 00:00:24,678
+Lee Sedol salió de la sala y tardó unos quince minutos en responder
+
+12
+00:00:24,678 --> 00:00:26,619
+AlphaGo ganó 4 a 1
+
+13
+00:00:26,619 --> 00:00:27,889
+Pero en la cuarta partida
+
+14
+00:00:27,889 --> 00:00:29,969
+Lee respondió con su propia genialidad
+
+15
+00:00:29,969 --> 00:00:31,754
+la jugada 78
+
+16
+00:00:31,754 --> 00:00:32,369
+La lección
+
+17
+00:00:32,369 --> 00:00:34,684
+la IA no solo imita a los expertos
+
+18
+00:00:34,684 --> 00:00:37,262
+puede mostrarnos caminos que no veíamos
+
+19
+00:00:37,262 --> 00:00:38,546
+Sigue a AECODE
+
+20
+00:00:38,546 --> 00:00:39,596
+Próxima historia
+
+21
+00:00:39,596 --> 00:00:41,887
+la canción detrás de ChatGPT
+
