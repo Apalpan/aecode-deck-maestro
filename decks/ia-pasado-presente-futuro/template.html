@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La historia de una pregunta</title>
+<style>
+/*FONTS*/
+:root {
+  color-scheme: light;
+  --bg-a: #FBFAFE;
+  --bg-b: #F1EDFB;
+  --ink: #1C1830;
+  --ink-2: #5B5670;
+  --ink-3: #8E88A3;
+  --line: #E2DCF3;
+  --violet: #5B3BC4;
+  --violet-deep: #3A2585;
+  --lilac: #B9A8F0;
+  --wash: #EDE7FC;
+  --paper: rgba(255, 255, 255, 0.72);
+  --serif: "Instrument Serif", "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans: "Manrope", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --ease: cubic-bezier(.2, .7, .1, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: radial-gradient(1200px 800px at 88% -10%, rgba(91, 59, 196, 0.10), transparent 60%),
+              linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 100%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+em { font-style: italic; }
+
+/* ---------- stage: fixed 1920×1080 canvas scaled to fit ---------- */
+.deck { position: fixed; inset: 0; display: grid; place-items: center; }
+.stage {
+  position: relative; width: 1920px; height: 1080px; flex: none;
+  transform-origin: center center;
+  background: radial-gradient(900px 700px at 92% 4%, rgba(91, 59, 196, 0.09), transparent 62%),
+              radial-gradient(800px 600px at 0% 100%, rgba(185, 168, 240, 0.18), transparent 60%),
+              linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 100%);
+  overflow: hidden;
+}
+.chrome-top {
+  position: absolute; left: 120px; right: 120px; top: 64px;
+  display: flex; justify-content: space-between; align-items: center;
+  font: 600 20px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--ink-2);
+}
+.chrome-top .count { font-variant-numeric: tabular-nums; letter-spacing: .12em; }
+.chrome-top .count b { color: var(--violet); font-weight: 700; }
+
+.slide {
+  position: absolute; left: 0; top: 0; width: 1920px; height: 1080px;
+  padding: 150px 120px 190px;
+  opacity: 0; visibility: hidden;
+  transition: opacity .6s var(--ease), visibility 0s linear .6s;
+}
+.slide.is-active { opacity: 1; visibility: visible; transition: opacity .6s var(--ease), visibility 0s; }
+.stage.boot .slide, .stage.boot .thread * { transition: none !important; }
+
+/* type scale */
+.eyebrow { font: 600 22px/1.2 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--violet); }
+.h-hero { font: 400 176px/.92 var(--serif); letter-spacing: -.02em; }
+.h1 { font: 400 104px/1 var(--serif); letter-spacing: -.015em; text-wrap: balance; }
+.h2 { font: 400 64px/1.08 var(--serif); letter-spacing: -.01em; text-wrap: balance; }
+.lede { font: 400 36px/1.45 var(--sans); color: var(--ink-2); max-width: 30ch; }
+.body { font: 400 28px/1.5 var(--sans); color: var(--ink-2); }
+.year { font: italic 400 76px/1 var(--serif); color: var(--violet); font-variant-numeric: lining-nums; }
+.accent { color: var(--violet); }
+.soft { color: var(--ink-3); }
+.hair { height: 1px; background: var(--line); }
+
+/* reveal on navigation (the cover is complete at rest) */
+.slide.is-active.enter [data-r] { animation: rise .9s var(--ease) both; animation-delay: calc(var(--i, 0) * 110ms + 120ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+/* ---------- 1 · cover ---------- */
+.s-cover { display: grid; grid-template-columns: 1.25fr .75fr; align-items: center; }
+.s-cover .left { display: flex; flex-direction: column; gap: 44px; }
+.s-cover .qmark {
+  justify-self: end; font: italic 400 640px/.8 var(--serif); color: transparent;
+  -webkit-text-stroke: 2px var(--lilac); margin-right: 40px; user-select: none;
+}
+.s-cover .byline { display: flex; gap: 28px; align-items: center; font: 500 26px/1 var(--sans); color: var(--ink-2); }
+.s-cover .byline i { width: 56px; height: 1px; background: var(--violet); display: block; }
+
+/* ---------- 2 · chapter I ---------- */
+.s-two { display: grid; grid-template-columns: 1fr 1.05fr; gap: 120px; align-items: center; }
+.s-two .left { display: flex; flex-direction: column; gap: 40px; }
+.quote { display: flex; flex-direction: column; gap: 36px; padding-left: 56px; border-left: 1px solid var(--lilac); }
+.quote blockquote { font: italic 400 112px/1 var(--serif); color: var(--ink); letter-spacing: -.015em; }
+.quote cite { font: 500 24px/1.4 var(--sans); font-style: normal; color: var(--ink-2); }
+.aside-line { display: flex; gap: 28px; align-items: baseline; }
+.aside-line .year { font-size: 56px; }
+
+/* ---------- 3 · 4 · milestone rows ---------- */
+.s-rows { display: flex; flex-direction: column; justify-content: space-between; }
+.s-rows .head { display: flex; flex-direction: column; gap: 28px; max-width: 1400px; }
+.rows { display: grid; grid-template-columns: repeat(3, 1fr); gap: 64px; }
+.row { display: flex; flex-direction: column; gap: 18px; padding-top: 28px; border-top: 1px solid var(--line); }
+.row h3 { font: 600 32px/1.25 var(--sans); color: var(--ink); }
+.takeaway { display: flex; gap: 24px; align-items: baseline; font: italic 400 48px/1.2 var(--serif); color: var(--ink); }
+.takeaway span { font: 600 20px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--violet); font-style: normal; }
+
+/* ---------- 5 · present I ---------- */
+.s-five { display: grid; grid-template-columns: 600px 1fr; gap: 100px; align-items: center; }
+.bigdate { display: flex; flex-direction: column; gap: 8px; }
+.bigdate .m { font: italic 400 150px/.9 var(--serif); color: var(--lilac); }
+.bigdate .y { font: 400 300px/.8 var(--serif); color: var(--violet); letter-spacing: -.03em; }
+.s-five .right { display: flex; flex-direction: column; gap: 36px; }
+.s-five .ticks .body { font-size: 26px; }
+.ticks { display: flex; flex-direction: column; }
+.ticks li { list-style: none; display: grid; grid-template-columns: 110px 1fr; gap: 24px; padding: 16px 0; border-top: 1px solid var(--line); align-items: baseline; }
+.ticks li:last-child { border-bottom: 1px solid var(--line); }
+.ticks .y { font: italic 400 44px/1 var(--serif); color: var(--violet); }
+.pill-q { align-self: flex-start; display: inline-flex; gap: 20px; align-items: baseline; padding: 22px 36px; border-radius: 999px; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 20px 50px -30px rgba(58, 37, 133, .35); }
+.pill-q span { font: 600 20px/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--ink-2); }
+.pill-q q { font: italic 400 44px/1 var(--serif); color: var(--ink); quotes: "«" "»"; }
+
+/* ---------- 6 · present II (today) ---------- */
+.s-six { display: flex; flex-direction: column; justify-content: space-between; }
+.s-six .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 60px; }
+.s-six .head .pill-q { flex: none; }
+.s-six .head .h1 { max-width: 1120px; }
+.today-tag { display: inline-flex; align-items: center; gap: 14px; font: 600 20px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--violet); white-space: nowrap; }
+.today-tag::before { content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 8px rgba(91, 59, 196, .14); }
+.evidence { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--paper); border: 1px solid var(--line); border-radius: 28px; box-shadow: 0 30px 80px -50px rgba(58, 37, 133, .45); }
+.ev { padding: 40px 40px 44px; display: flex; flex-direction: column; gap: 16px; }
+.ev + .ev { border-left: 1px solid var(--line); }
+.ev .fig { font: 400 72px/1 var(--serif); color: var(--ink); letter-spacing: -.02em; font-variant-numeric: lining-nums; }
+.ev .fig em { color: var(--violet); }
+.ev .body { font-size: 25px; }
+.ev .date { margin-top: auto; font: 600 18px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); }
+.s-six .foot { display: flex; justify-content: space-between; align-items: baseline; }
+.source { font: 500 20px/1.4 var(--sans); color: var(--ink-3); }
+
+/* ---------- 7 · future ---------- */
+.s-seven { display: flex; flex-direction: column; justify-content: space-between; }
+.s-seven .head { display: flex; flex-direction: column; gap: 28px; }
+.horizons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+.hz { position: relative; padding: 44px 44px 48px; border-radius: 28px; border: 1px dashed var(--lilac); display: flex; flex-direction: column; gap: 18px; background: rgba(255, 255, 255, .38); }
+.hz .tag { font: 600 18px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--violet); }
+.hz h3 { font: 400 52px/1.05 var(--serif); color: var(--ink); }
+.hz .body { font-size: 26px; }
+
+/* ---------- 8 · close ---------- */
+.s-eight { display: flex; flex-direction: column; justify-content: space-between; }
+.questions { display: flex; flex-direction: column; }
+.qrow { display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: baseline; padding: 26px 0; border-top: 1px solid var(--line); }
+.qrow:last-child { border-bottom: 1px solid var(--line); }
+.qrow .year { font-size: 60px; color: var(--ink-3); }
+.qrow .q { font: 400 70px/1.05 var(--serif); color: var(--ink-3); letter-spacing: -.01em; }
+.qrow.now .year, .qrow.now .q { color: var(--violet); }
+.qrow.now .q em { color: var(--violet-deep); }
+.s-eight .end { display: flex; justify-content: space-between; align-items: flex-end; gap: 60px; }
+.s-eight .end .h2 { max-width: 1100px; }
+.sign { text-align: right; display: flex; flex-direction: column; gap: 10px; font: 500 24px/1.3 var(--sans); color: var(--ink-2); white-space: nowrap; }
+.sign b { font: 700 24px/1 var(--sans); letter-spacing: .08em; color: var(--ink); }
+
+/* ---------- the thread of time ---------- */
+.thread { position: absolute; left: 120px; right: 120px; bottom: 70px; height: 70px; }
+.thread .rail { position: absolute; left: 0; right: 0; top: 20px; height: 1px; background: var(--line); }
+.thread .future { position: absolute; top: 20px; height: 1px; right: 0; background: repeating-linear-gradient(90deg, var(--lilac) 0 8px, transparent 8px 16px); }
+.thread .fill { position: absolute; left: 0; top: 19px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--lilac), var(--violet)); transition: width 1.1s var(--ease); }
+.thread .band { position: absolute; top: 14px; height: 13px; border-radius: 8px; background: rgba(91, 59, 196, .16); transition: left 1.1s var(--ease), width 1.1s var(--ease); }
+.thread .dot { position: absolute; top: 14px; width: 13px; height: 13px; margin-left: -6.5px; border-radius: 50%; background: var(--violet); box-shadow: 0 0 0 7px rgba(91, 59, 196, .14); transition: left 1.1s var(--ease); }
+.thread .tick { position: absolute; top: 40px; transform: translateX(-50%); font: 500 18px/1 var(--sans); color: var(--ink-3); font-variant-numeric: tabular-nums; letter-spacing: .06em; }
+.thread .tick::before { content: ""; position: absolute; left: 50%; top: -24px; width: 1px; height: 9px; background: var(--lilac); }
+.thread .now-label { position: absolute; top: -18px; transform: translateX(-50%); font: 700 16px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--violet); transition: left 1.1s var(--ease), opacity .4s; }
+
+/* ---------- controls ---------- */
+.nav { position: fixed; right: max(20px, env(safe-area-inset-right)); bottom: max(18px, env(safe-area-inset-bottom)); display: flex; gap: 8px; z-index: 5; }
+.nav button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--violet); font: 600 18px/1 var(--sans); cursor: pointer; display: grid; place-items: center; backdrop-filter: blur(6px); }
+.nav button:hover { border-color: var(--lilac); }
+.nav button:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+.nav svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (prefers-reduced-motion: reduce) {
+  .slide, .slide.is-active, .thread * { transition: none !important; }
+  .slide.is-active.enter [data-r] { animation: none; }
+}
+
+/* ---------- phone / narrow: reflow into a vertical read ---------- */
+@media (max-width: 760px) {
+  body { overflow: auto; background-attachment: scroll; }
+  .deck { position: static; display: block; padding: 0 18px 40px; }
+  .stage { width: 100%; height: auto; transform: none !important; background: none; overflow: visible; }
+  .chrome-top, .thread, .nav { display: none; }
+  .slide { position: relative; width: auto; height: auto; opacity: 1; visibility: visible; padding: 56px 0; border-bottom: 1px solid var(--line); display: flex !important; flex-direction: column; align-items: stretch !important; justify-content: flex-start !important; gap: 28px; }
+  .slide > * { min-width: 0; max-width: 100%; }
+  .slide::before { content: attr(data-era); font: 600 12px/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--ink-3); }
+  .s-cover, .s-two, .s-five { grid-template-columns: 1fr; }
+  .s-cover .qmark { display: none; }
+  .h-hero { font-size: 58px; }
+  .h1 { font-size: 40px; }
+  .h2 { font-size: 30px; }
+  .lede { font-size: 18px; }
+  .body, .ev .body, .hz .body { font-size: 16px; }
+  .eyebrow { font-size: 12px; }
+  .year { font-size: 36px; }
+  .quote { padding-left: 20px; gap: 16px; }
+  .quote blockquote { font-size: 44px; }
+  .quote cite, .s-cover .byline { font-size: 14px; }
+  .aside-line .year { font-size: 30px; }
+  .rows, .horizons { grid-template-columns: 1fr; gap: 20px; }
+  .row { gap: 10px; padding-top: 16px; }
+  .row h3 { font-size: 18px; }
+  .takeaway { font-size: 24px; flex-direction: column; gap: 10px; }
+  .takeaway span, .pill-q span, .today-tag, .hz .tag, .ev .date { font-size: 11px; }
+  .bigdate { flex-direction: row; align-items: baseline; gap: 14px; }
+  .bigdate .m { font-size: 48px; }
+  .bigdate .y { font-size: 72px; }
+  .ticks li { grid-template-columns: 64px 1fr; gap: 14px; padding: 12px 0; }
+  .ticks .y { font-size: 24px; }
+  .s-five .ticks .body { font-size: 16px; }
+  .s-six .head .pill-q { flex: initial; }
+  .pill-q { flex-direction: column; gap: 8px; padding: 16px 20px; border-radius: 20px; }
+  .pill-q q { font-size: 26px; }
+  .s-six .head, .s-six .foot, .s-eight .end { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .evidence { grid-template-columns: 1fr 1fr; border-radius: 18px; }
+  .ev { padding: 18px; gap: 8px; }
+  .ev:nth-child(3) { border-left: none; }
+  .ev:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .ev .fig { font-size: 32px; }
+  .source { font-size: 12px; }
+  .hz { padding: 22px; border-radius: 18px; gap: 10px; }
+  .hz h3 { font-size: 28px; }
+  .qrow { grid-template-columns: 64px 1fr; gap: 14px; padding: 14px 0; }
+  .qrow .year { font-size: 24px; }
+  .qrow .q { font-size: 28px; }
+  .sign { text-align: left; font-size: 14px; }
+  .sign b { font-size: 14px; }
+  .s-rows, .s-six, .s-seven, .s-eight { gap: 28px; }
+}
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+  <div class="stage boot" id="stage">
+
+    <header class="chrome-top" aria-hidden="true">
+      <span>Pasado · Presente · Futuro de la IA</span>
+      <span class="count" id="count"><b>01</b> / 08</span>
+    </header>
+
+    <!-- 1 · COVER -->
+    <section class="slide s-cover is-active" data-era="1950 — 2035" data-from="1950" data-to="1950" aria-label="Portada">
+      <div class="left">
+        <p class="eyebrow">Pasado, presente y futuro de la inteligencia artificial</p>
+        <h1 class="h-hero">La historia<br>de una <em class="accent">pregunta</em></h1>
+        <p class="lede">Cómo la IA pasó de ser un experimento mental a convertirse en un colega de trabajo.</p>
+        <p class="byline"><i></i>Alejandro Palpan · AECODE</p>
+      </div>
+      <div class="qmark" aria-hidden="true">?</div>
+    </section>
+
+    <!-- 2 · CHAPTER I -->
+    <section class="slide s-two" data-era="1950–1956" data-from="1950" data-to="1956" aria-label="Capítulo I">
+      <div class="left">
+        <p class="eyebrow" data-r style="--i:0">Capítulo I · El sueño</p>
+        <h2 class="h1" data-r style="--i:1">Todo empezó con una pregunta.</h2>
+        <p class="body" data-r style="--i:2">Un matemático británico propuso algo que sonaba a ciencia ficción: medir si una máquina puede conversar como una persona.</p>
+        <div class="hair" data-r style="--i:3"></div>
+        <div class="aside-line" data-r style="--i:4">
+          <span class="year">1956</span>
+          <p class="body">Un taller de verano en Dartmouth le pone nombre al campo: <em class="accent">inteligencia artificial</em>.</p>
+        </div>
+      </div>
+      <figure class="quote" data-r style="--i:2">
+        <blockquote>«¿Pueden pensar las máquinas?»</blockquote>
+        <cite>Alan Turing · <em>Computing Machinery and Intelligence</em>, 1950</cite>
+      </figure>
+    </section>
+
+    <!-- 3 · CHAPTER II -->
+    <section class="slide s-rows" data-era="1966–1997" data-from="1966" data-to="1997" aria-label="Capítulo II">
+      <div class="head">
+        <p class="eyebrow" data-r style="--i:0">Capítulo II · Reglas e inviernos</p>
+        <h2 class="h1" data-r style="--i:1">Le enseñamos reglas a la máquina y encontramos su límite.</h2>
+      </div>
+      <div class="rows">
+        <div class="row" data-r style="--i:2">
+          <span class="year">1966</span>
+          <h3>ELIZA, el primer chatbot</h3>
+          <p class="body">Imitaba a un terapeuta con reglas simples. Muchos creyeron que los entendía.</p>
+        </div>
+        <div class="row" data-r style="--i:3">
+          <span class="year">1974–1993</span>
+          <h3>Los inviernos de la IA</h3>
+          <p class="body">Sistemas expertos que prometían más de lo que podían dar. La inversión se congeló dos veces.</p>
+        </div>
+        <div class="row" data-r style="--i:4">
+          <span class="year">1997</span>
+          <h3>Deep Blue vence a Kasparov</h3>
+          <p class="body">Cálculo y fuerza bruta ganaron al campeón mundial de ajedrez, sin entender el juego.</p>
+        </div>
+      </div>
+      <p class="takeaway" data-r style="--i:5"><span>Lección</span>La inteligencia no cabe en un manual de reglas.</p>
+    </section>
+
+    <!-- 4 · CHAPTER III -->
+    <section class="slide s-rows" data-era="2012–2017" data-from="2012" data-to="2017" aria-label="Capítulo III">
+      <div class="head">
+        <p class="eyebrow" data-r style="--i:0">Capítulo III · Aprender de los datos</p>
+        <h2 class="h1" data-r style="--i:1">Dejamos de escribir reglas y empezamos a enseñar con ejemplos.</h2>
+      </div>
+      <div class="rows">
+        <div class="row" data-r style="--i:2">
+          <span class="year">2012</span>
+          <h3>AlexNet despierta al deep learning</h3>
+          <p class="body">Una red neuronal gana el reto ImageNet con más de diez puntos de ventaja sobre el segundo.</p>
+        </div>
+        <div class="row" data-r style="--i:3">
+          <span class="year">2016</span>
+          <h3>AlphaGo vence a Lee Sedol</h3>
+          <p class="body">Gana 4 a 1 en Go, un juego con más posiciones posibles que átomos en el universo.</p>
+        </div>
+        <div class="row" data-r style="--i:4">
+          <span class="year">2017</span>
+          <h3>Nace el Transformer</h3>
+          <p class="body">El artículo «Attention Is All You Need» crea la arquitectura detrás de los modelos de lenguaje actuales.</p>
+        </div>
+      </div>
+      <p class="takeaway" data-r style="--i:5"><span>Lección</span>Desde aquí, la pregunta clave fue con qué datos alimentarla.</p>
+    </section>
+
+    <!-- 5 · PRESENT I -->
+    <section class="slide s-five" data-era="2022–2024" data-from="2022" data-to="2024" aria-label="Capítulo IV">
+      <div class="bigdate" data-r style="--i:0" aria-hidden="true">
+        <span class="m">noviembre</span>
+        <span class="y">2022</span>
+      </div>
+      <div class="right">
+        <p class="eyebrow" data-r style="--i:1">Capítulo IV · La IA conversa</p>
+        <h2 class="h1" data-r style="--i:2">Un día, la IA empezó a conversar con todos.</h2>
+        <ul class="ticks" data-r style="--i:3">
+          <li><span class="y">2022</span><span class="body">ChatGPT lleva los modelos de lenguaje al gran público.</span></li>
+          <li><span class="y">2023</span><span class="body">Claude y GPT-4 escriben, resumen, programan y analizan.</span></li>
+          <li><span class="y">2024</span><span class="body">Texto, imagen, voz y código en una misma conversación.</span></li>
+        </ul>
+        <p class="pill-q" data-r style="--i:4"><span>La pregunta del público</span><q>¿Qué le pregunto?</q></p>
+      </div>
+    </section>
+
+    <!-- 6 · PRESENT II · TODAY -->
+    <section class="slide s-six" data-era="Hoy · 2025–2026" data-from="2025" data-to="2026" aria-label="Hoy">
+      <div class="head">
+        <div style="display:flex;flex-direction:column;gap:28px">
+          <p class="eyebrow" data-r style="--i:0">Capítulo V · La IA actúa · Caso Claude, septiembre 2026</p>
+          <h2 class="h1" data-r style="--i:1">Hoy, la IA ejecuta trabajo de principio a fin.</h2>
+        </div>
+        <p class="pill-q" data-r style="--i:2"><span>La nueva pregunta</span><q>¿Qué le delego?</q></p>
+      </div>
+      <div class="evidence" data-r style="--i:3">
+        <div class="ev">
+          <span class="fig">1 millón</span>
+          <p class="body">de tokens de contexto: un expediente técnico completo en una sola conversación.</p>
+          <span class="date">Modelos 2026</span>
+        </div>
+        <div class="ev">
+          <span class="fig"><em>Laptop</em> cerrada</span>
+          <p class="body">Claude sigue trabajando y entrega documentos y presentaciones.</p>
+          <span class="date">16 · sep · 2026</span>
+        </div>
+        <div class="ev">
+          <span class="fig">En <em>Chrome</em></span>
+          <p class="body">Navega, hace clic y llena formularios, con un control de seguridad en cada acción.</p>
+          <span class="date">26 · ago · 2026</span>
+        </div>
+        <div class="ev">
+          <span class="fig">2.000+</span>
+          <p class="body">conectores y plugins para trabajar con las herramientas del equipo.</p>
+          <span class="date">23 · sep · 2026</span>
+        </div>
+      </div>
+      <p class="source" data-r style="--i:4">Fuentes: anthropic.com/news · claude.com/blog · documentación de modelos de Claude, septiembre 2026</p>
+    </section>
+
+    <!-- 7 · FUTURE -->
+    <section class="slide s-seven" data-era="2027–2035" data-from="2027" data-to="2035" aria-label="Futuro">
+      <div class="head">
+        <p class="eyebrow" data-r style="--i:0">Capítulo VI · Lo que viene · hipótesis de trabajo</p>
+        <h2 class="h1" data-r style="--i:1">El futuro se decide en lo que elijamos delegar.</h2>
+      </div>
+      <div class="horizons">
+        <article class="hz" data-r style="--i:2">
+          <span class="tag">Equipos</span>
+          <h3>Cada profesional dirige sus agentes</h3>
+          <p class="body">Personas que coordinan agentes especializados: uno investiga, otro redacta, otro verifica. El valor se mide por el trabajo bien delegado.</p>
+        </article>
+        <article class="hz" data-r style="--i:3">
+          <span class="tag">Mundo físico</span>
+          <h3>La IA sale de la pantalla</h3>
+          <p class="body">Robots, sensores y gemelos digitales llevan la IA a la obra, la planta y la ciudad, donde cada decisión tiene peso real.</p>
+        </article>
+        <article class="hz" data-r style="--i:4">
+          <span class="tag">Criterio</span>
+          <h3>Decidir bien será la ventaja</h3>
+          <p class="body">Cuando ejecutar sea barato, lo escaso será el juicio: contexto, ética y responsabilidad sobre el resultado.</p>
+        </article>
+      </div>
+      <p class="source" data-r style="--i:5">Proyección editorial, no datos. Se revisa cada año contra lo que efectivamente ocurra.</p>
+    </section>
+
+    <!-- 8 · CLOSE -->
+    <section class="slide s-eight" data-era="1950 — 2035" data-from="1950" data-to="2035" aria-label="Cierre">
+      <div style="display:flex;flex-direction:column;gap:36px">
+        <p class="eyebrow" data-r style="--i:0">Epílogo · La pregunta cambia con cada época</p>
+        <div class="questions">
+          <div class="qrow" data-r style="--i:1"><span class="year">1950</span><p class="q">¿Pueden pensar las máquinas?</p></div>
+          <div class="qrow" data-r style="--i:2"><span class="year">2022</span><p class="q">¿Qué le pregunto a la IA?</p></div>
+          <div class="qrow now" data-r style="--i:3"><span class="year">2026</span><p class="q">¿Qué le delego y qué <em>decido yo</em>?</p></div>
+        </div>
+      </div>
+      <div class="end">
+        <p class="h2" data-r style="--i:4">La historia de la IA es la historia <em class="accent">de nuestras preguntas.</em></p>
+        <p class="sign" data-r style="--i:5"><b>Alejandro Palpan</b>AECODE · Aprende, aplica, construye mejor</p>
+      </div>
+    </section>
+
+    <!-- the thread of time (persistent) -->
+    <div class="thread" id="thread" aria-hidden="true">
+      <div class="rail"></div>
+      <div class="future" id="future"></div>
+      <div class="fill" id="fill"></div>
+      <div class="band" id="band"></div>
+      <div class="dot" id="dot"></div>
+      <div class="now-label" id="nowLabel">Hoy</div>
+    </div>
+  </div>
+</main>
+
+<nav class="nav" aria-label="Navegación de diapositivas">
+  <button type="button" id="prev" aria-label="Diapositiva anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button type="button" id="next" aria-label="Diapositiva siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+</nav>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var count = document.getElementById('count');
+  var fill = document.getElementById('fill'), band = document.getElementById('band');
+  var dot = document.getElementById('dot'), future = document.getElementById('future');
+  var nowLabel = document.getElementById('nowLabel');
+  var START = 1950, END = 2035, NOW = 2026, W = 1680;
+  var idx = 0;
+  var narrow = function () { return window.matchMedia('(max-width: 760px)').matches; };
+  var x = function (y) { return (y - START) / (END - START) * W; };
+
+  // ticks every 20 years + the present
+  [1950, 1970, 1990, 2010, 2030].forEach(function (y) {
+    var t = document.createElement('div');
+    t.className = 'tick'; t.style.left = x(y) + 'px'; t.textContent = y;
+    document.getElementById('thread').appendChild(t);
+  });
+  future.style.left = x(NOW) + 'px';
+  nowLabel.style.left = x(NOW) + 'px';
+
+  function fit() {
+    if (narrow()) { stage.style.transform = 'none'; return; }
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    stage.style.transform = 'scale(' + s + ')';
+  }
+
+  function thread(sl) {
+    var a = +sl.dataset.from, b = +sl.dataset.to;
+    var head = Math.min(b, NOW);
+    fill.style.width = x(head) + 'px';
+    band.style.left = x(a) + 'px';
+    band.style.width = Math.max(13, x(b) - x(a)) + 'px';
+    dot.style.left = x(head) + 'px';
+    nowLabel.style.opacity = b >= 2025 ? 1 : 0;
+  }
+
+  function go(n, animate) {
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    if (n === idx && animate) return;
+    slides[idx].classList.remove('is-active', 'enter');
+    idx = n;
+    var sl = slides[idx];
+    sl.classList.add('is-active');
+    if (animate) { void sl.offsetWidth; sl.classList.add('enter'); }
+    count.innerHTML = '<b>' + String(idx + 1).padStart(2, '0') + '</b> / ' + String(slides.length).padStart(2, '0');
+    thread(sl);
+    try { history.replaceState(null, '', '#s' + (idx + 1)); } catch (e) {}
+  }
+
+  document.getElementById('next').addEventListener('click', function () { go(idx + 1, true); });
+  document.getElementById('prev').addEventListener('click', function () { go(idx - 1, true); });
+  document.addEventListener('keydown', function (e) {
+    if (narrow()) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); go(idx + 1, true); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); go(idx - 1, true); }
+    else if (k === 'Home') go(0, true);
+    else if (k === 'End') go(slides.length - 1, true);
+    else if (k === 'f' || k === 'F') {
+      var el = document.documentElement;
+      try { document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen().catch(function () {}); } catch (err) {}
+    }
+  });
+  stage.addEventListener('click', function (e) {
+    if (narrow()) return;
+    var r = stage.getBoundingClientRect();
+    go(idx + (e.clientX - r.left < r.width * 0.3 ? -1 : 1), true);
+  });
+  var sx = null;
+  document.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (sx === null || narrow()) return;
+    var dx = e.changedTouches[0].clientX - sx; sx = null;
+    if (Math.abs(dx) > 40) go(idx + (dx < 0 ? 1 : -1), true);
+  }, { passive: true });
+
+  window.addEventListener('resize', fit);
+  fit();
+  var m = /^#s(\d+)$/.exec(location.hash || '');
+  go(m ? (+m[1] - 1) : 0, false);
+  requestAnimationFrame(function () { requestAnimationFrame(function () { stage.classList.remove('boot'); }); });
+})();
+</script>
+</body>
+</html>
